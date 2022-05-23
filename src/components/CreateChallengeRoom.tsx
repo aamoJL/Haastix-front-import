@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { ChallengeRoomData } from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
 
@@ -12,6 +13,8 @@ const defaultFormData : ChallengeRoomData = {
 function CreateChallengeRoom() {
   const [formData, setFormData] = useState<ChallengeRoomData>(defaultFormData);
   const {roomName, challenges, delay, time} = formData;
+
+  let navigate = useNavigate();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
@@ -52,6 +55,7 @@ function CreateChallengeRoom() {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Submit WIP
+    navigate("/wait");
   }
 
   return (
@@ -79,7 +83,7 @@ function CreateChallengeRoom() {
         <input type="number" name="delay" id="delay" value={delay} placeholder="Viive" onChange={onChange}/>
         <input type="number" name="time" id="time" value={time} placeholder="Kesto" onChange={onChange}/>
         <br />
-        <button>Luo haaste</button>
+        <input type="submit" value="Luo haaste"/>
       </form>
     </div>
   );

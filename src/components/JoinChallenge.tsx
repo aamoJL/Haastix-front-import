@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PlayerIcon from '../assets/player_emojies/002-cool-5.png';
+import SettingsHomeButtons from './SettingsHomeButtons';
 
 function JoinChallenge() {
   const [roomCode, setRoomCode] = useState("");
@@ -7,6 +8,7 @@ function JoinChallenge() {
 
   return (
     <div>
+      <SettingsHomeButtons />
       <h1>Pääsykoodi</h1>
       <input type="text" id="roomCode" placeholder='Type room code' onChange={(e) => setRoomCode(e.target.value)} value={roomCode}></input>
       <p>Pyydä koodi pelimestarilta</p>
