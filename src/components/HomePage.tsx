@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/otsikko-v2.png';
+import Button from "@mui/material/Button";
 
 function HomePage() {
   return (
@@ -15,10 +16,10 @@ function HomePage() {
       </div>
       <img src={logo} alt="Logo" />
       <Link to="create">
-        <button id="createChallenge-btn">Luo haaste</button>
+        <Button variant="contained" id="createChallenge-btn">Luo haaste</Button>
       </Link>
       <Link to="join">
-        <button id="joinChallenge-btn">Liity haasteeseen</button>
+        <Button variant="contained" id="joinChallenge-btn">Liity haasteeseen</Button>
       </Link>
     </div>
   );
