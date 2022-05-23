@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from '../assets/otsikko-v2.png';
+import Button from "@mui/material/Button";
 
 function HomePage() {
   return (
@@ -12,9 +13,10 @@ function HomePage() {
       </div>
       <img src={logo} alt="Logo" />
       {/*click => CreateChallenge */}
-      <button id="createChallenge-btn">Luo haaste</button>
+      <br></br>
+      <Button variant="contained" id="createChallenge-btn">Luo haaste</Button>
       {/*click => JoinChallenge */}
-      <button id="joinChallenge-btn">Liity haasteeseen</button>
+      <Button variant="contained" id="joinChallenge-btn">Liity haasteeseen</Button>
     </div>
   );
 }

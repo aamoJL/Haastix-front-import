@@ -7,7 +7,7 @@ import WaitingRoomViewGamemaster from './components/WaitingRoomViewGamemaster';
 function App() {
   return (
     <div className="App">
-      {/* <HomePage /> */}
+      <HomePage />
       {/* <CreateChallengeRoom /> */}
       {/* <WaitingRoomViewGamemaster roomCode="a1B2" roomData={{
         roomName: "Test Room",
@@ -15,7 +15,7 @@ function App() {
         time: undefined,
         delay: undefined,
       }}/> */}
-      <JoinChallenge />
+      {/* <JoinChallenge /> */}
     </div>
   );
 }
