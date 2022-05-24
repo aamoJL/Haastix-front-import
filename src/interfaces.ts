@@ -14,5 +14,5 @@ export interface ChallengeRoomData{
 export interface ChallengeRoomJoin{
   userName: string,
   roomCode: string,
-  userAvatar?: string
+  userAvatar?: number
 }
