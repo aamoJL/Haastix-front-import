@@ -9,15 +9,31 @@ function JoinChallenge() {
   const [playerName, setPlayerName] = useState("");
   const [playerAvatar, setAvatar] = useState("");
 
-  const setStuff = () => 
+  const setStuff = () => {
     setInfo({
       roomCode: roomCode,
       userName: playerName,
       userAvatar: "1",
     })
+  }
 
-  const consolelog = () =>
-    console.log(info);
+ const joinChallengeRoom = () => {
+   fetch(`/challenge/join/` + "DwxD", {
+     method: 'POST',
+     headers: {'Conten-Type' : 'application/json'},
+     body: JSON.stringify({
+       userName: "playerName",
+       userAvatar: "1"
+     })
+    }).then(async response => {
+        // const isJson = response.headers.get('content-type')?.includes('application/json');
+        // const data = isJson && await response.json();
+
+        console.log(response);
+    }).catch(error => {
+        console.log("error", error)
+   });
+  }
 
   return (
     <div>
@@ -31,7 +47,7 @@ function JoinChallenge() {
         <img src={PlayerIcon} alt="" />
       </div>
       <button id="joinChallenge-btn" onClick={setStuff}>Liity haasteeseen</button>
-      <button onClick={consolelog}>Liity </button>
+      <button onClick={joinChallengeRoom}>Liity </button>
     </div>
   );
 }
