@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
 import PlayerIcon from '../assets/player_emojies/002-cool-5.png';
+import { ChallengeRoomJoin } from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
 
 function JoinChallenge() {
+  const [info, setInfo] = useState<ChallengeRoomJoin>();
   const [roomCode, setRoomCode] = useState("");
   const [playerName, setPlayerName] = useState("");
+  const [playerAvatar, setAvatar] = useState("");
+
+  const setStuff = () => 
+    setInfo({
+      roomCode: roomCode,
+      userName: playerName,
+      userAvatar: "1",
+    })
+
+  const consolelog = () =>
+    console.log(info);
 
   return (
     <div>
@@ -17,7 +30,8 @@ function JoinChallenge() {
       <div>
         <img src={PlayerIcon} alt="" />
       </div>
-      <button id="joinChallenge-btn">Liity haasteeseen</button>
+      <button id="joinChallenge-btn" onClick={setStuff}>Liity haasteeseen</button>
+      <button onClick={consolelog}>Liity </button>
     </div>
   );
 }
