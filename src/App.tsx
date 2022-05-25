@@ -16,9 +16,9 @@ function App() {
           <Route path='create' element={<CreateChallengeRoom />} />
           <Route path='wait' element={<WaitingRoomViewGamemaster roomCode="a1B2" roomData={{
             roomName: "Test Room",
-            challenges: [{description: "Test Challenge"}],
-            time: undefined,
-            delay: undefined,
+            challenges: [{description: "Test Challenge", challengeNumber: 0}],
+            time: 10,
+            delay: 10,
           }}/>} />
           <Route path='*' element={<NotFound />}/>
         </Routes>
