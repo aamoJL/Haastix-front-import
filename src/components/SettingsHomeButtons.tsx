@@ -1,12 +1,15 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function SettingsHomeButtons() {
   return (
     <div>
-        {/*click => Settings */}
+      <Link to="settings">
         <button id="settings-btn">Settings</button>
-        {/*click => HomePage */}
+      </Link>
+      <Link to="/">
         <button id="home-btn">Home</button>
+      </Link>
       </div>
   );
 }
