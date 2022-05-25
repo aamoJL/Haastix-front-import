@@ -18,7 +18,7 @@ function HomePage() {
       <Link to="create">
         <Button variant="contained" id="createChallenge-btn">Luo haaste</Button>
       </Link>
-      <Link to="join">
+      <Link to="game">
         <Button variant="contained" id="joinChallenge-btn">Liity haasteeseen</Button>
       </Link>
     </div>

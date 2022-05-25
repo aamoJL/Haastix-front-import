@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChallengeRoomJoin } from '../interfaces';
+import { ChallengeRoomJoin, JoinChallengeSuccessRespomse } from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import {emojiArray, getEmojiImage} from './storage/Images'
 
@@ -12,6 +12,7 @@ const defaultFormData : ChallengeRoomJoin= {
 function JoinChallenge() {
   const [info, setInfo] = useState<ChallengeRoomJoin>(defaultFormData);
   const {roomCode, userName, userAvatar} = info;
+  const [token, setToken] = useState("");
 
  const joinChallengeRoom = () => {
    fetch(`${process.env.REACT_APP_API_URL}/challenge/join/${roomCode}`, 
@@ -27,7 +28,12 @@ function JoinChallenge() {
       }
     )
     .then(res => res.json())
-    .then(res => console.log(res))
+    .then(res => {
+      if(res.statusCode === 200)
+        console.log(res)
+        setToken(res.details.token)
+        sessionStorage.setItem('token', token)
+    })
     .catch(error => alert(error))
   }
   
