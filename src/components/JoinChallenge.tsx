@@ -14,7 +14,7 @@ function JoinChallenge() {
   const {roomCode, userName, userAvatar} = info;
 
  const joinChallengeRoom = () => {
-   fetch(`${process.env.REACT_APP_API_URL}/challenge/join/` + roomCode, 
+   fetch(`${process.env.REACT_APP_API_URL}/challenge/join/${roomCode}`, 
       {
         method: "POST",
         headers: {
@@ -22,7 +22,7 @@ function JoinChallenge() {
         },
         body: JSON.stringify({
           userName: userName,
-          userAvatar: "1"
+          userAvatar: userAvatar.toString()
         })
       }
     )
