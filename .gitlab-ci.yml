@@ -1,0 +1,20 @@
+# This CI-file is for project FRONTEND ONLY
+
+stages:
+  - build
+  - deploy
+
+
+build_test:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo "REACT_APP_API_URL=128.214.255.104" > .env
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.web --destination $CI_REGISTRY_IMAGE:test
+  only:
+    - test
+  tags:
+  - general
