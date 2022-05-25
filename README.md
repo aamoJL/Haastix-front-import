@@ -33,4 +33,3 @@ Your project folder should look like this:
 To run the development environment, open the project folder with Visual Studio Code. Navigate to source-tools folder and right click ```docker-compose-dev.yml``` -file. Choose ```Compose Up``` -option and docker will start building the backend for you.  
 
 To run the frontend in a development server, navigate to source-frontend folder with your terminal and run ```npm start```. It will run the development server which will recompile the server everytime you make changes to frontend.
-
