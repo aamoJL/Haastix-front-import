@@ -10,6 +10,11 @@ export interface ChallengeRoomData{
   challenges: Challenge[],
 }
 
+export interface ChallengeRoomJoin{
+  userName: string,
+  roomCode: string,
+  userAvatar: number
+}
 /**
  * JSON response from successful challenge room creation API call
  */
