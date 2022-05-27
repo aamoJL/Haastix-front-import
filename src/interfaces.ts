@@ -34,3 +34,18 @@ export interface NewChallengeRoomSuccessResponse{
     token: string
   }
 }
+
+export interface JoinChallengeSuccessRespomse{
+  statusCode: number,
+  message: string,
+  details: {
+    userid: string,
+    challengeRoomId: string, 
+    challengeRoomName: string,
+    challengeStartDate: string,
+    challengeEndDate: string,
+    challengeTasks: Challenge[],
+    token: string,
+    userName: string,
+  }
+}

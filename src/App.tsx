@@ -12,7 +12,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<HomePage />} />
-          <Route path='join' element={<JoinChallenge />} />
+          <Route path='game' element={<JoinChallenge />} />
           <Route path='create' element={<CreateChallengeRoom />} />
           <Route path='wait' element={<WaitingRoomViewGamemaster roomCode="a1B2" roomData={{
             roomName: "Test Room",
