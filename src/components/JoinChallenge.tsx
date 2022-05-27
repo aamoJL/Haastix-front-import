@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { isConstructorDeclaration } from 'typescript';
 import { ChallengeRoomJoin, JoinChallengeSuccessRespomse } from '../interfaces';
+import NotFound from './NotFound';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import {emojiArray, getEmojiImage} from './storage/Images'
+import WaitingRoom from './WaitingRoom';
+import WaitingRoomViewGamemaster from './WaitingRoomViewGamemaster';
 
 const defaultFormData : ChallengeRoomJoin= {
   roomCode: "",
@@ -10,11 +14,46 @@ const defaultFormData : ChallengeRoomJoin= {
 }
 
 function JoinChallenge() {
-  const [info, setInfo] = useState<ChallengeRoomJoin>(defaultFormData);
-  const {roomCode, userName, userAvatar} = info;
-  const [token, setToken] = useState("");
+  const [info, setInfo] = useState<ChallengeRoomJoin>(defaultFormData); //form state
+  const {roomCode, userName, userAvatar} = info; //form state
+  const [token, setToken] = useState(sessionStorage.getItem("token"));
+  const [showWaitingRoom, setShowWaitingRoom] = useState(false);
+  const [loading, setLoading] = useState(true); // placeholder loading screen
 
- const joinChallengeRoom = () => {
+  useEffect(() => {
+    if(token !== null){
+      // fetch room data
+      fetch(`${process.env.REACT_APP_API_URL}/challenge/reJoin`,
+      {
+        method:"GET",
+        headers: {
+          Authorization: `bearer ${sessionStorage.getItem('token')}`,
+        }
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.statusCode !== 200)
+        {
+          sessionStorage.removeItem('token');
+          setToken(sessionStorage.getItem('token'));
+          setLoading(false);
+        }
+        else
+        {
+          setShowWaitingRoom(true);
+          setLoading(false);
+        }
+      })
+      .catch(error => console.log(error))
+    }
+    else{
+      setLoading(false);
+    }
+  }, [token]);
+
+
+  const joinChallengeRoom = () => {
+    //join game as a new player
    fetch(`${process.env.REACT_APP_API_URL}/challenge/join/${roomCode}`, 
       {
         method: "POST",
@@ -30,9 +69,13 @@ function JoinChallenge() {
     .then(res => res.json())
     .then(res => {
       if(res.statusCode === 200)
-        console.log(res)
+      {
         setToken(res.details.token)
-        sessionStorage.setItem('token', token)
+        if(res.details.token !== null)
+          sessionStorage.setItem('token', res.details.token);
+        setLoading(false);
+        setShowWaitingRoom(true);
+      }
     })
     .catch(error => alert(error))
   }
@@ -63,15 +106,22 @@ function JoinChallenge() {
   return (
     <div>
       <SettingsHomeButtons />
-      <h1>Pääsykoodi</h1>
-      <input type="text" id="roomCode" placeholder='Type room code' onChange={onChange} value={roomCode}></input>
-      <p>Pyydä koodi pelimestarilta</p>
-      <input type="text" id="userName" placeholder='Type your name' onChange={onChange} value={userName}></input>
-      <p>Kuvake</p>
-      <div>        
-        <img onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
-      </div>
-      <button id="joinChallenge-btn" onClick={joinChallengeRoom}>Liity haasteeseen</button>
+      {loading && <></>}
+      {showWaitingRoom && <WaitingRoom/>}
+      {!loading && !showWaitingRoom && (
+        <>
+        <h1>Pääsykoodi</h1>
+        <input type="text" id="roomCode" placeholder='Type room code' onChange={onChange} value={roomCode}></input>
+        <p>Pyydä koodi pelimestarilta</p>
+        <input type="text" id="userName" placeholder='Type your name' onChange={onChange} value={userName}></input>
+        <p>Kuvake</p>
+        <div>        
+          <img onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
+        </div>
+        <button id="joinChallenge-btn" onClick={joinChallengeRoom}>Liity haasteeseen</button>
+        </>
+      )}
+      
     </div>
   );
 }
