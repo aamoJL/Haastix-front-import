@@ -51,4 +51,4 @@ deploy_production:
     project: wimma-lab-2022/iotitude/devops-pipeline
     branch: main
   only:
-    - master
+    - main
