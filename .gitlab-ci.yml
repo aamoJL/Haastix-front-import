@@ -32,3 +32,23 @@ build_production:
     - main
   tags:
   - prod
+
+deploy_test:
+  stage: deploy
+  variables:
+    TRIGGER: 'true'
+  trigger:
+    project: iotitude/devops-pipeline
+    branch: test
+  only:
+    - test
+
+deploy_production:
+  stage: deploy
+  variables:
+    TRIGGER: 'true'
+  trigger:
+    project: iotitude/devops-pipeline
+    branch: main
+  only:
+    - master
