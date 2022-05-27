@@ -38,7 +38,7 @@ deploy_test:
   variables:
     TRIGGER: 'true'
   trigger:
-    project: iotitude/devops-pipeline/
+    project: wimma-lab-2022/iotitude/devops-pipeline
     branch: test
   only:
     - test
@@ -48,7 +48,7 @@ deploy_production:
   variables:
     TRIGGER: 'true'
   trigger:
-    project: iotitude/devops-pipeline/
+    project: wimma-lab-2022/iotitude/devops-pipeline
     branch: main
   only:
     - master
