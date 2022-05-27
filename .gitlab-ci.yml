@@ -1,0 +1,54 @@
+# This CI-file is for project FRONTEND ONLY
+
+stages:
+  - build
+  - deploy
+
+
+build_test:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo "REACT_APP_API_URL=http://128.214.255.104" > .env
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:test
+  only:
+    - test
+  tags:
+  - general
+
+build_production:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo "REACT_APP_API_URL=http://86.50.169.110" > .env
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:production
+  only:
+    - main
+  tags:
+  - prod
+
+deploy_test:
+  stage: deploy
+  variables:
+    TRIGGER: 'true'
+  trigger:
+    project: wimma-lab-2022/iotitude/devops-pipeline
+    branch: test
+  only:
+    - test
+
+deploy_production:
+  stage: deploy
+  variables:
+    TRIGGER: 'true'
+  trigger:
+    project: wimma-lab-2022/iotitude/devops-pipeline
+    branch: main
+  only:
+    - master
