@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { isConstructorDeclaration } from 'typescript';
-import { ChallengeRoomJoin, JoinChallengeSuccessRespomse } from '../interfaces';
-import NotFound from './NotFound';
+import { ChallengeRoomJoin } from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
-import WaitingRoomViewGamemaster from './WaitingRoomViewGamemaster';
+import { Button, TextField, Typography, Stack, Avatar } from '@mui/material';
 
 const defaultFormData : ChallengeRoomJoin= {
   roomCode: "",
@@ -19,6 +17,7 @@ function JoinChallenge() {
   const [token, setToken] = useState(sessionStorage.getItem("token"));
   const [showWaitingRoom, setShowWaitingRoom] = useState(false);
   const [loading, setLoading] = useState(true); // placeholder loading screen
+  const [isValid, setIsValid] = useState(true); //if true form inputs are not valid and button is disabled
 
   useEffect(() => {
     if(token !== null){
@@ -32,16 +31,16 @@ function JoinChallenge() {
       })
       .then(res => res.json())
       .then(res => {
+        setLoading(false);
         if(res.statusCode !== 200)
         {
+          console.log(res);
           sessionStorage.removeItem('token');
           setToken(sessionStorage.getItem('token'));
-          setLoading(false);
         }
         else
         {
           setShowWaitingRoom(true);
-          setLoading(false);
         }
       })
       .catch(error => console.log(error))
@@ -103,6 +102,10 @@ function JoinChallenge() {
     }));
   }
 
+  useEffect(() => {
+
+  },[info])
+
   return (
     <div>
       <SettingsHomeButtons />
@@ -110,18 +113,17 @@ function JoinChallenge() {
       {showWaitingRoom && <WaitingRoom/>}
       {!loading && !showWaitingRoom && (
         <>
-        <h1>Pääsykoodi</h1>
-        <input type="text" id="roomCode" placeholder='Type room code' onChange={onChange} value={roomCode}></input>
-        <p>Pyydä koodi pelimestarilta</p>
-        <input type="text" id="userName" placeholder='Type your name' onChange={onChange} value={userName}></input>
-        <p>Kuvake</p>
-        <div>        
-          <img onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
-        </div>
-        <button id="joinChallenge-btn" onClick={joinChallengeRoom}>Liity haasteeseen</button>
+        <Stack  justifyContent="center" spacing={2} alignItems="center">
+          <Typography variant="h2">Join a game</Typography>
+          <Typography variant="body1">Ask the gamemaster for the code</Typography>
+          <TextField type="text" id="roomCode" label="Room code" onChange={onChange} value={roomCode}></TextField>
+          <TextField type="text" id="userName" label="Name" onChange={onChange} value={userName}></TextField>
+          <Typography variant="body1">Avatar</Typography>
+          <Avatar  variant="rounded"  sx={{height: 200, width: 200}} onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
+          <Button disabled={isValid} variant="contained" id="joinChallenge-btn" onClick={joinChallengeRoom}>Liity haasteeseen</Button>
+        </Stack>
         </>
       )}
-      
     </div>
   );
 }
