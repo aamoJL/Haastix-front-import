@@ -2,25 +2,23 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/otsikko-v2.png';
 import Button from "@mui/material/Button";
+import SettingsHomeButtons from './SettingsHomeButtons';
+import { Stack } from '@mui/material';
+import { Box } from '@mui/system';
 
 function HomePage() {
   return (
     <div>
-      <div>
-        <Link to="about">
-          <button id="info-btn">Info</button>
+      <SettingsHomeButtons homePage={true}/>
+      <Stack justifyContent="space-evenly" alignContent="center" spacing={2}>
+        <Box component="img" src={logo} alt="Logo" />
+        <Link to="create">
+          <Button variant="contained" id="createChallenge-btn">Luo haaste</Button>
         </Link>
-        <Link to="settings">
-          <button id="settings-btn">Settings</button>
+        <Link to="game">
+          <Button variant="contained" id="joinChallenge-btn">Liity haasteeseen</Button>
         </Link>
-      </div>
-      <img src={logo} alt="Logo" />
-      <Link to="create">
-        <Button variant="contained" id="createChallenge-btn">Luo haaste</Button>
-      </Link>
-      <Link to="game">
-        <Button variant="contained" id="joinChallenge-btn">Liity haasteeseen</Button>
-      </Link>
+      </Stack>
     </div>
   );
 }

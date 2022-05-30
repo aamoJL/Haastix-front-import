@@ -175,7 +175,7 @@ function CreateChallengeRoom() {
 
   return (
     <div>
-      <SettingsHomeButtons />
+      <SettingsHomeButtons homePage={false}/>
       <Typography variant="h2" component="h2">Otsikko</Typography>
       <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} placeholder="Type room name..." inputProps={{ maxLength: formValidation.maxNameLength }}/>
       <Typography variant="h3" component="h2">Haaste</Typography>

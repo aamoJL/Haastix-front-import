@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChallengeRoomJoin, ChallengeRoomJoinValidation } from '../interfaces';
+import { ChallengeRoomJoin } from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
@@ -129,7 +129,7 @@ function JoinChallenge() {
 
   return (
     <div>
-      <SettingsHomeButtons />
+      <SettingsHomeButtons homePage={false}/>
       {loading && <></>}
       {showWaitingRoom && <WaitingRoom/>}
       {!loading && !showWaitingRoom && (
