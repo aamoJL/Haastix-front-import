@@ -6,38 +6,30 @@ import InfoIcon from '@mui/icons-material/Info';
 import { Link } from 'react-router-dom';
 
 interface Props {
-  homePage: boolean;
+  isHomePage?: boolean;
 }
 
-function SettingsHomeButtons(props: Props) {
+function SettingsHomeButtons({isHomePage= false}: Props) {
   return (
     <div>
-      {!props.homePage && 
+      {!isHomePage && 
         <Stack direction="row" justifyContent="center" alignItems="flex-start">
-          <Link to="settings">
-            <IconButton aria-label="settings" id="settings-btn">
-              <SettingsIcon/>
-            </IconButton>
-          </Link>
-          <Link to="/">
-            <IconButton aria-label="home" id="home-btn">
-              <HomeIcon/>
-            </IconButton>
-          </Link>
-        </Stack>
-      }
-      {props.homePage && 
-        <Stack direction="row" justifyContent="center" alignItems="flex-start">
-        <Link to="settings">
-          <IconButton aria-label="settings" id="settings-btn">
+          <IconButton component={Link} to="/settings" aria-label="settings" id="settings-btn">
             <SettingsIcon/>
           </IconButton>
-        </Link>
-        <Link to="about">
-          <IconButton aria-label="info" id="info-btn">
-            <InfoIcon/>
+          <IconButton component={Link} to="/" aria-label="home" id="home-btn">
+            <HomeIcon/>
           </IconButton>
-        </Link>
+        </Stack>
+      }
+      {isHomePage && 
+        <Stack direction="row" justifyContent="center" alignItems="flex-start">
+        <IconButton component={Link} to="/settings" aria-label="settings" id="settings-btn">
+          <SettingsIcon/>
+        </IconButton>
+        <IconButton component={Link} to="/" aria-label="info" id="info-btn">
+          <InfoIcon/>
+        </IconButton>
       </Stack>
       }
     </div>

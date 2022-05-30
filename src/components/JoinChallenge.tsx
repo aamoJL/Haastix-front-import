@@ -129,7 +129,7 @@ function JoinChallenge() {
 
   return (
     <div>
-      <SettingsHomeButtons homePage={false}/>
+      <SettingsHomeButtons/>
       {loading && <></>}
       {showWaitingRoom && <WaitingRoom/>}
       {!loading && !showWaitingRoom && (

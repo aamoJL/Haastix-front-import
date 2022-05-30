@@ -9,15 +9,11 @@ import { Box } from '@mui/system';
 function HomePage() {
   return (
     <div>
-      <SettingsHomeButtons homePage={true}/>
+      <SettingsHomeButtons isHomePage={true}/>
       <Stack justifyContent="space-evenly" alignItems="center" spacing={2}>
         <Box component="img" src={logo} alt="Logo" sx={{width: 400, height: 200}}/>
-        <Link to="create">
-          <Button variant="contained" id="createChallenge-btn">Luo haaste</Button>
-        </Link>
-        <Link to="game">
-          <Button variant="contained" id="joinChallenge-btn">Liity haasteeseen</Button>
-        </Link>
+        <Button component={Link} to="/create" variant="contained" id="createChallenge-btn">Luo haaste</Button>
+        <Button component={Link} to="/game" variant="contained" id="joinChallenge-btn">Liity haasteeseen</Button>
       </Stack>
     </div>
   );
