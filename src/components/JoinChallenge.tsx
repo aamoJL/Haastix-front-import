@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { isConstructorDeclaration } from 'typescript';
 import { ChallengeRoomJoin, JoinChallengeSuccessRespomse } from '../interfaces';
+import ChallengeRoom from './ChallengeRoom';
 import NotFound from './NotFound';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import {emojiArray, getEmojiImage} from './storage/Images'
@@ -19,6 +20,7 @@ function JoinChallenge() {
   const [token, setToken] = useState(sessionStorage.getItem("token"));
   const [showWaitingRoom, setShowWaitingRoom] = useState(false);
   const [loading, setLoading] = useState(true); // placeholder loading screen
+  const [roomInfo, setRoomInfo] = useState<JoinChallengeSuccessRespomse>();
 
   useEffect(() => {
     if(token !== null){
@@ -40,6 +42,7 @@ function JoinChallenge() {
         }
         else
         {
+          setRoomInfo(res);
           setShowWaitingRoom(true);
           setLoading(false);
         }
@@ -107,7 +110,8 @@ function JoinChallenge() {
     <div>
       <SettingsHomeButtons />
       {loading && <></>}
-      {showWaitingRoom && <WaitingRoom/>}
+      {/* {showWaitingRoom && <WaitingRoom/>} */}
+      {showWaitingRoom && roomInfo && <ChallengeRoom roomInfo={roomInfo}/>}
       {!loading && !showWaitingRoom && (
         <>
         <h1>Pääsykoodi</h1>

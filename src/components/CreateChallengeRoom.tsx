@@ -175,12 +175,12 @@ function CreateChallengeRoom() {
       {
         challenges.map((challenge, i) => (
           <div key={i}>
-              <TextField multiline variant="standard" type="text" value={challenge.description} onChange={(e) => handleChallengeChange(e, i)} inputProps={{ maxLength: formValidation.maxTaskDescription }} placeholder="Kuvaus..."/>
-              <Button size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>X</Button>
+              <TextField id={`challenge-input-${i}`} multiline variant="standard" type="text" value={challenge.description} onChange={(e) => handleChallengeChange(e, i)} inputProps={{ maxLength: formValidation.maxTaskDescription }} placeholder="Kuvaus..."/>
+              <Button id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>X</Button>
           </div>
         ))
       }
-      <Button sx={{m: 1}} variant='outlined' size="medium" onClick={(e) => {handleAddChallenge()}}>Lisää haasteita</Button>
+      <Button sx={{m: 1}} id="add-challenge-btn" variant='outlined' size="medium" onClick={(e) => {handleAddChallenge()}}>Lisää haasteita</Button>
       <Typography variant="h3" component="h2">Aloitus & kesto</Typography>
       <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
         <FormControl variant="standard">
@@ -193,7 +193,7 @@ function CreateChallengeRoom() {
         </FormControl>
       </Stack>
       <div>
-        <Button sx={{m: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>Luo haaste</Button>
+        <Button sx={{m: 1}} id="create-challenge-btn" variant='contained' size="large" onClick={(e) => onSubmit(e)}>Luo haaste</Button>
       </div>
     </div>
   );

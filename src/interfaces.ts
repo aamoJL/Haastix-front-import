@@ -42,10 +42,11 @@ export interface JoinChallengeSuccessRespomse{
     userid: string,
     challengeRoomId: string, 
     challengeRoomName: string,
+    challengeRoomCode?: string,
     challengeStartDate: string,
     challengeEndDate: string,
     challengeTasks: Challenge[],
     token: string,
-    userName: string,
+    username: string,
   }
 }

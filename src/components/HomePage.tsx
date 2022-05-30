@@ -15,10 +15,10 @@ function HomePage() {
         </Link>
       </div>
       <img src={logo} alt="Logo" />
-      <Link to="create">
+      <Link to="create" id="createChallenge-link">
         <Button variant="contained" id="createChallenge-btn">Luo haaste</Button>
       </Link>
-      <Link to="game">
+      <Link to="game" id="joinChallenge-link">
         <Button variant="contained" id="joinChallenge-btn">Liity haasteeseen</Button>
       </Link>
     </div>
