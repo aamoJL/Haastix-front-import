@@ -7,11 +7,11 @@ function HomePage() {
   return (
     <div>
       <div>
-        <Link to="about">
-          <button id="info-btn">Info</button>
+        <Link to="about" id="about-link">
+          <Button id="info-btn">Info</Button>
         </Link>
-        <Link to="settings">
-          <button id="settings-btn">Settings</button>
+        <Link to="settings" id="settings-link">
+          <Button id="settings-btn">Settings</Button>
         </Link>
       </div>
       <img src={logo} alt="Logo" />
