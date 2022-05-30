@@ -1,5 +1,5 @@
 import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeRoomData, NewChallengeRoomSuccessResponse} from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
@@ -33,11 +33,18 @@ function CreateChallengeRoom() {
   const [formData, setFormData] = useState<ChallengeRoomData>(defaultFormData);
   const {roomName, challenges, delay, time} = formData;
   const navigate = useNavigate();
+  const [token, setToken] = useState(sessionStorage.getItem('token'))
 
   /**
    * Generic change handler
    * @param e 
    */
+
+  useEffect(() => {
+    if(token !== null)
+      navigate("/game");
+  }, [])
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prevState) => ({
       ...prevState,
