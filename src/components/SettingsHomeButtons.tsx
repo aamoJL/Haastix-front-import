@@ -1,6 +1,8 @@
-import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import React, { useState } from 'react';
+import SettingsIcon from '@mui/icons-material/Settings';
+import HomeIcon from '@mui/icons-material/Home';
+import InfoIcon from '@mui/icons-material/Info';
 import { Link } from 'react-router-dom';
 
 interface Props {
@@ -11,22 +13,30 @@ function SettingsHomeButtons(props: Props) {
   return (
     <div>
       {!props.homePage && 
-        <Stack direction="row" justifyContent="space-evenly" >
+        <Stack direction="row" justifyContent="center" alignItems="flex-start">
           <Link to="settings">
-            <Button variant="contained" id="settings-btn">Settings</Button>
+            <IconButton aria-label="settings" id="settings-btn">
+              <SettingsIcon/>
+            </IconButton>
           </Link>
           <Link to="/">
-            <Button variant="contained" id="home-btn">Home</Button>
+            <IconButton aria-label="home" id="home-btn">
+              <HomeIcon/>
+            </IconButton>
           </Link>
         </Stack>
       }
       {props.homePage && 
-        <Stack direction="row" justifyContent="space-between" >
+        <Stack direction="row" justifyContent="center" alignItems="flex-start">
         <Link to="settings">
-          <Button variant="contained" id="settings-btn">Settings</Button>
+          <IconButton aria-label="settings" id="settings-btn">
+            <SettingsIcon/>
+          </IconButton>
         </Link>
         <Link to="about">
-          <Button variant="contained" id="info-btn">Info</Button>
+          <IconButton aria-label="info" id="info-btn">
+            <InfoIcon/>
+          </IconButton>
         </Link>
       </Stack>
       }

@@ -33,7 +33,6 @@ function CreateChallengeRoom() {
   const [formData, setFormData] = useState<ChallengeRoomData>(defaultFormData);
   const {roomName, challenges, delay, time} = formData;
   const navigate = useNavigate();
-  const [token, setToken] = useState(sessionStorage.getItem('token'))
 
   /**
    * Generic change handler
@@ -41,9 +40,9 @@ function CreateChallengeRoom() {
    */
 
   useEffect(() => {
-    if(token !== null)
+    if(sessionStorage.getItem('token') !== null)
       navigate("/game");
-  }, [])
+  })
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prevState) => ({
