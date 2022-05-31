@@ -174,7 +174,11 @@ function CreateChallengeRoom() {
     navigate("/game");
   }
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  /**
+   * Number input click handler will be used to select the input's text on click
+   * @param e event
+   */
+  const handleNumberInputClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     let element = e.target as HTMLInputElement;
     (document.getElementById(element.id) as HTMLInputElement)?.select();
   }
@@ -198,11 +202,11 @@ function CreateChallengeRoom() {
       <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
         <FormControl variant="standard">
           <InputLabel htmlFor="delay">Viive</InputLabel>
-          <Input onClick={handleClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="delay" id="delay" value={delay} onChange={(e) => handleNumInputChange(e, formValidation.maxDelay)}/>
+          <Input onClick={handleNumberInputClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="delay" id="delay" value={delay} onChange={(e) => handleNumInputChange(e, formValidation.maxDelay)}/>
         </FormControl>
         <FormControl variant="standard">
           <InputLabel htmlFor="time">Kesto</InputLabel>
-          <Input onClick={handleClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="time" id="time" value={time} onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}/>
+          <Input onClick={handleNumberInputClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="time" id="time" value={time} onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}/>
         </FormControl>
       </Stack>
       <div>
