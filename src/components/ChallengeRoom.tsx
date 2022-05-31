@@ -1,6 +1,7 @@
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { JoinChallengeSuccessRespomse } from '../interfaces';
+import Camera from './Camera';
 
 interface Props {
     roomInfo?: JoinChallengeSuccessRespomse,
@@ -13,6 +14,12 @@ interface SegmentedTime{
   seconds: number
 }
 
+/**
+ * Component that renders game view for given room information.
+ * Room's scoreboard will be rendered if the room's game time is up.
+ * Players and Game master will have different views.
+ * @param roomInfo reJoin API response
+ */
 function ChallengeRoom({roomInfo} : Props) {
   /**
    * Returns object with segmented time between now and end date
@@ -48,6 +55,7 @@ function ChallengeRoom({roomInfo} : Props) {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
   const [currentTask, setCurrentTask] = useState(roomInfo?.details.challengeTasks[0]);
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
+  const [showCamera, setShowCamera] = useState(false);
 
   // Game time timer
   useEffect(() => {
@@ -84,6 +92,8 @@ function ChallengeRoom({roomInfo} : Props) {
           <Typography id="task-title-player" variant="body1" component="p">Haaste: <span id="current-task-number-player">{(currentTask?.challengeNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
           <Typography id="task-description-player" variant="body1" component="p">Haasteen kuvaus:<br/>{currentTask?.description}</Typography>
           <Typography id="timer-player" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
+          <Button onClick={(e) => setShowCamera(!showCamera)}>{showCamera ? "Sulje kamera" : "Näytä kamera"}</Button>
+          {showCamera && <Camera />}
         </>}
       {/* Time is up, scoreboard */}
       {timeIsUp && 
