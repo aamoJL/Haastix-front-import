@@ -16,12 +16,6 @@ export interface ChallengeRoomJoin{
   userAvatar: number
 }
 
-export interface ChallengeRoomJoinValidation{
-  isCodeValid: boolean,
-  isNameValid: boolean,
-  roomCodeHelperText: string
-}
-
 /**
  * JSON response from successful challenge room creation API call
  */
