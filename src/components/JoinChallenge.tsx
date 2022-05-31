@@ -3,8 +3,9 @@ import { ChallengeRoomJoin } from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
-import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton } from '@mui/material';
+import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { ClassNames } from '@emotion/react';
 
 const defaultFormData : ChallengeRoomJoin= {
   roomCode: "",
@@ -23,6 +24,7 @@ function JoinChallenge() {
   const [openAlert, setOpenAlert] = useState(false); // if true show error alert
 
   useEffect(() => {
+    //rejoin challenge if token is found
     if(token !== null){
       // fetch room data
       fetch(`${process.env.REACT_APP_API_URL}/challenge/reJoin`,
@@ -122,7 +124,7 @@ function JoinChallenge() {
   },[roomCode, userName])
 
   return (
-    <div>
+    <Box>
       <SettingsHomeButtons/>
       {loading && <></>}
       {showWaitingRoom && <WaitingRoom/>}
@@ -141,7 +143,7 @@ function JoinChallenge() {
               Room Code was invalid!
             </Alert>
           </Collapse>
-          <TextField 
+          <TextField
             helperText="Code must be 4 characters"
             type="text"
             id="roomCode"
@@ -164,7 +166,7 @@ function JoinChallenge() {
         </Stack>
         </>
       )}
-    </div>
+    </Box>
   );
 }
 
