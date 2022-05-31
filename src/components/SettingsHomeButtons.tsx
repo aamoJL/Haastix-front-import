@@ -1,9 +1,8 @@
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
+import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
-import InfoIcon from '@mui/icons-material/Info';
 import { Link } from 'react-router-dom';
+import { IconButton, Stack } from '@mui/material';
 
 interface Props {
   isHomePage?: boolean;
@@ -27,7 +26,7 @@ function SettingsHomeButtons({isHomePage= false}: Props) {
         <IconButton component={Link} to="/settings" aria-label="settings" id="settings-btn">
           <SettingsIcon/>
         </IconButton>
-        <IconButton component={Link} to="/" aria-label="info" id="info-btn">
+        <IconButton component={Link} to="/info" aria-label="info" id="info-btn">
           <InfoIcon/>
         </IconButton>
       </Stack>

@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/otsikko-v2.png';
-import Button from "@mui/material/Button";
 import SettingsHomeButtons from './SettingsHomeButtons';
-import { Stack } from '@mui/material';
+import { Stack, Button } from '@mui/material';
 import { Box } from '@mui/system';
 
 function HomePage() {
