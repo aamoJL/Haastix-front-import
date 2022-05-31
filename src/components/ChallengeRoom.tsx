@@ -73,7 +73,7 @@ function ChallengeRoom({roomInfo} : Props) {
         <>
           <Typography id="user-title-gm" variant="body1" component="p">Käyttäjä: GameMaster</Typography>
           <Typography id="room-code-title-gm" variant="body1" component="p">Huoneen koodi:<br/><b>{roomInfo?.details.challengeRoomCode}</b></Typography>
-          <Typography id="task-title-gm" variant="body1" component="p">Haaste: {(currentTask?.challengeNumber as number) + 1} / {roomInfo?.details.challengeTasks.length}</Typography>
+          <Typography id="task-title-gm" variant="body1" component="p">Haaste: <span id="current-task-number-gm">{(currentTask?.challengeNumber as number) + 1}</span> / <span id="challenge-count-number-gm">{roomInfo?.details.challengeTasks.length}</span></Typography>
           <Typography id="task-description-gm" variant="body1" component="p">Haasteen kuvaus:<br/>{currentTask?.description}</Typography>
           <Typography id="timer-gm" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
         </>}
@@ -81,7 +81,7 @@ function ChallengeRoom({roomInfo} : Props) {
       {!isGameMaster && !timeIsUp &&
         <>
           <Typography id="user-title-player" variant="body1" component="p">Käyttäjä: {roomInfo.details.username}</Typography>
-          <Typography id="task-title-player" variant="body1" component="p">Haaste: {(currentTask?.challengeNumber as number) + 1} / {roomInfo?.details.challengeTasks.length}</Typography>
+          <Typography id="task-title-player" variant="body1" component="p">Haaste: <span id="current-task-number-player">{(currentTask?.challengeNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
           <Typography id="task-description-player" variant="body1" component="p">Haasteen kuvaus:<br/>{currentTask?.description}</Typography>
           <Typography id="timer-player" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
         </>}
