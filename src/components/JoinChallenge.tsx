@@ -5,7 +5,6 @@ import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
 import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { ClassNames } from '@emotion/react';
 
 const defaultFormData : ChallengeRoomJoin= {
   roomCode: "",
@@ -128,16 +127,15 @@ function JoinChallenge() {
       <SettingsHomeButtons/>
       {loading && <></>}
       {showWaitingRoom && <WaitingRoom/>}
-      {!loading && !showWaitingRoom && (
-        <>
+      {!loading && !showWaitingRoom &&
         <Stack  justifyContent="center" spacing={2} alignItems="center">
           <Typography variant="h2">Join a game</Typography>
           <Typography variant="body1">Ask the gamemaster for the code</Typography>
           <Collapse in={openAlert}>
             <Alert severity='error' 
             action={
-              <IconButton id="close-alert-btn" aria-label="close-alert" onClick={() => {setOpenAlert(false)}}>
-                <CloseIcon/>
+              <IconButton size="small" id="close-alert-btn" aria-label="close-alert" onClick={() => {setOpenAlert(false)}}>
+                <CloseIcon fontSize= "small"/>
               </IconButton>
             }>
               Room Code was invalid!
@@ -150,7 +148,9 @@ function JoinChallenge() {
             label="Room code"
             onChange={onChange}
             value={roomCode}
-            error={codeWasNotValid}>
+            error={codeWasNotValid}
+            inputProps={{maxLength: 4}}
+            >
           </TextField>
           <TextField
             helperText="Name must me between 3 and 30 characters"
@@ -158,14 +158,15 @@ function JoinChallenge() {
             id="userName"
             label="User name"
             onChange={onChange}
-            value={userName}>
+            value={userName}
+            inputProps={{maxLength: 30}}
+            >
           </TextField>
           <Typography variant="body1">Avatar</Typography>
           <Avatar variant="rounded" sx={{height: 200, width: 200}} onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
           <Button disabled={formIsNotValid} variant="contained" id="joinChallenge-btn" onClick={joinChallengeRoom}>Liity haasteeseen</Button>
         </Stack>
-        </>
-      )}
+      }
     </Box>
   );
 }

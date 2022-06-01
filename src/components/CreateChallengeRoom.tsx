@@ -176,7 +176,7 @@ function CreateChallengeRoom() {
     <Box>
       <SettingsHomeButtons/>
       <Typography variant="h2" component="h2">Otsikko</Typography>
-      <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} placeholder="Type room name..." inputProps={{ maxLength: formValidation.maxNameLength }}/>
+      <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} label="Room Name"  inputProps={{ maxLength: formValidation.maxNameLength }}/>
       <Typography variant="h3" component="h2">Haaste</Typography>
       {
         challenges.map((challenge, i) => (
