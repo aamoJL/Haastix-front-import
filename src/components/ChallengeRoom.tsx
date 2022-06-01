@@ -1,7 +1,7 @@
 import { Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { JoinChallengeSuccessRespomse } from '../interfaces';
-import Camera from './Camera';
+import ChallengeRoomCamera from './ChallengeRoomCamera';
 
 interface Props {
     roomInfo?: JoinChallengeSuccessRespomse,
@@ -93,7 +93,7 @@ function ChallengeRoom({roomInfo} : Props) {
           <Typography id="task-description-player" variant="body1" component="p">Haasteen kuvaus:<br/>{currentTask?.description}</Typography>
           <Typography id="timer-player" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
           <Button onClick={(e) => setShowCamera(!showCamera)}>{showCamera ? "Sulje kamera" : "Näytä kamera"}</Button>
-          {showCamera && <Camera />}
+          {showCamera && currentTask && <ChallengeRoomCamera taskNumber={currentTask.challengeNumber}/>}
         </>}
       {/* Time is up, scoreboard */}
       {timeIsUp && 
