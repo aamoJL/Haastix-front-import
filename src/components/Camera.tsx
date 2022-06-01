@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 /**
  * Component that will render video from users camera and button to take photo from the video feed's latest frame
@@ -8,6 +8,8 @@ function Camera() {
   let stream: MediaStream | undefined = undefined;
   let context: CanvasRenderingContext2D | null | undefined = undefined;
   let videoElement: HTMLVideoElement | undefined = undefined;
+  let [allowed, setAllowed] = useState(true);
+  let [loading, setLoading] = useState(true);
 
   let canvasHeight = 200;
   let canvasWidth = 200;
@@ -48,8 +50,14 @@ function Camera() {
       videoElement.onloadeddata = () => {
         updateCamera();
       }
+      setAllowed(true);
+      setLoading(false);
     })
-    .catch(error => console.log(error));
+    .catch((error: DOMException) => {
+      console.log(error);
+      setAllowed(false);
+      setLoading(false);
+    });
 
     return() => {
       // Stop all tracks from the media devices so the camera will shut down when this component umounts
@@ -76,12 +84,18 @@ function Camera() {
   return (
     <div>
       <canvas id="camera-canvas" />
-      <div>
-        <Button variant='contained' onClick={takePhotoHandler}>Ota kuva</Button>
-      </div>
-      <div>
-        <img id="photo" src="" alt="" />
-      </div>
+      {loading && <></>}
+      {allowed && !loading && (
+        <div>
+          <div>
+            <Button id="take-photo-btn" variant='contained' onClick={takePhotoHandler}>Ota kuva</Button>
+          </div>
+          <div>
+            <img id="photo" src="" alt="" />
+          </div>
+        </div>
+      )}
+      {!allowed && !loading && <div>Ei oikeuksia kameraan!</div>}
     </div>
   );
 }
