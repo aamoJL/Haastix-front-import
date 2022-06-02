@@ -1,4 +1,5 @@
-import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box } from '@mui/material';
+import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close'
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeRoomData, NewChallengeRoomSuccessResponse} from '../interfaces';
@@ -192,7 +193,9 @@ function CreateChallengeRoom() {
         challenges.map((challenge, i) => (
           <Box key={i}>
               <TextField multiline variant="standard" type="text" value={challenge.description} onChange={(e) => handleChallengeChange(e, i)} inputProps={{ maxLength: formValidation.maxTaskDescription }} placeholder="Kuvaus..."/>
-              <Button size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>X</Button>
+              <IconButton size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>
+                <CloseIcon/>
+              </IconButton>
           </Box>
         ))
       }
