@@ -15,7 +15,7 @@ function WaitingRoomViewGamemaster(props : Props) {
 
   return (
     <div>
-      <SettingsHomeButtons />
+      <SettingsHomeButtons/>
       <div>
         <h1>{props.roomData.roomName}</h1>
         <p>{props.roomCode}</p>

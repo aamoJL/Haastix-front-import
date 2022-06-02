@@ -1,27 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/otsikko-v2.png';
-import Button from "@mui/material/Button";
+import logo from '../assets/haastix-green.png';
+import SettingsHomeButtons from './SettingsHomeButtons';
+import { Stack, Button, Box } from '@mui/material';
 
 function HomePage() {
   return (
-    <div>
-      <div>
-        <Link to="about">
-          <button id="info-btn">Info</button>
-        </Link>
-        <Link to="settings">
-          <button id="settings-btn">Settings</button>
-        </Link>
-      </div>
-      <img src={logo} alt="Logo" />
-      <Link to="create">
-        <Button variant="contained" id="createChallenge-btn">Luo haaste</Button>
-      </Link>
-      <Link to="game">
-        <Button variant="contained" id="joinChallenge-btn">Liity haasteeseen</Button>
-      </Link>
-    </div>
+    <Stack justifyContent="space-evenly" alignItems="center" spacing={3}>
+      <SettingsHomeButtons isHomePage={true}/>
+      <Box component="img" src={logo} alt="Logo" sx={{mb:6, width: 0.75, height: 0.75, maxWidth: 824 , maxHeight: 282}}/>
+      <Button component={Link} to="/create" variant="contained" id="createChallenge-btn">Create a challenge</Button>
+      <Button component={Link} to="/game" variant="contained" id="joinChallenge-btn">Join a challenge</Button>
+    </Stack>
   );
 }
 
