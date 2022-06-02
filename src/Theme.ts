@@ -7,7 +7,6 @@ const theme = createTheme({
     },
     text: {
       primary: '#E4E4E4',
-      secondary: '#1B1B1B'
     },
     primary: {
       main: '#00CC92',
@@ -23,7 +22,7 @@ const theme = createTheme({
     },
     MuiTextField: {
       defaultProps: {
-        margin: 'dense',
+        color: 'primary',
       },
       styleOverrides: {
         root: {
@@ -54,6 +53,9 @@ const theme = createTheme({
         underline: {
           ":before":{
             borderBottom: '2px solid #00CC92'
+          },
+          ":after": {
+            borderBottom: '2px solid #e4e4e4'
           }
         }
       }
