@@ -25,8 +25,8 @@ const formValidation = {
 const defaultFormData : ChallengeRoomData = {
   roomName: "",
   challenges: [{description: "", challengeNumber: 0}],
-  time: formValidation.minDuration,
-  delay: formValidation.minDelay,
+  time: 0,
+  delay: 0,
 }
 
 function CreateChallengeRoom() {
@@ -34,16 +34,15 @@ function CreateChallengeRoom() {
   const {roomName, challenges, delay, time} = formData;
   const navigate = useNavigate();
 
-  /**
-   * Generic change handler
-   * @param e 
-   */
-
   useEffect(() => {
     if(sessionStorage.getItem('token') !== null)
       navigate("/game");
   })
 
+  /**
+   * Generic change handler
+   * @param e 
+   */
   const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -98,11 +97,13 @@ function CreateChallengeRoom() {
    * @param min input's min value
    * @param max input's max value
    */
-  const handleNumInputChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, min?: number, max?: number) => {
+  const handleNumInputChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, max?: number) => {
     let newValue = Number(e.target.value);
-    
+    // The new value will be NaN if the value does not match the input pattern validation
+    // Don't do anything if the new value is NaN
+    if(isNaN(newValue)){return;}
+
     // Clamp value
-    newValue = (min !== undefined && newValue < min) ? min : newValue;
     newValue = (max !== undefined && newValue > max) ? max : newValue;
 
     setFormData((prevState) => ({
@@ -118,10 +119,10 @@ function CreateChallengeRoom() {
     // Data validation
     if(roomName.length > formValidation.maxNameLength){alert(`Room name can't be over ${formValidation.maxNameLength} characters long!`); error = true;}
     if(roomName.length < formValidation.minNameLength){alert(`Room name must be at least ${formValidation.minNameLength} characters long!`); error = true;}
-    if(delay > formValidation.maxDelay){alert(`Delay can't be over ${formValidation.maxDelay} seconds long!`); error = true;}
-    if(delay < formValidation.minDelay){alert(`Delay must be at least ${formValidation.minDelay} seconds long!`); error = true;}
-    if(time > formValidation.maxDuration){alert(`Duration can't be over ${formValidation.maxDuration} seconds long!`); error = true;}
-    if(time < formValidation.minDuration){alert(`Duration must be at least ${formValidation.minDuration} seconds long!`); error = true;}
+    if(delay && delay > formValidation.maxDelay){alert(`Delay can't be over ${formValidation.maxDelay} minutes long!`); error = true;}
+    if(delay && delay < formValidation.minDelay){alert(`Delay must be at least ${formValidation.minDelay} minutes long!`); error = true;}
+    if(time > formValidation.maxDuration){alert(`Duration can't be over ${formValidation.maxDuration} minutes long!`); error = true;}
+    if(time < formValidation.minDuration){alert(`Duration must be at least ${formValidation.minDuration} minutes long!`); error = true;}
     if(challenges.length > formValidation.maxTaskCount){alert(`The room can't have more than ${formValidation.maxTaskCount} tasks!`); error = true;}
     if(challenges.length < formValidation.minTaskCount){alert(`The room needs at least ${formValidation.minTaskCount} tasks!`); error = true;}
 
@@ -172,6 +173,15 @@ function CreateChallengeRoom() {
     navigate("/game");
   }
 
+  /**
+   * Number input click handler will be used to select the input's text on click
+   * @param e event
+   */
+  const handleNumberInputClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    let element = e.target as HTMLInputElement;
+    (document.getElementById(element.id) as HTMLInputElement)?.select();
+  }
+
   return (
     <Box>
       <SettingsHomeButtons/>
@@ -186,16 +196,16 @@ function CreateChallengeRoom() {
           </Box>
         ))
       }
-      <Button sx={{m: 1}} variant='outlined' size="medium" onClick={(e) => {handleAddChallenge()}}>Lisää haasteita</Button>
+      <Button sx={{m: 1}} id="add-challenge-btn" variant='outlined' size="medium" onClick={(e) => {handleAddChallenge()}}>Lisää haasteita</Button>
       <Typography variant="h3" component="h2">Aloitus & kesto</Typography>
       <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
         <FormControl variant="standard">
           <InputLabel htmlFor="delay">Viive</InputLabel>
-          <Input type='number' name="delay" id="delay" value={delay} onChange={(e) => handleNumInputChange(e, formValidation.minDelay, formValidation.maxDelay)}/>
+          <Input onClick={handleNumberInputClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="delay" id="delay" value={delay} onChange={(e) => handleNumInputChange(e, formValidation.maxDelay)}/>
         </FormControl>
         <FormControl variant="standard">
           <InputLabel htmlFor="time">Kesto</InputLabel>
-          <Input type="number" name="time" id="time" value={time} onChange={(e) => handleNumInputChange(e, formValidation.minDuration, formValidation.maxDuration)}/>
+          <Input onClick={handleNumberInputClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="time" id="time" value={time} onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}/>
         </FormControl>
       </Stack>
       <Box>
