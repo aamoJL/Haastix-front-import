@@ -1,10 +1,12 @@
 import { Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { Socket } from 'socket.io-client';
 import { JoinChallengeSuccessRespomse } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
 
 interface Props {
     roomInfo?: JoinChallengeSuccessRespomse,
+    socket?: Socket
 }
 
 interface SegmentedTime{
@@ -20,7 +22,7 @@ interface SegmentedTime{
  * Players and Game master will have different views.
  * @param roomInfo reJoin API response
  */
-function ChallengeRoom({roomInfo} : Props) {
+function ChallengeRoom({roomInfo, socket} : Props) {
   /**
    * Returns object with segmented time between now and end date
    * @param delayTime end date
@@ -69,8 +71,36 @@ function ChallengeRoom({roomInfo} : Props) {
         clearInterval(interval);
       }
     }, 1000);
+
+    // Player
+    if(!isGameMaster){
+      socket?.on("fileStatusPlayer", dataResponse => {
+        console.log(dataResponse);
+      })
+  
+      socket?.emit('playerCheckFile', {
+        token: roomInfo?.details.token,
+        payload: {
+            challengeNumber: 0
+        }
+      })
+    }
+
+    // Gamemaster
+    if(isGameMaster){
+      socket?.on("newFile", dataResponse => {
+        console.log(dataResponse);
+      })
+      
+      socket?.emit('listFiles', {
+        token: roomInfo?.details.token,
+      })
+    }
+    
     return () => {
       clearInterval(interval);
+      socket?.off("fileStatusPlayer")
+      socket?.off("newFile");
     }
   }, [roomInfo?.details.challengeEndDate]);
   
