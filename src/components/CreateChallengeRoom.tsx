@@ -192,8 +192,8 @@ function CreateChallengeRoom() {
       {
         challenges.map((challenge, i) => (
           <Box key={i}>
-              <TextField multiline variant="standard" type="text" value={challenge.description} onChange={(e) => handleChallengeChange(e, i)} inputProps={{ maxLength: formValidation.maxTaskDescription }} placeholder="Kuvaus..."/>
-              <IconButton size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>
+              <TextField id={`challenge-input-${i}`} multiline variant="standard" type="text" value={challenge.description} onChange={(e) => handleChallengeChange(e, i)} inputProps={{ maxLength: formValidation.maxTaskDescription }} placeholder="Kuvaus..."/>
+              <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>
                 <CloseIcon/>
               </IconButton>
           </Box>
