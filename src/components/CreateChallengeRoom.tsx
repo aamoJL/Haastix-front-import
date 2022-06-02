@@ -1,4 +1,4 @@
-import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input } from '@mui/material';
+import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeRoomData, NewChallengeRoomSuccessResponse} from '../interfaces';
@@ -33,12 +33,11 @@ function CreateChallengeRoom() {
   const [formData, setFormData] = useState<ChallengeRoomData>(defaultFormData);
   const {roomName, challenges, delay, time} = formData;
   const navigate = useNavigate();
-  const [token, setToken] = useState(sessionStorage.getItem('token'))
 
   useEffect(() => {
-    if(token !== null)
+    if(sessionStorage.getItem('token') !== null)
       navigate("/game");
-  }, [])
+  })
 
   /**
    * Generic change handler
@@ -184,17 +183,17 @@ function CreateChallengeRoom() {
   }
 
   return (
-    <div>
-      <SettingsHomeButtons />
+    <Box>
+      <SettingsHomeButtons/>
       <Typography variant="h2" component="h2">Otsikko</Typography>
-      <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} placeholder="Type room name..." inputProps={{ maxLength: formValidation.maxNameLength }}/>
+      <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} label="Room Name"  inputProps={{ maxLength: formValidation.maxNameLength }}/>
       <Typography variant="h3" component="h2">Haaste</Typography>
       {
         challenges.map((challenge, i) => (
-          <div key={i}>
-              <TextField id={`challenge-input-${i}`} multiline variant="standard" type="text" value={challenge.description} onChange={(e) => handleChallengeChange(e, i)} inputProps={{ maxLength: formValidation.maxTaskDescription }} placeholder="Kuvaus..."/>
-              <Button id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>X</Button>
-          </div>
+          <Box key={i}>
+              <TextField multiline variant="standard" type="text" value={challenge.description} onChange={(e) => handleChallengeChange(e, i)} inputProps={{ maxLength: formValidation.maxTaskDescription }} placeholder="Kuvaus..."/>
+              <Button size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>X</Button>
+          </Box>
         ))
       }
       <Button sx={{m: 1}} id="add-challenge-btn" variant='outlined' size="medium" onClick={(e) => {handleAddChallenge()}}>Lisää haasteita</Button>
@@ -209,10 +208,10 @@ function CreateChallengeRoom() {
           <Input onClick={handleNumberInputClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="time" id="time" value={time} onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}/>
         </FormControl>
       </Stack>
-      <div>
-        <Button sx={{m: 1}} id="create-challenge-btn" variant='contained' size="large" onClick={(e) => onSubmit(e)}>Luo haaste</Button>
-      </div>
-    </div>
+      <Box>
+        <Button sx={{m: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>Luo haaste</Button>
+      </Box>
+    </Box>
   );
 }
 
