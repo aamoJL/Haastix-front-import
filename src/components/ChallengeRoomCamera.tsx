@@ -1,8 +1,10 @@
 import { Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { SendFileResponse } from '../interfaces';
 
 interface Props{
-  taskNumber: number
+  taskNumber: number,
+  onSubmit: () => void,
 }
 
 /**
@@ -11,7 +13,7 @@ interface Props{
  * After user takes a photo the component will render the taken photo and
  * buttons to submit or decline the photo. 
  */
-function ChallengeRoomCamera({taskNumber}:Props) {
+function ChallengeRoomCamera({taskNumber, onSubmit}:Props) {
   let stream: MediaStream | undefined = undefined;
   let context: CanvasRenderingContext2D | null | undefined = undefined;
   let videoElement: HTMLVideoElement | undefined = undefined;
@@ -103,8 +105,11 @@ function ChallengeRoomCamera({taskNumber}:Props) {
         })
       })
       .then(res => res.json())
-      .then(res => {
+      .then((res: SendFileResponse) => {
         console.log(res);
+        if(res.statusCode === 200){
+          onSubmit();
+        }
       })
       .catch(error => {
         console.log(error);
@@ -124,7 +129,7 @@ function ChallengeRoomCamera({taskNumber}:Props) {
         <div>
           <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt="Otettu kuva" />
           <div>
-            <Button id="send-photo-btn" variant='contained' onClick={sendPhotoHandler}>Lähetä kuva</Button>
+            <Button id="send-photo-btn" variant='contained' color="success" onClick={sendPhotoHandler}>Lähetä kuva</Button>
             <Button id="decline-photo-btn" variant='outlined' color="error" onClick={(e) => setTakenPhoto("")}>Ota uusi kuva</Button>
           </div>
         </div>
