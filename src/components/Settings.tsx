@@ -1,4 +1,4 @@
-import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel } from '@mui/material';
+import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel, Select, MenuItem, SelectChangeEvent, FormControl, FormLabel, RadioGroup, Radio } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'
 import React, { useState } from 'react';
 
@@ -8,7 +8,7 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 300,
-  bgcolor: 'background.paper',
+  bgcolor: '#191919',
   pl: 2,
   pt: 1
 };
@@ -20,8 +20,13 @@ interface Props {
 const Settings = (props: Props) => {
   const [darkMode, setDarkMode] = useState(false);
   const [sound, setSound] = useState(false);
+  const [theme, setTheme] = useState('0');
   const handleDarkMode = () => setDarkMode(!darkMode);
   const handleSound = () => setSound(!sound);
+
+  const handleTheme = (event: SelectChangeEvent) => {
+    setTheme(event.target.value);
+  }
  
   return (
     <div>
@@ -35,8 +40,15 @@ const Settings = (props: Props) => {
               Settings
             </Typography>
           </Stack>
-          <FormControlLabel control={<Switch checked={darkMode} onChange={handleDarkMode}/>} label="Dark mode"/>
-          <FormControlLabel control={<Switch checked={sound} onChange={handleSound}/>} label="Sound"/>
+          <FormControl>
+            <FormLabel>Theme</FormLabel>
+            <RadioGroup row defaultValue={0}>
+              <FormControlLabel value={0} control={<Radio />} label="Theme1"/>
+              <FormControlLabel value={1} control={<Radio />} label="Theme2"/>
+            </RadioGroup>
+          </FormControl>
+          <FormControlLabel control={<Switch id="darkmode-btn" checked={darkMode} onChange={handleDarkMode}/>} label="Dark mode"/>
+          <FormControlLabel control={<Switch id="volume-btn" checked={sound} onChange={handleSound}/>} label="Sound"/>
         </Stack>
       </Modal>
     </div>
