@@ -55,12 +55,25 @@ function ChallengeRoom({roomInfo, socket} : Props) {
   const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime();
   
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
-  const [currentTask, setCurrentTask] = useState(roomInfo?.details.challengeTasks[0]);
+  const [currentTaskNumber, setCurrentTaskNumber] = useState(0);
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
   const [showCamera, setShowCamera] = useState(false);
   const [playerWaitingReview, setPlayerWaitingReview] = useState(false);
   const [waitingSubmissions, setWaitingSubmissions] = useState<ChallengeFile[]>([])
   const [waitingSubmissionPhoto, setWaitingSubmissionPhoto] = useState("");
+
+useEffect(() => {
+  // Player
+  if(!isGameMaster){
+      // Check the state of the current task
+      socket?.emit('playerCheckFile', {
+        token: roomInfo?.details.token,
+        payload: {
+            challengeNumber: currentTaskNumber
+        }
+      })
+  }
+}, [currentTaskNumber])
 
   // Game time timer
   useEffect(() => {
@@ -78,16 +91,16 @@ function ChallengeRoom({roomInfo, socket} : Props) {
     // Player
     if(!isGameMaster){
       socket?.on("fileStatusPlayer", (dataResponse: FileStatusPlayerResponse) => {
-        console.log(dataResponse);
         if(dataResponse.fileStatus === "Approved"){
           // If current submission has been approved, move to the next challenge if possible
-          let nextTaskNum = currentTask ? currentTask.challengeNumber + 1 : undefined;
-          if(nextTaskNum && nextTaskNum < roomInfo.details.challengeTasks.length){
-            setCurrentTask(roomInfo.details.challengeTasks[nextTaskNum]);
-            setPlayerWaitingReview(false);
+          let nextTaskNum = dataResponse.challengeNumber + 1;
+          if(nextTaskNum >= roomInfo.details.challengeTasks.length){
+            setTimeIsUp(true);
+            alert("Kaikki haasteet suoritettu!");
           }
           else{
-            alert("Kaikki haasteet suoritettu!");
+            setCurrentTaskNumber(nextTaskNum);
+            setPlayerWaitingReview(false);
           }
         }
         else if(dataResponse.fileStatus === "Rejected"){
@@ -100,21 +113,12 @@ function ChallengeRoom({roomInfo, socket} : Props) {
           setPlayerWaitingReview(true);
         }
       })
-  
-      // Send request to check the status of the current task's submission
-      socket?.emit('playerCheckFile', {
-        token: roomInfo?.details.token,
-        payload: {
-            challengeNumber: currentTask?.challengeNumber
-        }
-      })
     }
 
     // Gamemaster
     if(isGameMaster){
       // Add new submissions to this component's state
       socket?.on("newFile", (dataResponse: NewFileResponse) => {
-        console.log(dataResponse);
         if(dataResponse.statusCode === 200){
           setWaitingSubmissions(dataResponse.challengeFiles);
           if(dataResponse.challengeFiles.length > 0){
@@ -125,10 +129,8 @@ function ChallengeRoom({roomInfo, socket} : Props) {
               }
             })
             .then(async res => {
-              let mimeType = res.headers.get("content-type");
               let file = await res.blob();
               let reader = new FileReader();
-              console.log(file);
               reader.readAsDataURL(file);
 
               reader.onloadend = () => {
@@ -166,6 +168,7 @@ function ChallengeRoom({roomInfo, socket} : Props) {
 
   return (
     <div>
+      <Typography id="room-title" variant="body1" component="p">Huone: {roomInfo?.details.challengeRoomName}</Typography>
       {/* GameMaster */}
       {isGameMaster && !timeIsUp &&
         <>
@@ -187,13 +190,13 @@ function ChallengeRoom({roomInfo, socket} : Props) {
       {!isGameMaster && !timeIsUp &&
         <>
           <Typography id="user-title-player" variant="body1" component="p">Käyttäjä: {roomInfo.details.username}</Typography>
-          <Typography id="task-title-player" variant="body1" component="p">Haaste: <span id="current-task-number-player">{(currentTask?.challengeNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
-          <Typography id="task-description-player" variant="body1" component="p">Haasteen kuvaus:<br/>{currentTask?.description}</Typography>
+          <Typography id="task-title-player" variant="body1" component="p">Haaste: <span id="current-task-number-player">{(currentTaskNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
+          <Typography id="task-description-player" variant="body1" component="p">Haasteen kuvaus:<br/>{roomInfo.details.challengeTasks[currentTaskNumber].description}</Typography>
           <Typography id="timer-player" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
             <>
               <Button disabled={playerWaitingReview} onClick={(e) => setShowCamera(!showCamera)}>{showCamera ? "Sulje kamera" : "Näytä kamera"}</Button>
               {playerWaitingReview && <div>Odotetaan kuvan arviointia...</div>}
-              {showCamera && currentTask && <ChallengeRoomCamera taskNumber={currentTask.challengeNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}}/>}
+              {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}}/>}
             </>
         </>}
       {/* Time is up, scoreboard */}
