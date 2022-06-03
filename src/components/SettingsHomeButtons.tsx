@@ -10,8 +10,8 @@ interface Props {
   isHomePage?: boolean;
 }
 
-function SettingsHomeButtons({isHomePage= false}: Props) {
-  const [open, setOpen] = useState(false);
+function SettingsHomeButtons({isHomePage= false}: Props) { //if isHomePage is true navigation shows info icon
+  const [open, setOpen] = useState(false); // if true open settings page
   const handleChange = () => setOpen(!open);
   
   return (

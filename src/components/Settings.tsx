@@ -19,9 +19,9 @@ interface Props {
   handleClose: () => void
 };
 const Settings = (props: Props) => {
-  const [darkMode, setDarkMode] = useState(false);
-  const [sound, setSound] = useState(false);
-  const [theme, setTheme] = useState("theme1");
+  const [darkMode, setDarkMode] = useState(false); //switch between dark and light mode TODO callback for this state
+  const [sound, setSound] = useState(false); //toggle sound
+  const [theme, setTheme] = useState("theme1"); //set what theme to use 
   const handleDarkMode = () => setDarkMode(!darkMode);
   const handleSound = () => setSound(!sound);
 
