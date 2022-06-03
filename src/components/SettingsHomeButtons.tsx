@@ -15,29 +15,22 @@ function SettingsHomeButtons({isHomePage= false}: Props) {
   const handleChange = () => setOpen(!open);
   
   return (
-    <div>
+    <Stack direction="row" justifyContent="center" alignItems="flex-start">
+      <IconButton aria-label="settings" id="settings-btn" onClick={handleChange}>
+        <SettingsIcon fontSize='inherit'/>
+      </IconButton>
       {!isHomePage && 
-        <Stack direction="row" justifyContent="center" alignItems="flex-start">
-          <IconButton aria-label="settings" id="settings-btn" onClick={handleChange}>
-            <SettingsIcon fontSize='inherit'/>
-          </IconButton>
-          <IconButton component={Link} to="/" aria-label="home" id="home-btn">
-            <HomeIcon fontSize='inherit'/>
-          </IconButton>
-        </Stack>
+        <IconButton component={Link} to="/" aria-label="home" id="home-btn">
+          <HomeIcon fontSize='inherit'/>
+        </IconButton>
       }
       {isHomePage && 
-        <Stack direction="row" justifyContent="center" alignItems="flex-start">
-        <IconButton aria-label="settings" id="settings-btn" onClick={handleChange}>
-          <SettingsIcon fontSize='inherit'/>
-        </IconButton>
         <IconButton component={Link} to="/info" aria-label="info" id="info-btn">
           <InfoIcon fontSize='inherit'/>
         </IconButton>
-      </Stack>
       }
       <Settings open={open} handleClose={handleChange}/>
-    </div>
+    </Stack>
   );
 }
 
