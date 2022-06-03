@@ -2,7 +2,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
-import { Box, IconButton, Stack } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
 import { useState } from 'react';
 import Settings from './Settings';
 
@@ -12,14 +12,13 @@ interface Props {
 
 function SettingsHomeButtons({isHomePage= false}: Props) {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleChange = () => setOpen(!open);
   
   return (
     <div>
       {!isHomePage && 
         <Stack direction="row" justifyContent="center" alignItems="flex-start">
-          <IconButton aria-label="settings" id="settings-btn" onClick={handleOpen}>
+          <IconButton aria-label="settings" id="settings-btn" onClick={handleChange}>
             <SettingsIcon fontSize='inherit'/>
           </IconButton>
           <IconButton component={Link} to="/" aria-label="home" id="home-btn">
@@ -29,7 +28,7 @@ function SettingsHomeButtons({isHomePage= false}: Props) {
       }
       {isHomePage && 
         <Stack direction="row" justifyContent="center" alignItems="flex-start">
-        <IconButton aria-label="settings" id="settings-btn" onClick={handleOpen}>
+        <IconButton aria-label="settings" id="settings-btn" onClick={handleChange}>
           <SettingsIcon fontSize='inherit'/>
         </IconButton>
         <IconButton component={Link} to="/info" aria-label="info" id="info-btn">
@@ -37,7 +36,7 @@ function SettingsHomeButtons({isHomePage= false}: Props) {
         </IconButton>
       </Stack>
       }
-      <Settings open={open} handleClose={handleClose}/>
+      <Settings open={open} handleClose={handleChange}/>
     </div>
   );
 }
