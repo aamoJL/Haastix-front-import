@@ -3,6 +3,7 @@ import { Avatar, Stack, Typography } from '@mui/material';
 import { JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer} from '../interfaces';
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
+import ChallengeRoom from './ChallengeRoom';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
@@ -107,7 +108,7 @@ const avatars =
   playerArray && playerArray.length > 0
     ? playerArray.map((value, key) => {
         return (
-          <div key={value.name}>
+          <div key={key}>
             <Stack alignItems="center">
               {value.name}
               <Avatar src={getEmojiImage(value.avatar)} alt="avatar" />
@@ -119,17 +120,22 @@ const avatars =
 
   return (
     <div>
-      <Typography id="room-name" variant="body1" component="p">Room name: {roomInfo.details.challengeRoomName}</Typography>
-      <Typography id="timer-gm" variant="body1" component="p">Haasteen alkuun: {getFormattedTime(timeLeft)}</Typography>
-      {isGameMaster && !timeIsUp &&
-      <>
-        <Typography id="room-code" variant="body1" component="p">Huone koodi : {roomInfo.details.challengeRoomCode}</Typography>
-        <Typography id="task" variant="body1" component="p">First task : {roomInfo.details.challengeTasks[0].description}</Typography>
-        <Typography id="player-joined" variant="body1" component="p">Pelaajia liittynyt : {playerArray.length}</Typography>
-      </>}
-      {!isGameMaster && !timeIsUp && <>
-        {avatars}
-      </>}
+      {!timeIsUp && (
+        <>
+          <Typography id="room-name" variant="body1" component="p">Room name: {roomInfo.details.challengeRoomName}</Typography>
+          <Typography id="timer-gm" variant="body1" component="p">Haasteen alkuun: {getFormattedTime(timeLeft)}</Typography>
+          {isGameMaster &&
+          <>
+            <Typography id="room-code" variant="body1" component="p">Huone koodi : {roomInfo.details.challengeRoomCode}</Typography>
+            <Typography id="task" variant="body1" component="p">First task : {roomInfo.details.challengeTasks[0].description}</Typography>
+            <Typography id="player-joined" variant="body1" component="p">Pelaajia liittynyt : {playerArray.length}</Typography>
+          </>}
+          {!isGameMaster && <>
+            {avatars}
+          </>}
+        </>
+      )}
+      {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo}/>}
     </div>
   );
 };

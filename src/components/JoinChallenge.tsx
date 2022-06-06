@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ChallengeRoomJoin, JoinChallengeSuccessResponse } from '../interfaces';
+import { Socket } from 'socket.io-client';
 import SettingsHomeButtons from './SettingsHomeButtons';
+import { setConnection } from './socket';
 import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
 import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { setConnection } from './socket';
-import { Socket } from 'socket.io-client';
 
 const defaultFormData : ChallengeRoomJoin= {
   roomCode: "",
@@ -18,7 +18,7 @@ function JoinChallenge() {
   const [currentSocket, setSocket] = useState<Socket | undefined>(undefined);
   const [info, setInfo] = useState<ChallengeRoomJoin>(defaultFormData); //form state
   const {roomCode, userName, userAvatar} = info; //form state
-  const [token, setToken] = useState(sessionStorage.getItem("token"));
+  const [token, setToken] = useState<string | null>(sessionStorage.getItem("token"));
   const [showWaitingRoom, setShowWaitingRoom] = useState(false);
   const [loading, setLoading] = useState(true); // placeholder loading screen
   const [formIsNotValid, setFormIsNotValid] = useState(true); //if true form inputs are not valid and button is disabled
@@ -136,7 +136,6 @@ function JoinChallenge() {
   return (
     <Box>
       <SettingsHomeButtons/>
-     
       {loading && <></>}
       {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket}/>}
       {!loading && !showWaitingRoom &&
