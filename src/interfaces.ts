@@ -1,4 +1,4 @@
-export interface Challenge{
+ interface Challenge{
   description: string,
   challengeNumber: number,
 }
@@ -15,6 +15,7 @@ export interface ChallengeRoomJoin{
   roomCode: string,
   userAvatar: number
 }
+
 /**
  * JSON response from successful challenge room creation API call
  */
@@ -35,7 +36,7 @@ export interface NewChallengeRoomSuccessResponse{
   }
 }
 
-export interface JoinChallengeSuccessRespomse{
+export interface JoinChallengeSuccessResponse{
   statusCode: number,
   message: string,
   details: {
@@ -46,6 +47,17 @@ export interface JoinChallengeSuccessRespomse{
     challengeEndDate: string,
     challengeTasks: Challenge[],
     token: string,
-    userName: string,
+    username: string,
+    userAvatar: number,
+    challengeRoomCode: string
   }
+}
+
+export interface WaitingRoomList{  
+    name: string,
+    avatar: number
+}
+
+export interface WaitingRoomNewPlayer{  
+  players: WaitingRoomList[]
 }

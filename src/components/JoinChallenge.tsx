@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { isConstructorDeclaration } from 'typescript';
-import { ChallengeRoomJoin, JoinChallengeSuccessRespomse } from '../interfaces';
+import { ChallengeRoomJoin, JoinChallengeSuccessResponse } from '../interfaces';
 import NotFound from './NotFound';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
 import WaitingRoomViewGamemaster from './WaitingRoomViewGamemaster';
+import { setConnection } from './socket';
+import { Socket } from 'socket.io-client';
 
 const defaultFormData : ChallengeRoomJoin= {
   roomCode: "",
@@ -14,11 +16,17 @@ const defaultFormData : ChallengeRoomJoin= {
 }
 
 function JoinChallenge() {
+  const [currentSocket, setSocket] = useState<Socket | undefined>(undefined);
   const [info, setInfo] = useState<ChallengeRoomJoin>(defaultFormData); //form state
   const {roomCode, userName, userAvatar} = info; //form state
   const [token, setToken] = useState(sessionStorage.getItem("token"));
   const [showWaitingRoom, setShowWaitingRoom] = useState(false);
   const [loading, setLoading] = useState(true); // placeholder loading screen
+  const [roomInfo, setRoomInfo] = useState<JoinChallengeSuccessResponse>();
+
+  const openWebsocket = (token: string) => {
+    setSocket(setConnection(token))
+}
 
   useEffect(() => {
     if(token !== null){
@@ -40,6 +48,8 @@ function JoinChallenge() {
         }
         else
         {
+          setRoomInfo(res);
+          openWebsocket(token);
           setShowWaitingRoom(true);
           setLoading(false);
         }
@@ -102,12 +112,13 @@ function JoinChallenge() {
       [e.target.id]: e.target.value,
     }));
   }
-
+  
   return (
     <div>
       <SettingsHomeButtons />
       {loading && <></>}
-      {showWaitingRoom && <WaitingRoom/>}
+      {/* {showWaitingRoom && <WaitingRoom/>} */}
+      {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket}/>}
       {!loading && !showWaitingRoom && (
         <>
         <h1>Pääsykoodi</h1>
