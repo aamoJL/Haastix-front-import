@@ -1,4 +1,4 @@
-export interface Challenge{
+ interface Challenge{
   description: string,
   challengeNumber: number,
 }
@@ -36,7 +36,7 @@ export interface NewChallengeRoomSuccessResponse{
   }
 }
 
-export interface JoinChallengeSuccessRespomse{
+export interface JoinChallengeSuccessResponse{
   statusCode: number,
   message: string,
   details: {
@@ -47,6 +47,65 @@ export interface JoinChallengeSuccessRespomse{
     challengeEndDate: string,
     challengeTasks: Challenge[],
     token: string,
-    userName: string,
+    username: string,
+    userAvatar: number,
+    challengeRoomCode: string
   }
+}
+
+export interface WaitingRoomList{  
+    name: string,
+    avatar: number
+}
+
+export interface WaitingRoomNewPlayer{  
+  players: WaitingRoomList[]
+}
+
+/**
+ * Response from "fileStatusPlayer" socket
+ */
+export interface FileStatusPlayerResponse {
+  fileStatus: "Not reviewed" | "Approved" | "Rejected",
+  challengeNumber: number,
+}
+
+/**
+ * Response from "sendFile" socket
+ */
+export interface SendFileResponse{
+  statusCode: number,
+  message: string,
+  error?: "unauthorized" | "Image in review/approved" | "File type invalid" | "Payload too large",
+  details?: {
+    fileId: string,
+    challengeNumber: number
+  },
+}
+
+/**
+ * Response from "newFile" socket
+ */
+export interface NewFileResponse {
+  statusCode: number,
+  message: string,
+  challengeFiles: ChallengeFile[],
+}
+
+export interface ChallengeFile {
+  fileId: string,
+  fileName: string,
+  fileStatus: "Not reviewed" | "Approved" | "Rejected",
+  challengeNumber: number,
+  description: string,
+}
+
+/**
+ * Response from "fetchfile" API call
+ */
+export interface FetchFileResponse {
+  FILE: string,
+  statusCode: number,
+  error?: string,
+  message: string
 }
