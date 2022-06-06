@@ -1,4 +1,4 @@
- interface Challenge{
+interface Challenge{
   description: string,
   challengeNumber: number,
 }
@@ -108,4 +108,19 @@ export interface FetchFileResponse {
   statusCode: number,
   error?: string,
   message: string
+}
+
+/**
+ * Player data for "finalScore_update" socket response
+ */
+export interface PlayerData{
+  playerAvatar: string,
+  playerFileIds: [{
+    CreatedAt: string,
+    challengeNumber: number,
+    fileId: string,
+  }],
+  playerName: string,
+  totalScore: number,
+  totalTime: number
 }
