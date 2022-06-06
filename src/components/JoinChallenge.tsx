@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ChallengeRoomJoin } from '../interfaces';
+import { ChallengeRoomJoin, JoinChallengeSuccessResponse } from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
 import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { setConnection } from './socket';
+import { Socket } from 'socket.io-client';
 
 const defaultFormData : ChallengeRoomJoin= {
   roomCode: "",
@@ -13,6 +15,7 @@ const defaultFormData : ChallengeRoomJoin= {
 }
 
 function JoinChallenge() {
+  const [currentSocket, setSocket] = useState<Socket | undefined>(undefined);
   const [info, setInfo] = useState<ChallengeRoomJoin>(defaultFormData); //form state
   const {roomCode, userName, userAvatar} = info; //form state
   const [token, setToken] = useState(sessionStorage.getItem("token"));
@@ -21,6 +24,11 @@ function JoinChallenge() {
   const [formIsNotValid, setFormIsNotValid] = useState(true); //if true form inputs are not valid and button is disabled
   const [codeWasNotValid, setCodeWasNotValid] = useState(false); // if true code was not valid and code field is red
   const [openAlert, setOpenAlert] = useState(false); // if true show error alert
+  const [roomInfo, setRoomInfo] = useState<JoinChallengeSuccessResponse>();
+
+  const openWebsocket = (token: string) => {
+    setSocket(setConnection(token))
+}
 
   useEffect(() => {
     //rejoin challenge if token is found
@@ -44,6 +52,8 @@ function JoinChallenge() {
         }
         else
         {
+          setRoomInfo(res);
+          openWebsocket(token);
           setShowWaitingRoom(true);
         }
       })
@@ -122,11 +132,13 @@ function JoinChallenge() {
       setFormIsNotValid(true);
   },[roomCode, userName])
 
+  
   return (
     <Box>
       <SettingsHomeButtons/>
+     
       {loading && <></>}
-      {showWaitingRoom && <WaitingRoom/>}
+      {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket}/>}
       {!loading && !showWaitingRoom &&
         <Stack  justifyContent="center" spacing={2} alignItems="center">
           <Typography variant="h2">Join a game</Typography>
