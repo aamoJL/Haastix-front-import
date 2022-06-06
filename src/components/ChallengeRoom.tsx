@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
+import Scoreboard from './Scoreboard';
 
 interface Props {
     roomInfo: JoinChallengeSuccessResponse,
@@ -200,9 +201,10 @@ function ChallengeRoom({roomInfo, socket} : Props) {
             </>
         </>}
       {/* Time is up, scoreboard */}
+      <Scoreboard socket={socket}/>
       {timeIsUp && 
         <>
-          <Typography id="times-up-title" variant="h2" component="h2">Haaste on päättynyt!</Typography>
+          <Typography id="times-up-title" variant="h2" component="h2">The challenge is over!</Typography>
         </>}
     </div>
   );
