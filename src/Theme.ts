@@ -61,9 +61,12 @@ const theme = createTheme({
       }
     },
     MuiButton: {
+      defaultProps: {
+        fullWidth: true
+      },
       styleOverrides: {
         root: {
-          minWidth: 200,
+          maxWidth: 200,
         }
       }
     }
