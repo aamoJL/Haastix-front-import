@@ -4,6 +4,7 @@ import { JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer} fr
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
 import ChallengeRoom from './ChallengeRoom';
+import ExitButton from './ExitButton';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
@@ -136,6 +137,7 @@ const avatars =
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo}/>}
+      <ExitButton/>
     </div>
   );
 };
