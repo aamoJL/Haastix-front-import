@@ -65,13 +65,13 @@ function ChallengeRoom({roomInfo, socket} : Props) {
 useEffect(() => {
   // Player
   if(!isGameMaster){
-      // Check the state of the current task
-      socket?.emit('playerCheckFile', {
-        token: roomInfo?.details.token,
-        payload: {
-            challengeNumber: currentTaskNumber
-        }
-      })
+    // Check the state of the current task
+    socket?.emit('playerCheckFile', {
+      token: roomInfo?.details.token,
+      payload: {
+          challengeNumber: currentTaskNumber
+      }
+    })
   }
 }, [currentTaskNumber])
 
