@@ -69,6 +69,16 @@ const theme = createTheme({
           maxWidth: 200,
         }
       }
+    },
+    MuiDialog: {
+      styleOverrides: {
+        scrollPaper: {
+          alignItems: 'flex-start',
+        },
+        paper: {
+          color: '#191919'
+        }
+      }
     }
   }
 });
