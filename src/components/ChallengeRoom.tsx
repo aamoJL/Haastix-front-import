@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
+import ExitButton from './ExitButton';
 
 interface Props {
     roomInfo: JoinChallengeSuccessResponse,
@@ -200,10 +201,8 @@ function ChallengeRoom({roomInfo, socket} : Props) {
             </>
         </>}
       {/* Time is up, scoreboard */}
-      {timeIsUp && 
-        <>
-          <Typography id="times-up-title" variant="h2" component="h2">Haaste on päättynyt!</Typography>
-        </>}
+      {timeIsUp && <Typography id="times-up-title" variant="h2" component="h2">Haaste on päättynyt!</Typography>}
+      <ExitButton isGameEnded={timeIsUp}/>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer} fr
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
 import ChallengeRoom from './ChallengeRoom';
+import ExitButton from './ExitButton';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
@@ -128,7 +129,7 @@ const avatars =
           <>
             <Typography id="room-code" variant="body1" component="p">Huone koodi : {roomInfo.details.challengeRoomCode}</Typography>
             <Typography id="task" variant="body1" component="p">First task : {roomInfo.details.challengeTasks[0].description}</Typography>
-            <Typography id="player-joined" variant="body1" component="p">Pelaajia liittynyt : {playerArray.length}</Typography>
+            <Typography id="players-joined" variant="body1" component="p">Pelaajia liittynyt : {playerArray.length}</Typography>
           </>}
           {!isGameMaster && <>
             {avatars}
@@ -136,6 +137,7 @@ const avatars =
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo}/>}
+      {!timeIsUp && <ExitButton/>}
     </div>
   );
 };
