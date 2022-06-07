@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell } from '@mui/material';
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, List, ListItem } from '@mui/material';
 import { JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
@@ -55,35 +55,35 @@ function WaitingRoom({roomInfo, socket} : Props) {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
   const [playerArray, setPlayerArray]  = useState<WaitingRoomList[]>([]);
-  const [openPlayers, setOpenPlayers] = useState(false);
+  const [showPlayers, setShowPlayers] = useState(false);
+  const [showChallenges, setShowChallenges] = useState(false);
 
   const navigation = useNavigate();
 
-useEffect(() => {
-  const interval = setInterval(() => {
-  const endDate = new Date(roomInfo.details.challengeStartDate as string);
-  const milliseconds = endDate.getTime() - new Date().getTime();
-  const segmentedTime = calculateTimeLeft(milliseconds);
-  setTimeLeft(segmentedTime);
-  if(milliseconds <= 0){
-    setTimeIsUp(true);
-    clearInterval(interval);
-  }
-  }, 1000);
-  return () => {
-    clearInterval(interval);
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {
+    const endDate = new Date(roomInfo.details.challengeStartDate as string);
+    const milliseconds = endDate.getTime() - new Date().getTime();
+    const segmentedTime = calculateTimeLeft(milliseconds);
+    setTimeLeft(segmentedTime);
+    if(milliseconds <= 0){
+      setTimeIsUp(true);
+      clearInterval(interval);
+    }
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    }
   }, [roomInfo.details.challengeStartDate]);
 
-useEffect(() => {
+  useEffect(() => {
     // Set Socket.io Listeners | newPlayer listener
     socket?.on("newPlayer", (data: WaitingRoomNewPlayer) => {
       // set players from data to players
-    setPlayerArray(data.players);
-      // set loading false
-      // setLoading(false);
-      }
-    );
+      setPlayerArray(data.players);
+        // set loading false
+        // setLoading(false);
+    });
 
     socket?.on("youWereRemoved", (data: YouWereRemovedResponse) => {
         if(data.statusCode === 200) {
@@ -91,11 +91,11 @@ useEffect(() => {
           alert("You were removed from the game");
           navigation("/");
         }
-      });
+    });
 
-  socket?.on("playerWasRemoved", (data: WaitingRoomNewPlayer) => {
+    socket?.on("playerWasRemoved", (data: WaitingRoomNewPlayer) => {
       setPlayerArray(data.players);
-      });
+    });
 
     // get token
     // getToken();
@@ -109,6 +109,15 @@ useEffect(() => {
     };
   });
 
+  const handleShowPlayers = () => {
+    setShowChallenges(false);
+    setShowPlayers(!showPlayers);
+  }
+  const handleShowChallenges = () => {
+    setShowPlayers(false);
+    setShowChallenges(!showChallenges);
+  }
+
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
       {!timeIsUp && (
@@ -119,14 +128,21 @@ useEffect(() => {
           <>
             <Typography id="room-code" variant="body1" component="p">Huone koodi : {roomInfo.details.challengeRoomCode}</Typography>
             <Typography id="task" variant="body1" component="p">First task : {roomInfo.details.challengeTasks[0].description}</Typography>
-            <Button onClick={()=>setOpenPlayers(!openPlayers)}>Players ({playerArray.length})</Button>
-              <Collapse in={openPlayers} unmountOnExit>
-                <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray}/>
-              </Collapse>
-            <Button>Challenges</Button>
+            <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} handleFunction={handleShowPlayers}/>
+            <Button onClick={handleShowChallenges}>Challenges ({roomInfo.details.challengeTasks.length})</Button>
+            <Collapse in={showChallenges} unmountOnExit>
+              <List dense>
+                {
+                  roomInfo.details.challengeTasks.map((value, i) => (
+                    <ListItem key={i}>{value.description}</ListItem>
+                  ))
+                }
+                <Button variant="text">Save</Button>
+              </List>
+            </Collapse>
           </>}
-          {!isGameMaster && playerArray.length > 0 && <>
-            <Table sx={{maxWidth: 2e00}} size="small">
+          {!isGameMaster && playerArray.length > 0 && 
+            <Table sx={{maxWidth: 200}} size="small">
               <TableBody>
                 {playerArray.map((value, i) => (
                   <TableRow key={i}> 
@@ -140,11 +156,10 @@ useEffect(() => {
                 ))}
               </TableBody>
             </Table>
-            </>
           }
         </>
       )}
-      {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo}/>}
+      {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray}/>}
       {!timeIsUp && <ExitButton/>}
     </Stack>
   );

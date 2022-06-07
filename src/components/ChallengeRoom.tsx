@@ -1,13 +1,15 @@
 import { Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse } from '../interfaces';
+import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, WaitingRoomList } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
 import ExitButton from './ExitButton';
+import RemovePlayer from './RemovePlayer';
 
 interface Props {
     roomInfo: JoinChallengeSuccessResponse,
-    socket?: Socket
+    socket?: Socket,
+    playerArray: WaitingRoomList[]
 }
 
 interface SegmentedTime{
@@ -23,7 +25,7 @@ interface SegmentedTime{
  * Players and Game master will have different views.
  * @param roomInfo reJoin API response
  */
-function ChallengeRoom({roomInfo, socket} : Props) {
+function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
   /**
    * Returns object with segmented time between now and end date
    * @param delayTime end date
@@ -62,6 +64,7 @@ function ChallengeRoom({roomInfo, socket} : Props) {
   const [playerWaitingReview, setPlayerWaitingReview] = useState(false);
   const [waitingSubmissions, setWaitingSubmissions] = useState<ChallengeFile[]>([])
   const [waitingSubmissionPhoto, setWaitingSubmissionPhoto] = useState("");
+  const [showPlayers, setShowPlayers] = useState(false);
 
   useEffect(() => {
     // Player
@@ -176,6 +179,7 @@ function ChallengeRoom({roomInfo, socket} : Props) {
           <Typography id="user-title-gm" variant="body1" component="p">Käyttäjä: GameMaster</Typography>
           <Typography id="room-code-title-gm" variant="body1" component="p">Huoneen koodi:<br/><b>{roomInfo?.details.challengeRoomCode}</b></Typography>
           <Typography id="timer-gm" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
+          <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} handleFunction={()=>setShowPlayers(!showPlayers)}/>
           {waitingSubmissions.length > 0 && 
             <div>
               <p>Arvioi suoritus:</p>
