@@ -181,7 +181,3 @@ const avatars =
 };
 
 export default WaitingRoom;
-
-function saveDataToSecureStore(arg0: string, arg1: string) {
-  throw new Error('Function not implemented.');
-}
