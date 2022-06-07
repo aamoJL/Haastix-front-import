@@ -61,22 +61,9 @@ const theme = createTheme({
       }
     },
     MuiButton: {
-      defaultProps: {
-        fullWidth: true
-      },
       styleOverrides: {
         root: {
-          maxWidth: 200,
-        }
-      }
-    },
-    MuiDialog: {
-      styleOverrides: {
-        scrollPaper: {
-          alignItems: 'flex-start',
-        },
-        paper: {
-          color: '#191919'
+          minWidth: 200,
         }
       }
     }
