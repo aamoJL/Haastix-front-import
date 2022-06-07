@@ -55,7 +55,8 @@ export interface JoinChallengeSuccessResponse{
 
 export interface WaitingRoomList{  
     name: string,
-    avatar: number
+    avatar: number,
+    userId: string
 }
 
 export interface WaitingRoomNewPlayer{  
@@ -107,5 +108,10 @@ export interface FetchFileResponse {
   FILE: string,
   statusCode: number,
   error?: string,
+  message: string
+}
+
+export interface YouWereRemovedResponse {
+  statusCode: number,
   message: string
 }
