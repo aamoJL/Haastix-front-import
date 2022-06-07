@@ -6,6 +6,7 @@ import {getEmojiImage} from './storage/Images'
 import ChallengeRoom from './ChallengeRoom';
 import { useNavigate } from 'react-router-dom';
 import RemovePlayer from './RemovePlayer';
+import ExitButton from './ExitButton';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
@@ -174,6 +175,7 @@ const avatars =
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo}/>}
+      {!timeIsUp && <ExitButton/>}
     </div>
   );
 };

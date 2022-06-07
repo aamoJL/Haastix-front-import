@@ -143,7 +143,7 @@ function JoinChallenge() {
       {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket}/>}
       {!loading && !showWaitingRoom &&
         <Stack  justifyContent="center" spacing={2} alignItems="center">
-          <Typography variant="h2">Join a game</Typography>
+          <Typography variant="h3">Join a game</Typography>
           <Typography variant="body1">Ask the gamemaster for the code</Typography>
           <Collapse in={openAlert}>
             <Alert severity='error' 
