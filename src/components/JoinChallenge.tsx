@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChallengeRoomJoin, JoinChallengeSuccessResponse, YouWereRemovedResponse } from '../interfaces';
+import { ChallengeRoomJoin, JoinChallengeSuccessResponse } from '../interfaces';
 import { Socket } from 'socket.io-client';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import { setConnection } from './socket';

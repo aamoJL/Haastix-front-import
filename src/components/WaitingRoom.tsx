@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Avatar, Stack, Typography } from '@mui/material';
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell } from '@mui/material';
 import { JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
@@ -55,6 +55,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
   const [playerArray, setPlayerArray]  = useState<WaitingRoomList[]>([]);
+  const [openPlayers, setOpenPlayers] = useState(false);
 
   const navigation = useNavigate();
 
@@ -81,17 +82,6 @@ useEffect(() => {
     setPlayerArray(data.players);
       // set loading false
       // setLoading(false);
-      // if (
-      //   roomData.challengeRemainingDuration === 0 &&
-      //   roomData.challengeRemainingDelay === 0
-      // ) {
-      //   clearInterval(intervalRef.current);
-      //   setDelayEnded(true);
-      //   intervalRef.current = null;
-      // } else if (roomData.challengeRemainingDelay === 0) {
-      //   //if delay is 0 show challengeroom
-      //   setDelayEnded(true);
-      //   setLoading(false);
       }
     );
 
@@ -109,7 +99,7 @@ useEffect(() => {
 
     // get token
     // getToken();
-    // // toggle loadingscreen
+    // toggle loadingscreen
     // setLoading(false);
     return () => {
       // Clear socket.io Listeners , newPlayer
@@ -117,47 +107,10 @@ useEffect(() => {
       socket?.off("playerWasRemoved");
       socket?.off("youWereRemoved");
     };
-  }, []);
-
-const avatars =
-  playerArray && playerArray.length > 0
-    ? playerArray.map((value, key) => {
-        return (
-          <div key={key}>
-            <Stack alignItems="center">
-              {value.name}
-              <Avatar src={getEmojiImage(value.avatar)} alt="avatar" />
-            </Stack>
-          </div>
-        );
-      })
-    : null;
-
-    // const handleRemovePlayer = (userName: string) => {
-    //   socket?.emit("removePlayer", {
-    //     token: roomInfo.details.token,
-    //     payload: {
-    //       userName: userName,
-    //     },
-    //   });
-    // }
-
-// const removePlayer =
-//   playerArray && playerArray.length > 0
-//     ? playerArray.map((value, key) => {
-//         return (
-//           <div key={key}>
-//               {value.name}
-//               <IconButton id={`remove-challenge-btn-${value.name}`} size="small" color="error" onClick={(e) => handleRemovePlayer(value.name)}>
-//                 <CloseIcon/>
-//               </IconButton>
-//           </div>
-//         );
-//       })
-//     : null;
+  });
 
   return (
-    <div>
+    <Stack alignItems="center" justifyContent="center" spacing={1}>
       {!timeIsUp && (
         <>
           <Typography id="room-name" variant="body1" component="p">Room name: {roomInfo.details.challengeRoomName}</Typography>
@@ -166,17 +119,34 @@ const avatars =
           <>
             <Typography id="room-code" variant="body1" component="p">Huone koodi : {roomInfo.details.challengeRoomCode}</Typography>
             <Typography id="task" variant="body1" component="p">First task : {roomInfo.details.challengeTasks[0].description}</Typography>
-            <Typography id="player-joined" variant="body1" component="p">Pelaajia liittynyt : {playerArray.length}</Typography>
-            <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} />
+            <Button onClick={()=>setOpenPlayers(!openPlayers)}>Players ({playerArray.length})</Button>
+              <Collapse in={openPlayers} unmountOnExit>
+                <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray}/>
+              </Collapse>
+            <Button>Challenges</Button>
           </>}
-          {!isGameMaster && <>
-            {avatars}
-          </>}
+          {!isGameMaster && playerArray.length > 0 && <>
+            <Table sx={{maxWidth: 2e00}} size="small">
+              <TableBody>
+                {playerArray.map((value, i) => (
+                  <TableRow key={i}> 
+                    <TableCell align="left">
+                      <Avatar src={getEmojiImage(value.avatar)} alt="avatar" />
+                    </TableCell>  
+                    <TableCell align="left">
+                      {value.name}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            </>
+          }
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo}/>}
       {!timeIsUp && <ExitButton/>}
-    </div>
+    </Stack>
   );
 };
 
