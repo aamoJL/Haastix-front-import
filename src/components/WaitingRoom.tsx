@@ -113,13 +113,17 @@ function WaitingRoom({roomInfo, socket} : Props) {
   const handleShowPlayers = () => {
     setShowChallenges(false);
     setShowPlayers(!showPlayers);
-    console.log(challengeArray[0]);
   }
 
   const handleShowChallenges = () => {
     setShowPlayers(false);
     setShowChallenges(!showChallenges);
     setEdit(false);
+  }
+
+  const handleEditView = () => {
+    setChallengeArray(roomInfo.details.challengeTasks);
+    setEdit(true);
   }
 
   const handleEditChallenge = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
@@ -137,20 +141,16 @@ function WaitingRoom({roomInfo, socket} : Props) {
     const newArr = challengeArray.concat({description: "", challengeNumber: challengeArray.length})
     const fixedArr = changeChallengeNumbers(newArr);
     setChallengeArray(fixedArr);
-
-    console.log(fixedArr);
   }
 
   const handleRemoveChallenge = (i: number) => {
     const newArr = challengeArray.filter(challenge => challenge.challengeNumber !== i);
-    //const newArr = challengeArray.splice(i, 1);
-    if(challengeArray.length < 1) {
-      handleAddChallenge();
+    if(newArr.length < 1)
+      setChallengeArray([{description:"", challengeNumber: 0}]);
+    else{
+      const fixedArr = changeChallengeNumbers(newArr);
+      setChallengeArray(fixedArr);
     }
-    const fixedArr = changeChallengeNumbers(newArr);
-    setChallengeArray(fixedArr);
-
-    console.log(fixedArr);
   }
 
   const changeChallengeNumbers = (arr: Challenge[]) => {
@@ -198,7 +198,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
                     <Typography variant="body1" component="p" key={i}>{value.description}</Typography>
                   ))
                 }
-                <Button id="edit-btn" variant="text" onClick={()=>setEdit(true)}>Edit</Button>
+                <Button id="edit-btn" variant="text" onClick={handleEditView}>Edit</Button>
               </Stack>}
               {edit && 
               <Stack alignItems="center" justifyContent="center" spacing={1}>
