@@ -1,4 +1,4 @@
-import { Avatar, Button, IconButton, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Avatar, IconButton, Modal, Stack, SxProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { PlayerData } from '../interfaces';
@@ -10,17 +10,23 @@ interface Props{
   socket?: Socket,
 }
 
-const modalStyle = {
+const modalStyle : SxProps<Theme> = {
   position: 'absolute' as 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: "auto",
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: 'background.default',
   boxShadow: 24,
+  borderRadius: 1,
   p: 4,
 };
+
+const tableHeaderStyle : SxProps<Theme> = {
+  backgroundColor: "primary.main", 
+  color: "primary.contrastText",
+  borderBottomColor: "primary.contrastText"
+}
 
 /**
  * Component that renders challenge room's scoreboard sorted by task completion time
@@ -32,6 +38,7 @@ function Scoreboard({socket}: Props) {
   const [selectedPhoto, setSelectedPhoto] = useState<string | undefined>(undefined);
   const [selectedPhotoNumber, setSelectedPhotoNumber] = useState(0);
   const [openModal, setOpenModal] = useState(false);
+  const [modalLoading, setModalLoading] = useState(true);
 
   useEffect(() => {
     socket?.emit("fetchScoreBoard", {
@@ -62,6 +69,7 @@ function Scoreboard({socket}: Props) {
 
   useEffect(() => {
     if(selectedPlayer){
+      // Fetch selected photo file
       fetch(`${process.env.REACT_APP_API_URL}/challenge/fetchfile/${selectedPlayer.playerFileIds[selectedPhotoNumber].fileId}`, {
         method: "GET",
         headers: {
@@ -75,6 +83,7 @@ function Scoreboard({socket}: Props) {
   
         reader.onloadend = () => {
           setSelectedPhoto(reader.result as string);
+          setModalLoading(false);
         }
       })
       .catch(error => console.log(error))
@@ -82,8 +91,11 @@ function Scoreboard({socket}: Props) {
   },[selectedPhotoNumber, selectedPlayer])
 
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, player: PlayerData) => {
-    setSelectedPhotoNumber(0);
-    setSelectedPlayer(player);
+    if(selectedPlayer !== player){
+      setModalLoading(true);
+      setSelectedPhotoNumber(0);
+      setSelectedPlayer(player);
+    }
     setOpenModal(true);
   }
 
@@ -101,11 +113,13 @@ function Scoreboard({socket}: Props) {
     setSelectedPhotoNumber(photoNumber);
   }
 
+  // Scoreboard item rows
   let scoreElements = scores.map((player, i) => {
     return (
       <TableRow id={`scoreboard-row-${i}`} hover key={player.playerName} onClick={(e) => handleRowClick(e, player)}>
+        <TableCell>{i + 1}</TableCell>
         <TableCell><Avatar sx={{ width: 24, height: 24 }} src={getEmojiImage(parseInt(player.playerAvatar))} alt="avatar" /></TableCell>
-        <TableCell align='right' id={`scoreboard-name-${i}`}>{player.playerName}</TableCell>
+        <TableCell align='left' id={`scoreboard-name-${i}`}>{player.playerName}</TableCell>
         <TableCell align='right' id={`scoreboard-time-${i}`}>{player.totalTime}</TableCell>
         <TableCell align='right' id={`scoreboard-tasks-${i}`}>{player.playerFileIds.length}</TableCell>
       </TableRow>
@@ -115,29 +129,30 @@ function Scoreboard({socket}: Props) {
   return (
     <Stack direction="column" alignItems="center">
       <Typography id="times-up-title" variant="body1" component="p">Scoreboard</Typography>
-      <Button id="open-modal-btn" onClick={() => setOpenModal(true)}>Open modal</Button>
-      <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <Stack sx={modalStyle} alignItems="center" direction="row">
+      <Modal open={openModal && !modalLoading} onClose={() => setOpenModal(false)} disableAutoFocus>
+        <Stack sx={modalStyle} alignItems="center" direction="row" spacing={2}>
           <IconButton id="prev-photo-btn" onClick={(e) => handlePhotoArrowClick(e, selectedPhotoNumber - 1)}>
             <ArrowBackIcon />
           </IconButton>
-          <Stack direction="column" alignItems="center">
+          <Stack direction="column" alignItems="center" spacing={1}>
+            <Typography sx={{fontWeight: 'bold'}} variant="body1" component="p">{`${selectedPlayer?.playerName}`}</Typography>
             <img src={selectedPhoto} alt="" />
-            <Typography variant="body1" component="p">{`Task number: ${selectedPhotoNumber}`}</Typography>
+            <Typography variant="body1" component="p">{`Task number: ${selectedPhotoNumber + 1}`}</Typography>
           </Stack>
           <IconButton id="next-photo-btn" onClick={(e) => handlePhotoArrowClick(e, selectedPhotoNumber + 1)}>
             <ArrowForwardIcon />
           </IconButton>
         </Stack>
       </Modal>
-      <TableContainer sx={{maxWidth: 700, maxHeight: 440}}>
+      <TableContainer sx={{maxWidth: 700, maxHeight: 300, width:"auto"}}>
         <Table size="small" stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell>Icon</TableCell>
-              <TableCell align='right'>Name</TableCell>
-              <TableCell align='right'>Time</TableCell>
-              <TableCell align='right'>Tasks</TableCell>
+              <TableCell sx={tableHeaderStyle}>#</TableCell>
+              <TableCell sx={tableHeaderStyle}>Icon</TableCell>
+              <TableCell sx={tableHeaderStyle} align='left'>Name</TableCell>
+              <TableCell sx={tableHeaderStyle} align='right'>Time</TableCell>
+              <TableCell sx={tableHeaderStyle} align='right'>Tasks</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
