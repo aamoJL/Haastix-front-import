@@ -133,12 +133,42 @@ function WaitingRoom({roomInfo, socket} : Props) {
     setChallengeArray(newArray);
   }
 
+  const handleAddChallenge = () => {
+    const newArr = challengeArray.concat({description: "", challengeNumber: challengeArray.length})
+    const fixedArr = changeChallengeNumbers(newArr);
+    setChallengeArray(fixedArr);
+
+    console.log(fixedArr);
+  }
+
+  const handleRemoveChallenge = (i: number) => {
+    const newArr = challengeArray.filter(challenge => challenge.challengeNumber !== i);
+    //const newArr = challengeArray.splice(i, 1);
+    if(challengeArray.length < 1) {
+      handleAddChallenge();
+    }
+    const fixedArr = changeChallengeNumbers(newArr);
+    setChallengeArray(fixedArr);
+
+    console.log(fixedArr);
+  }
+
+  const changeChallengeNumbers = (arr: Challenge[]) => {
+    const newArr = arr.map((challenge, index) => {
+      return {...challenge, challengeNumber: index}
+    })
+    return newArr;
+  }
+
   const handleSaveChallenges = () => {
+    const filteredArr = challengeArray.filter(challenge => challenge.description !== "");
+    setChallengeArray(filteredArr);
+
     socket?.emit("modifyChallenge", {
       token: roomInfo.details.token,
       payload: {
         challengeName: roomInfo.details.challengeRoomName,
-        challengeTasks: challengeArray
+        challengeTasks: filteredArr
       }
     });
 
@@ -181,7 +211,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
                         onChange={(e)=>handleEditChallenge(e, i)}
                         InputProps={{
                           endAdornment: (
-                            <IconButton>
+                            <IconButton onClick={()=>handleRemoveChallenge(i)}>
                               <CloseIcon/>
                             </IconButton>
                           )
@@ -190,7 +220,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
                     </Box>
                   ))}
                 <ButtonGroup variant="text">
-                  <Button id="add-challenge-btn" onClick={()=>{console.log(roomInfo)}}>Add</Button>
+                  <Button id="add-challenge-btn" onClick={handleAddChallenge}>Add</Button>
                   <Button id="save-challenges-btn" onClick={handleSaveChallenges}>Save</Button>
                 </ButtonGroup>
               </Stack>}
