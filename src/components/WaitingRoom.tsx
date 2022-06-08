@@ -119,6 +119,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
   const handleShowChallenges = () => {
     setShowPlayers(false);
     setShowChallenges(!showChallenges);
+    setEdit(false);
   }
 
   const handleEditChallenge = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
@@ -189,7 +190,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
                     </Box>
                   ))}
                 <ButtonGroup variant="text">
-                  <Button id="add-challenge-btn">Add</Button>
+                  <Button id="add-challenge-btn" onClick={()=>{console.log(roomInfo)}}>Add</Button>
                   <Button id="save-challenges-btn" onClick={handleSaveChallenges}>Save</Button>
                 </ButtonGroup>
               </Stack>}

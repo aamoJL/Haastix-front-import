@@ -179,7 +179,7 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
           <Typography id="user-title-gm" variant="body1" component="p">Käyttäjä: GameMaster</Typography>
           <Typography id="room-code-title-gm" variant="body1" component="p">Huoneen koodi:<br/><b>{roomInfo?.details.challengeRoomCode}</b></Typography>
           <Typography id="timer-gm" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
-          <Button onClick={()=>setShowPlayers(!showPlayers)}>Players {playerArray.length}</Button>
+          <Button onClick={()=>setShowPlayers(!showPlayers)}>Players ({playerArray.length})</Button>
           <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
           {waitingSubmissions.length > 0 && 
             <div>

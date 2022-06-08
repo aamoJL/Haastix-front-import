@@ -8,10 +8,27 @@ import WaitingRoom from './WaitingRoom';
 import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-const defaultFormData : ChallengeRoomJoin= {
+const defaultFormData : ChallengeRoomJoin = {
   roomCode: "",
   userName: "",
   userAvatar: 1,
+}
+
+const defaultRoomInfo: JoinChallengeSuccessResponse = {
+  statusCode: 0,
+  message: "",
+  details: {
+    userid: "",
+    challengeRoomId: "",
+    challengeRoomCode: "",
+    challengeRoomName: "",
+    challengeStartDate: "",
+    challengeEndDate: "",
+    challengeTasks: [{ description: "", challengeNumber: 0}],
+    token: "",
+    username: "",
+    userAvatar: 0,
+  }
 }
 
 function JoinChallenge() {
@@ -24,7 +41,7 @@ function JoinChallenge() {
   const [formIsNotValid, setFormIsNotValid] = useState(true); //if true form inputs are not valid and button is disabled
   const [codeWasNotValid, setCodeWasNotValid] = useState(false); // if true code was not valid and code field is red
   const [openAlert, setOpenAlert] = useState(false); // if true show error alert
-  const [roomInfo, setRoomInfo] = useState<JoinChallengeSuccessResponse>();
+  const [roomInfo, setRoomInfo] = useState<JoinChallengeSuccessResponse>(defaultRoomInfo);
 
   const openWebsocket = (token: string) => {
     setSocket(setConnection(token))
@@ -134,8 +151,18 @@ function JoinChallenge() {
 
   useEffect(() => {
     currentSocket?.on("challengeModify", (data: challengeModifyResponse)=> {
-      console.log(data);
+      setRoomInfo(prevState => ({
+        ...prevState,
+        details: {
+          ...prevState.details,
+          challengeTasks: data.challengeTasks
+        }
+      }))
     })
+
+    return()=> {
+      currentSocket?.off("challengeModify");
+    }
   })
 
   
