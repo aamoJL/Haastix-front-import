@@ -1,4 +1,4 @@
- interface Challenge{
+ export interface Challenge{
   description: string,
   challengeNumber: number,
 }
@@ -27,8 +27,6 @@ export interface NewChallengeRoomSuccessResponse{
     challengeRoomId: string, 
     challengeRoomCode: string,
     challengeRoomName: string,
-    challengeRemainingDuration: number,
-    challengeRemainingDelay: number,
     challengeStartDate: string,
     challengeEndDate: string,
     challengeTasks: Challenge[],
@@ -51,6 +49,13 @@ export interface JoinChallengeSuccessResponse{
     userAvatar: number,
     challengeRoomCode: string
   }
+}
+
+export interface challengeModifyResponse {
+  challengeRoomName: string,
+  challengeStartDate: string,
+  challengeEndDate: string,
+  challengeTasks: Challenge[],
 }
 
 export interface WaitingRoomList{  

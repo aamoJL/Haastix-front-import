@@ -1,6 +1,6 @@
 import React from 'react';
 import CloseIcon from '@mui/icons-material/Close'
-import { Button, Collapse, IconButton, List, ListItem, Typography } from '@mui/material';
+import { Collapse, IconButton, List, ListItem, Typography } from '@mui/material';
 import { JoinChallengeSuccessResponse, WaitingRoomList} from '../interfaces';
 import { Socket } from 'socket.io-client';
 
@@ -9,10 +9,9 @@ interface Props {
   roomInfo: JoinChallengeSuccessResponse,
   playerArray: WaitingRoomList[],
   open: boolean,
-  handleFunction: () => void
 }
 
-function RemovePlayer({socket, roomInfo, playerArray, open, handleFunction} : Props) {  
+function RemovePlayer({socket, roomInfo, playerArray, open} : Props) {  
 
   const handleRemovePlayer = (userName: string) => {
     socket?.emit("removePlayer", {
@@ -25,7 +24,6 @@ function RemovePlayer({socket, roomInfo, playerArray, open, handleFunction} : Pr
   
   return (
     <div>
-      <Button onClick={handleFunction}>Players ({playerArray.length})</Button>
       <Collapse in={open} unmountOnExit>
         <List dense>
           {playerArray.length === 0 && <Typography variant="body1" component="p">No joined players</Typography>}

@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, List, ListItem } from '@mui/material';
-import { JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
+import React, { useEffect, useState } from 'react';
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box } from '@mui/material';
+import { Challenge, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
 import ChallengeRoom from './ChallengeRoom';
 import { useNavigate } from 'react-router-dom';
 import RemovePlayer from './RemovePlayer';
 import ExitButton from './ExitButton';
+import CloseIcon from '@mui/icons-material/Close'
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
@@ -26,15 +27,15 @@ function WaitingRoom({roomInfo, socket} : Props) {
    * @param delayTime end date
    * @returns segmentedTime object
   */
- const calculateTimeLeft = (milliseconds: number) => {
-  let time : SegmentedTime = {
-    days: Math.floor(milliseconds / (1000 * 60 * 60 * 24)),
-    hours: Math.floor((milliseconds / (1000 * 60 * 60)) % 24),
-    minutes: Math.floor((milliseconds / 1000 / 60) % 60),
-    seconds: Math.floor((milliseconds / 1000) % 60),
-  };
-  return time;
- }
+  const calculateTimeLeft = (milliseconds: number) => {
+    let time : SegmentedTime = {
+      days: Math.floor(milliseconds / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((milliseconds / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((milliseconds / 1000 / 60) % 60),
+      seconds: Math.floor((milliseconds / 1000) % 60),
+    };
+    return time;
+  }
 
   /**
  * Returns date string in "(-)HH:MM:SS" format
@@ -57,6 +58,8 @@ function WaitingRoom({roomInfo, socket} : Props) {
   const [playerArray, setPlayerArray]  = useState<WaitingRoomList[]>([]);
   const [showPlayers, setShowPlayers] = useState(false);
   const [showChallenges, setShowChallenges] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [challengeArray, setChallengeArray] = useState<Challenge[]>(roomInfo.details.challengeTasks);
 
   const navigation = useNavigate();
 
@@ -86,11 +89,9 @@ function WaitingRoom({roomInfo, socket} : Props) {
     });
 
     socket?.on("youWereRemoved", (data: YouWereRemovedResponse) => {
-        if(data.statusCode === 200) {
-          sessionStorage.removeItem("token");
-          alert("You were removed from the game");
-          navigation("/");
-        }
+      sessionStorage.removeItem("token");
+      alert(data.message);
+      navigation("/");
     });
 
     socket?.on("playerWasRemoved", (data: WaitingRoomNewPlayer) => {
@@ -112,14 +113,40 @@ function WaitingRoom({roomInfo, socket} : Props) {
   const handleShowPlayers = () => {
     setShowChallenges(false);
     setShowPlayers(!showPlayers);
+    console.log(challengeArray[0]);
   }
+
   const handleShowChallenges = () => {
     setShowPlayers(false);
     setShowChallenges(!showChallenges);
   }
 
+  const handleEditChallenge = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
+    const newArray = challengeArray.map(challenge => {
+      if(challenge.challengeNumber === index)
+      {
+        return {...challenge, description: e.target.value}
+      }
+      return challenge;
+    })
+    setChallengeArray(newArray);
+  }
+
+  const handleSaveChallenges = () => {
+    socket?.emit("modifyChallenge", {
+      token: roomInfo.details.token,
+      payload: {
+        challengeName: roomInfo.details.challengeRoomName,
+        challengeTasks: challengeArray
+      }
+    });
+
+    setEdit(false)
+  }
+
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
+      {!timeIsUp && <ExitButton/>}
       {!timeIsUp && (
         <>
           <Typography id="room-name" variant="body1" component="p">Room name: {roomInfo.details.challengeRoomName}</Typography>
@@ -128,17 +155,44 @@ function WaitingRoom({roomInfo, socket} : Props) {
           <>
             <Typography id="room-code" variant="body1" component="p">Huone koodi : {roomInfo.details.challengeRoomCode}</Typography>
             <Typography id="task" variant="body1" component="p">First task : {roomInfo.details.challengeTasks[0].description}</Typography>
-            <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} handleFunction={handleShowPlayers}/>
-            <Button onClick={handleShowChallenges}>Challenges ({roomInfo.details.challengeTasks.length})</Button>
+            <ButtonGroup>
+              <Button id="show-players-btn" onClick={handleShowPlayers}>Players ({playerArray.length})</Button>
+              <Button id="show-challenges-btn" onClick={handleShowChallenges}>Challenges ({roomInfo.details.challengeTasks.length})</Button>
+            </ButtonGroup>
+            <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
             <Collapse in={showChallenges} unmountOnExit>
-              <List dense>
+              {!edit && <Stack alignItems="center" >
                 {
                   roomInfo.details.challengeTasks.map((value, i) => (
-                    <ListItem key={i}>{value.description}</ListItem>
+                    <Typography variant="body1" component="p" key={i}>{value.description}</Typography>
                   ))
                 }
-                <Button variant="text">Save</Button>
-              </List>
+                <Button id="edit-btn" variant="text" onClick={()=>setEdit(true)}>Edit</Button>
+              </Stack>}
+              {edit && 
+              <Stack alignItems="center" justifyContent="center" spacing={1}>
+                  {challengeArray.map((value, i) => (
+                    <Box key={i}>
+                      <TextField
+                        id={`challenge-edit-input-${i}`}
+                        value={value.description}
+                        size="small"
+                        onChange={(e)=>handleEditChallenge(e, i)}
+                        InputProps={{
+                          endAdornment: (
+                            <IconButton>
+                              <CloseIcon/>
+                            </IconButton>
+                          )
+                        }}
+                      ></TextField>
+                    </Box>
+                  ))}
+                <ButtonGroup variant="text">
+                  <Button id="add-challenge-btn">Add</Button>
+                  <Button id="save-challenges-btn" onClick={handleSaveChallenges}>Save</Button>
+                </ButtonGroup>
+              </Stack>}
             </Collapse>
           </>}
           {!isGameMaster && playerArray.length > 0 && 
@@ -160,7 +214,6 @@ function WaitingRoom({roomInfo, socket} : Props) {
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray}/>}
-      {!timeIsUp && <ExitButton/>}
     </Stack>
   );
 };

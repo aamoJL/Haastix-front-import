@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChallengeRoomJoin, JoinChallengeSuccessResponse } from '../interfaces';
+import { challengeModifyResponse, ChallengeRoomJoin, JoinChallengeSuccessResponse } from '../interfaces';
 import { Socket } from 'socket.io-client';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import { setConnection } from './socket';
@@ -62,9 +62,6 @@ function JoinChallenge() {
     else{
       setLoading(false);
     }
-    // return () => {
-    //   currentSocket?.off("youWereRemoved");
-    // }
   }, [token]);
 
 
@@ -134,6 +131,12 @@ function JoinChallenge() {
     else
       setFormIsNotValid(true);
   },[roomCode, userName])
+
+  useEffect(() => {
+    currentSocket?.on("challengeModify", (data: challengeModifyResponse)=> {
+      console.log(data);
+    })
+  })
 
   
   return (
