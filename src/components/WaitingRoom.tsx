@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Avatar, Stack, Typography } from '@mui/material';
-import { JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer} from '../interfaces';
+import { JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
 import ChallengeRoom from './ChallengeRoom';
+import { useNavigate } from 'react-router-dom';
+import RemovePlayer from './RemovePlayer';
+import ExitButton from './ExitButton';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
@@ -46,12 +49,14 @@ function WaitingRoom({roomInfo, socket} : Props) {
     return timeString;
   }
 
-  const isGameMaster = roomInfo.details.username === undefined;  
+  const isGameMaster = roomInfo.details.username === undefined;
   const millisecondsLeft = new Date(roomInfo.details.challengeStartDate as string).getTime() - new Date().getTime();
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
   const [playerArray, setPlayerArray]  = useState<WaitingRoomList[]>([]);
+
+  const navigation = useNavigate();
 
 useEffect(() => {
   const interval = setInterval(() => {
@@ -89,10 +94,19 @@ useEffect(() => {
       //   setLoading(false);
       }
     );
-  // socket.on("playerWasRemoved", (data) => {
-    //   setRoomPlayers(data.players);
-    //   });
-    // }
+
+    socket?.on("youWereRemoved", (data: YouWereRemovedResponse) => {
+        if(data.statusCode === 200) {
+          sessionStorage.removeItem("token");
+          alert("You were removed from the game");
+          navigation("/");
+        }
+      });
+
+  socket?.on("playerWasRemoved", (data: WaitingRoomNewPlayer) => {
+      setPlayerArray(data.players);
+      });
+
     // get token
     // getToken();
     // // toggle loadingscreen
@@ -100,7 +114,8 @@ useEffect(() => {
     return () => {
       // Clear socket.io Listeners , newPlayer
       socket?.off("newPlayer");
-      // socket.off("playerWasRemoved");
+      socket?.off("playerWasRemoved");
+      socket?.off("youWereRemoved");
     };
   }, []);
 
@@ -118,6 +133,29 @@ const avatars =
       })
     : null;
 
+    // const handleRemovePlayer = (userName: string) => {
+    //   socket?.emit("removePlayer", {
+    //     token: roomInfo.details.token,
+    //     payload: {
+    //       userName: userName,
+    //     },
+    //   });
+    // }
+
+// const removePlayer =
+//   playerArray && playerArray.length > 0
+//     ? playerArray.map((value, key) => {
+//         return (
+//           <div key={key}>
+//               {value.name}
+//               <IconButton id={`remove-challenge-btn-${value.name}`} size="small" color="error" onClick={(e) => handleRemovePlayer(value.name)}>
+//                 <CloseIcon/>
+//               </IconButton>
+//           </div>
+//         );
+//       })
+//     : null;
+
   return (
     <div>
       {!timeIsUp && (
@@ -129,6 +167,7 @@ const avatars =
             <Typography id="room-code" variant="body1" component="p">Huone koodi : {roomInfo.details.challengeRoomCode}</Typography>
             <Typography id="task" variant="body1" component="p">First task : {roomInfo.details.challengeTasks[0].description}</Typography>
             <Typography id="player-joined" variant="body1" component="p">Pelaajia liittynyt : {playerArray.length}</Typography>
+            <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} />
           </>}
           {!isGameMaster && <>
             {avatars}
@@ -136,6 +175,7 @@ const avatars =
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo}/>}
+      {!timeIsUp && <ExitButton/>}
     </div>
   );
 };

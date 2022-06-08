@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChallengeRoomJoin, JoinChallengeSuccessResponse } from '../interfaces';
+import { ChallengeRoomJoin, JoinChallengeSuccessResponse, YouWereRemovedResponse } from '../interfaces';
 import { Socket } from 'socket.io-client';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import { setConnection } from './socket';
@@ -62,6 +62,9 @@ function JoinChallenge() {
     else{
       setLoading(false);
     }
+    // return () => {
+    //   currentSocket?.off("youWereRemoved");
+    // }
   }, [token]);
 
 
@@ -140,7 +143,7 @@ function JoinChallenge() {
       {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket}/>}
       {!loading && !showWaitingRoom &&
         <Stack  justifyContent="center" spacing={2} alignItems="center">
-          <Typography variant="h2">Join a game</Typography>
+          <Typography variant="h3">Join a game</Typography>
           <Typography variant="body1">Ask the gamemaster for the code</Typography>
           <Collapse in={openAlert}>
             <Alert severity='error' 

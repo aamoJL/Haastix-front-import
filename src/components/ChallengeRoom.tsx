@@ -4,6 +4,7 @@ import { Socket } from 'socket.io-client';
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
 import Scoreboard from './Scoreboard';
+import ExitButton from './ExitButton';
 
 interface Props {
     roomInfo: JoinChallengeSuccessResponse,
@@ -201,11 +202,12 @@ function ChallengeRoom({roomInfo, socket} : Props) {
             </>
         </>}
       {/* Time is up, scoreboard */}
-      {timeIsUp && 
-        <>
-          <Typography id="times-up-title" variant="h2" component="h2">The challenge is over!</Typography>
-          <Scoreboard socket={socket}/>
-        </>}
+      {timeIsUp &&
+      <>
+        <Typography id="times-up-title" variant="h2" component="h2">The challenge is over!</Typography>
+        <Scoreboard socket={socket}/>
+      </>} 
+      <ExitButton isGameEnded={timeIsUp}/>
     </div>
   );
 }

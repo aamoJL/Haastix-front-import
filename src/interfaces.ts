@@ -55,7 +55,8 @@ export interface JoinChallengeSuccessResponse{
 
 export interface WaitingRoomList{  
     name: string,
-    avatar: number
+    avatar: number,
+    userId: string
 }
 
 export interface WaitingRoomNewPlayer{  
@@ -122,5 +123,10 @@ export interface PlayerData{
   }],
   playerName: string,
   totalScore: number,
-  totalTime: number
+  totalTime: number,
+}
+
+export interface YouWereRemovedResponse {
+  statusCode: number,
+  message: string
 }
