@@ -62,7 +62,8 @@ const theme = createTheme({
     },
     MuiButton: {
       defaultProps: {
-        fullWidth: true
+        fullWidth: true,
+        variant: 'contained'
       },
       styleOverrides: {
         root: {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChallengeRoomJoin, JoinChallengeSuccessResponse, YouWereRemovedResponse } from '../interfaces';
+import { challengeModifyResponse, ChallengeRoomJoin, JoinChallengeSuccessResponse } from '../interfaces';
 import { Socket } from 'socket.io-client';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import { setConnection } from './socket';
@@ -8,10 +8,27 @@ import WaitingRoom from './WaitingRoom';
 import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-const defaultFormData : ChallengeRoomJoin= {
+const defaultFormData : ChallengeRoomJoin = {
   roomCode: "",
   userName: "",
   userAvatar: 1,
+}
+
+const defaultRoomInfo: JoinChallengeSuccessResponse = {
+  statusCode: 0,
+  message: "",
+  details: {
+    userid: "",
+    challengeRoomId: "",
+    challengeRoomCode: "",
+    challengeRoomName: "",
+    challengeStartDate: "",
+    challengeEndDate: "",
+    challengeTasks: [{ description: "", challengeNumber: 0}],
+    token: "",
+    username: "",
+    userAvatar: 0,
+  }
 }
 
 function JoinChallenge() {
@@ -24,7 +41,7 @@ function JoinChallenge() {
   const [formIsNotValid, setFormIsNotValid] = useState(true); //if true form inputs are not valid and button is disabled
   const [codeWasNotValid, setCodeWasNotValid] = useState(false); // if true code was not valid and code field is red
   const [openAlert, setOpenAlert] = useState(false); // if true show error alert
-  const [roomInfo, setRoomInfo] = useState<JoinChallengeSuccessResponse>();
+  const [roomInfo, setRoomInfo] = useState<JoinChallengeSuccessResponse>(defaultRoomInfo);
 
   const openWebsocket = (token: string) => {
     setSocket(setConnection(token))
@@ -62,9 +79,6 @@ function JoinChallenge() {
     else{
       setLoading(false);
     }
-    // return () => {
-    //   currentSocket?.off("youWereRemoved");
-    // }
   }, [token]);
 
 
@@ -134,6 +148,22 @@ function JoinChallenge() {
     else
       setFormIsNotValid(true);
   },[roomCode, userName])
+
+  useEffect(() => {
+    currentSocket?.on("challengeModify", (data: challengeModifyResponse)=> {
+      setRoomInfo(prevState => ({
+        ...prevState,
+        details: {
+          ...prevState.details,
+          challengeTasks: data.challengeTasks
+        }
+      }))
+    })
+
+    return()=> {
+      currentSocket?.off("challengeModify");
+    }
+  })
 
   
   return (

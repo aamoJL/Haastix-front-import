@@ -1,16 +1,17 @@
 import React from 'react';
 import CloseIcon from '@mui/icons-material/Close'
-import { IconButton } from '@mui/material';
-import { JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer} from '../interfaces';
+import { Collapse, IconButton, List, ListItem, Typography } from '@mui/material';
+import { JoinChallengeSuccessResponse, WaitingRoomList} from '../interfaces';
 import { Socket } from 'socket.io-client';
 
 interface Props {
   socket?: Socket,
   roomInfo: JoinChallengeSuccessResponse,
-  playerArray: WaitingRoomList[]
+  playerArray: WaitingRoomList[],
+  open: boolean,
 }
 
-function RemovePlayer({socket, roomInfo, playerArray} : Props) {  
+function RemovePlayer({socket, roomInfo, playerArray, open} : Props) {  
 
   const handleRemovePlayer = (userName: string) => {
     socket?.emit("removePlayer", {
@@ -19,20 +20,25 @@ function RemovePlayer({socket, roomInfo, playerArray} : Props) {
         userName: userName,
       },
     });
-    }  
+  }  
   
   return (
     <div>
-    {playerArray.length > 0 &&
-    playerArray.map((value, i) => (
-      <div key={i}>
-        {value.name}
-          <IconButton id={`remove-challenge-btn-${value.name}`} size="small" color="error" onClick={(e) => handleRemovePlayer(value.name)}>
-              <CloseIcon/>
-          </IconButton>
-        </div>
-      ))
-    }
+      <Collapse in={open} unmountOnExit>
+        <List dense>
+          {playerArray.length === 0 && <Typography variant="body1" component="p">No joined players</Typography>}
+          {playerArray.length > 0 &&
+          playerArray.map((value, i) => (
+            <ListItem key={i}>
+              {value.name}
+                <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemovePlayer(value.name)}>
+                    <CloseIcon/>
+                </IconButton>
+              </ListItem>
+            ))
+          }
+        </List>
+      </Collapse>
     </div>
   );
 };
