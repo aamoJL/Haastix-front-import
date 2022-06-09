@@ -6,7 +6,6 @@ export const setConnection = (token: string) => {
   try {
     var socket = socketIOClient(websocketEndpoint, {
       withCredentials: true,
-      rejectUnauthorized: false,
       auth: {
         token: token
       }
