@@ -1,6 +1,7 @@
-import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogTitle, IconButton } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 interface Props {
   isGameEnded?: boolean
@@ -29,8 +30,8 @@ const ExitButton = ({isGameEnded= false}: Props) => {
 
   return (
     <div>
-      {isGameEnded && <Button variant="contained" id="exit-btn" onClick={exitChallengeRoom}>Exit</Button>}
-      {!isGameEnded && <Button variant="contained" id="exit-btn" onClick={handleOpen}>Exit</Button>}
+      {isGameEnded && <IconButton color='error' id="exit-btn" onClick={exitChallengeRoom}><LogoutIcon /></IconButton>}
+      {!isGameEnded && <IconButton color='error' id="exit-btn" onClick={handleOpen}><LogoutIcon /></IconButton>}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle alignSelf="center" >Do you want to exit</DialogTitle>
         <DialogActions>
