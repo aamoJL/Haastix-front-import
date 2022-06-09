@@ -4,9 +4,9 @@ import { JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, Yo
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
 import ChallengeRoom from './ChallengeRoom';
-import { useNavigate } from 'react-router-dom';
 import RemovePlayer from './RemovePlayer';
 import ExitButton from './ExitButton';
+import AlertWindow from './AlertWindow';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
@@ -55,8 +55,8 @@ function WaitingRoom({roomInfo, socket} : Props) {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
   const [playerArray, setPlayerArray]  = useState<WaitingRoomList[]>([]);
-
-  const navigation = useNavigate();
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertWindow, setAlertWindow] = useState(false);
 
 useEffect(() => {
   const interval = setInterval(() => {
@@ -96,12 +96,11 @@ useEffect(() => {
     );
 
     socket?.on("youWereRemoved", (data: YouWereRemovedResponse) => {
-        if(data.statusCode === 200) {
           sessionStorage.removeItem("token");
-          alert("You were removed from the game");
-          navigation("/");
+          setAlertMessage(data.message);
+          setAlertWindow(true);
         }
-      });
+      );
 
   socket?.on("playerWasRemoved", (data: WaitingRoomNewPlayer) => {
       setPlayerArray(data.players);
@@ -132,33 +131,10 @@ const avatars =
         );
       })
     : null;
-
-    // const handleRemovePlayer = (userName: string) => {
-    //   socket?.emit("removePlayer", {
-    //     token: roomInfo.details.token,
-    //     payload: {
-    //       userName: userName,
-    //     },
-    //   });
-    // }
-
-// const removePlayer =
-//   playerArray && playerArray.length > 0
-//     ? playerArray.map((value, key) => {
-//         return (
-//           <div key={key}>
-//               {value.name}
-//               <IconButton id={`remove-challenge-btn-${value.name}`} size="small" color="error" onClick={(e) => handleRemovePlayer(value.name)}>
-//                 <CloseIcon/>
-//               </IconButton>
-//           </div>
-//         );
-//       })
-//     : null;
-
+ 
   return (
     <div>
-      {!timeIsUp && (
+      {!timeIsUp && !alertWindow && (
         <>
           <Typography id="room-name" variant="body1" component="p">Room name: {roomInfo.details.challengeRoomName}</Typography>
           <Typography id="timer-gm" variant="body1" component="p">Haasteen alkuun: {getFormattedTime(timeLeft)}</Typography>
@@ -176,6 +152,7 @@ const avatars =
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo}/>}
       {!timeIsUp && <ExitButton/>}
+      {alertWindow && <AlertWindow message={alertMessage}/>}
     </div>
   );
 };
