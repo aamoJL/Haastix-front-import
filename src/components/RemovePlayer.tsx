@@ -31,7 +31,7 @@ function RemovePlayer({socket, roomInfo, playerArray, open} : Props) {
   return (
     <div>
       <Collapse in={open} unmountOnExit>
-        <TableContainer sx={{maxWidth: 300, overflow: 'hidden'}}>
+        <TableContainer sx={{maxHeight: 300, maxWidth: 300, overflow: 'hidden'}}>
           <Table size="small">
           <TableHead>
             <TableRow>
@@ -40,25 +40,35 @@ function RemovePlayer({socket, roomInfo, playerArray, open} : Props) {
               <TableCell sx={tableHeaderStyle}></TableCell>
             </TableRow>
           </TableHead>
-          {playerArray.length === 0 && <Typography variant="body1" component="p">No joined players</Typography>}
-          {playerArray.length > 0 &&
+          {playerArray.length === 0 &&
           <TableBody>
-            {playerArray.map((value, i) => (
-            <TableRow key={i}>
-              <TableCell>
-                {i + 1}
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell align='center'>
+                <Typography variant="body1" component="p">No joined players</Typography>
               </TableCell>
-              <TableCell>
-                {value.name}
-              </TableCell>
-              <TableCell>
-                <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemovePlayer(value.name)}>
-                    <CloseIcon/>
-                </IconButton>
-              </TableCell>
+              <TableCell></TableCell>
             </TableRow>
-            ))}
           </TableBody>
+          }
+          {playerArray.length > 0 &&
+            <TableBody>
+              {playerArray.map((value, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  {i + 1}
+                </TableCell>
+                <TableCell>
+                  {value.name}
+                </TableCell>
+                <TableCell>
+                  <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemovePlayer(value.name)}>
+                      <CloseIcon/>
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+              ))}
+            </TableBody>
           }
           </Table>
         </TableContainer>

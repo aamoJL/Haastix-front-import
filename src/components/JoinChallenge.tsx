@@ -143,6 +143,10 @@ function JoinChallenge() {
 
   useEffect(() => {
     setCodeWasNotValid(false);
+    setOpenAlert(false);
+  }, [roomCode])
+
+  useEffect(() => {
     if(roomCode.length === 4 && userName.length >= 3 && userName.length <= 30)
       setFormIsNotValid(false);
     else

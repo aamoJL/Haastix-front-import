@@ -234,26 +234,26 @@ function WaitingRoom({roomInfo, socket} : Props) {
                 <Button id="edit-btn" variant="text" onClick={handleEditView}>Edit</Button>
               </Stack>}
               {edit && 
-              <Box sx={{maxHeight: 255, overflow: 'auto', maxWidth: 200}}>
-                  {challengeArray.map((value, i) => (
-                    <Box key={i}>
-                      <TextField
-                        autoFocus
-                        id={`challenge-edit-input-${i}`}
-                        value={value.description}
-                        size="small"
-                        multiline
-                        onChange={(e)=>handleEditChallenge(e, i)}
-                        inputProps={{maxLength: 256}}
-                        InputProps={{
-                          endAdornment: (
-                            <IconButton color='error' onClick={()=>handleRemoveChallenge(i)}>
-                              <CloseIcon/>
-                            </IconButton>
-                          )
-                        }}
-                      ></TextField>
-                    </Box>
+              <Box sx={{maxHeight: 255, overflow: 'auto', maxWidth: 300}}>
+                {challengeArray.map((value, i) => (
+                  <TextField
+                    key={i}
+                    autoFocus
+                    id={`challenge-edit-input-${i}`}
+                    sx={{mb:1}}
+                    value={value.description}
+                    size="small"
+                    multiline
+                    onChange={(e)=>handleEditChallenge(e, i)}
+                    inputProps={{maxLength: 256}}
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton color='error' onClick={()=>handleRemoveChallenge(i)}>
+                          <CloseIcon/>
+                        </IconButton>
+                      )
+                    }}
+                  ></TextField>
                   ))}
                 </Box>}
                 {edit && <ButtonGroup variant="text">

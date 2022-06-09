@@ -192,25 +192,26 @@ function CreateChallengeRoom() {
       <Box sx={{maxHeight: 205, overflow: 'auto', maxWidth: 200}}>
       {
         challenges.map((challenge, i) => (
-              <TextField
-                autoFocus
-                key={i} 
-                id={`challenge-input-${i}`} 
-                size="small" 
-                multiline 
-                type="text" 
-                value={challenge.description} 
-                onChange={(e) => handleChallengeChange(e, i)} 
-                inputProps={{ maxLength: formValidation.maxTaskDescription }} 
-                InputProps={{
-                  endAdornment: (
-                    <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>
-                    <CloseIcon/>
-                  </IconButton>
-                  )
-                }}
-                placeholder="Description..."
-                />
+          <TextField
+            autoFocus
+            key={i} 
+            id={`challenge-input-${i}`} 
+            size="small"
+            sx={{mb:1}}
+            multiline 
+            type="text" 
+            value={challenge.description} 
+            onChange={(e) => handleChallengeChange(e, i)} 
+            inputProps={{ maxLength: formValidation.maxTaskDescription }} 
+            InputProps={{
+              endAdornment: (
+                <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>
+                <CloseIcon/>
+              </IconButton>
+              )
+            }}
+            placeholder="Description..."
+            />
         ))
       }
       </Box>
@@ -224,7 +225,7 @@ function CreateChallengeRoom() {
           <Input onClick={handleNumberInputClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="time" id="time" value={time} onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}/>
         </FormControl>
       <Box>
-        <Button sx={{m: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>Create game</Button>
+        <Button id="create-game-btn" sx={{m: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>Create game</Button>
       </Box>
     </Stack>
   );
