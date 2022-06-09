@@ -1,7 +1,7 @@
 import socketIOClient from "socket.io-client";
 
 //const websocketEndpoint = `${process.env.REACT_APP_API_URL}`;
-const websocketEndpoint = `http://test.haastix.wimmalab.org`;
+const websocketEndpoint = `http://test.haastixlooool.wimmalab.org`;
 
 export const setConnection = (token: string) => {
   try {
