@@ -207,7 +207,6 @@ function ChallengeRoom({roomInfo, socket} : Props) {
         <Typography id="times-up-title" variant="h2" component="h2">The challenge is over!</Typography>
         <Scoreboard socket={socket}/>
       </>} 
-      <ExitButton isGameEnded={timeIsUp}/>
     </div>
   );
 }

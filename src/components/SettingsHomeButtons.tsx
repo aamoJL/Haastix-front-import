@@ -4,6 +4,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import { Box, IconButton, Stack } from '@mui/material';
 import ExitButton from './ExitButton';
+import Settings from './Settings';
+import { useState } from 'react';
 
 interface Props {
   isHomePage?: boolean;
@@ -11,30 +13,27 @@ interface Props {
 }
 
 function SettingsHomeButtons({isHomePage= false, isLoggedIn= false}: Props) {
+  const [open, setOpen] = useState(false); // if true open settings page
+  const handleChange = () => setOpen(!open);
+
   return (
-    <Box>
+    <Stack direction="row" justifyContent="center" alignItems="center">
+      <IconButton aria-label="settings" id="settings-btn" onClick={handleChange}>
+        <SettingsIcon fontSize='inherit'/>
+      </IconButton>
       {!isHomePage && 
-        <Stack direction="row" justifyContent="center" alignItems="center">
-          <IconButton component={Link} to="/settings" aria-label="settings" id="settings-btn">
-            <SettingsIcon fontSize='inherit'/>
-          </IconButton>
           <IconButton component={Link} to="/" aria-label="home" id="home-btn">
             <HomeIcon fontSize='inherit'/>
           </IconButton>
-          {isLoggedIn && <ExitButton/>}
-        </Stack>
       }
       {isHomePage && 
-        <Stack direction="row" justifyContent="center" alignItems="flex-start">
-        <IconButton component={Link} to="/settings" aria-label="settings" id="settings-btn">
-          <SettingsIcon fontSize='inherit'/>
-        </IconButton>
         <IconButton component={Link} to="/info" aria-label="info" id="info-btn">
           <InfoIcon fontSize='inherit'/>
         </IconButton>
-      </Stack>
       }
-    </Box>
+      {isLoggedIn && <ExitButton/>}
+      <Settings open={open} handleClose={handleChange}/>
+    </Stack>
   );
 }
 
