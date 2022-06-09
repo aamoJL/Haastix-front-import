@@ -5,12 +5,13 @@ import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
 import ChallengeRoom from './ChallengeRoom';
 import RemovePlayer from './RemovePlayer';
-import ExitButton from './ExitButton';
+// import ExitButton from './ExitButton';
 import AlertWindow from './AlertWindow';
+import SettingsHomeButtons from './SettingsHomeButtons';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
-  socket?: Socket,
+  socket?: Socket
 }
 
 interface SegmentedTime{
@@ -151,7 +152,6 @@ const avatars =
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo}/>}
-      {!timeIsUp && <ExitButton/>}
       {alertWindow && <AlertWindow message={alertMessage}/>}
     </div>
   );

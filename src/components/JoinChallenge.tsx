@@ -138,7 +138,7 @@ function JoinChallenge() {
   
   return (
     <Box>
-      <SettingsHomeButtons/>
+      <SettingsHomeButtons isLoggedIn={showWaitingRoom}/>
       {loading && <></>}
       {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket}/>}
       {!loading && !showWaitingRoom &&
