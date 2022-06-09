@@ -172,7 +172,9 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
 
   return (
     <div>
+      {!timeIsUp && 
       <Typography id="room-title" variant="body1" component="p">Huone: {roomInfo?.details.challengeRoomName}</Typography>
+      }
       {/* GameMaster */}
       {isGameMaster && !timeIsUp &&
         <>
@@ -205,12 +207,13 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
               {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}}/>}
             </>
         </>}
-      {/* Time is up, scoreboard */}
       {timeIsUp &&
       <>
         <Typography id="times-up-title" variant="h2" component="h2">The challenge is over!</Typography>
+        <Typography id="room-title" variant="body1" component="p">Huone: {roomInfo?.details.challengeRoomName}</Typography>
         <Scoreboard socket={socket}/>
       </>} 
+      {/* Time is up, scoreboard */}
     </div>
   );
 }

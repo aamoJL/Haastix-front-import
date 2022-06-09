@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeRoomData, NewChallengeRoomSuccessResponse} from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
+import { maxWidth } from '@mui/system';
 
 // Form validation variables
 // required values from: https://gitlab.labranet.jamk.fi/wimmalab2021/iotitude/source-backend/-/blob/master/documents/restApiRoutesDocuments/newChallenge.md
@@ -169,7 +170,6 @@ function CreateChallengeRoom() {
 
   const onSuccess = (response: NewChallengeRoomSuccessResponse) => {
     // save token
-    console.log(response);
     sessionStorage.setItem("token", response.details.token);
     navigate("/game");
   }
@@ -189,10 +189,12 @@ function CreateChallengeRoom() {
       <Typography variant="h3" component="h3">Create game</Typography>
       <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} label="Room name"  inputProps={{ maxLength: formValidation.maxNameLength }}/>
       <Typography variant="h4" component="h4">Challenges</Typography>
+      <Box sx={{maxHeight: 205, overflow: 'auto', maxWidth: 200}}>
       {
         challenges.map((challenge, i) => (
-          <Box sx={{maxHeight: '50%'}} key={i}>
-              <TextField 
+              <TextField
+                autoFocus
+                key={i} 
                 id={`challenge-input-${i}`} 
                 size="small" 
                 multiline 
@@ -209,9 +211,9 @@ function CreateChallengeRoom() {
                 }}
                 placeholder="Description..."
                 />
-          </Box>
         ))
       }
+      </Box>
       <Button sx={{m: 1}} id="add-challenge-btn" variant='text' size="medium" onClick={(e) => {handleAddChallenge()}}>Add new challenge</Button>
         <FormControl variant="standard">
           <InputLabel htmlFor="delay">Delay before game starts</InputLabel>

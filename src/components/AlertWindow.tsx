@@ -13,7 +13,7 @@ function AlertWindow({message} : Props) {
     };
 
     return (
-          <Alert style={{position: 'absolute', top: '50px', left: '50%', transform: 'translate(-50%, 0%)'}} onClose={handleClose} severity="error" sx={{ width: 'auto', height: '100px' }}>
+          <Alert style={{position: 'absolute', top: '50px', left: '50%', transform: 'translate(-50%, 0%)'}} onClose={handleClose} severity="error" sx={{ width: 'auto' }}>
             {message}
           </Alert>
     );
