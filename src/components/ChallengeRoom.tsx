@@ -4,7 +4,6 @@ import { Socket } from 'socket.io-client';
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, WaitingRoomList } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
 import Scoreboard from './Scoreboard';
-import ExitButton from './ExitButton';
 import RemovePlayer from './RemovePlayer';
 
 interface Props {

@@ -6,7 +6,6 @@ import {getEmojiImage} from './storage/Images'
 import ChallengeRoom from './ChallengeRoom';
 import RemovePlayer from './RemovePlayer';
 import AlertWindow from './AlertWindow';
-import ExitButton from './ExitButton';
 import CloseIcon from '@mui/icons-material/Close'
 
 interface Props {
@@ -178,7 +177,6 @@ function WaitingRoom({roomInfo, socket} : Props) {
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
-      {!timeIsUp && <ExitButton/>}
       {!timeIsUp && (
         <>
           <Typography id="room-name" variant="body1" component="p">Room name: {roomInfo.details.challengeRoomName}</Typography>
