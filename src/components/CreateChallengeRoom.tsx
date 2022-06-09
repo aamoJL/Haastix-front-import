@@ -184,37 +184,47 @@ function CreateChallengeRoom() {
   }
 
   return (
-    <Box>
+    <Stack alignItems='center' spacing={1}>
       <SettingsHomeButtons/>
-      <Typography variant="h2" component="h2">Otsikko</Typography>
-      <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} label="Room Name"  inputProps={{ maxLength: formValidation.maxNameLength }}/>
-      <Typography variant="h3" component="h2">Haaste</Typography>
+      <Typography variant="h3" component="h3">Create game</Typography>
+      <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} label="Room name"  inputProps={{ maxLength: formValidation.maxNameLength }}/>
+      <Typography variant="h4" component="h4">Challenges</Typography>
       {
         challenges.map((challenge, i) => (
-          <Box key={i}>
-              <TextField id={`challenge-input-${i}`} multiline variant="standard" type="text" value={challenge.description} onChange={(e) => handleChallengeChange(e, i)} inputProps={{ maxLength: formValidation.maxTaskDescription }} placeholder="Kuvaus..."/>
-              <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>
-                <CloseIcon/>
-              </IconButton>
+          <Box sx={{maxHeight: '50%'}} key={i}>
+              <TextField 
+                id={`challenge-input-${i}`} 
+                size="small" 
+                multiline 
+                type="text" 
+                value={challenge.description} 
+                onChange={(e) => handleChallengeChange(e, i)} 
+                inputProps={{ maxLength: formValidation.maxTaskDescription }} 
+                InputProps={{
+                  endAdornment: (
+                    <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>
+                    <CloseIcon/>
+                  </IconButton>
+                  )
+                }}
+                placeholder="Description..."
+                />
           </Box>
         ))
       }
-      <Button sx={{m: 1}} id="add-challenge-btn" variant='outlined' size="medium" onClick={(e) => {handleAddChallenge()}}>Lisää haasteita</Button>
-      <Typography variant="h3" component="h2">Aloitus & kesto</Typography>
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
+      <Button sx={{m: 1}} id="add-challenge-btn" variant='text' size="medium" onClick={(e) => {handleAddChallenge()}}>Add new challenge</Button>
         <FormControl variant="standard">
-          <InputLabel htmlFor="delay">Viive</InputLabel>
+          <InputLabel htmlFor="delay">Delay before game starts</InputLabel>
           <Input onClick={handleNumberInputClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="delay" id="delay" value={delay} onChange={(e) => handleNumInputChange(e, formValidation.maxDelay)}/>
         </FormControl>
         <FormControl variant="standard">
-          <InputLabel htmlFor="time">Kesto</InputLabel>
+          <InputLabel htmlFor="time">Game duration</InputLabel>
           <Input onClick={handleNumberInputClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="time" id="time" value={time} onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}/>
         </FormControl>
-      </Stack>
       <Box>
-        <Button sx={{m: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>Luo haaste</Button>
+        <Button sx={{m: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>Create game</Button>
       </Box>
-    </Box>
+    </Stack>
   );
 }
 

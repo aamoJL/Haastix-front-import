@@ -23,9 +23,11 @@ const theme = createTheme({
     MuiTextField: {
       defaultProps: {
         color: 'primary',
+        fullWidth: true
       },
       styleOverrides: {
         root: {
+          maxWidth: 200,
           "& .MuiOutlinedInput-root": {
             "& > fieldset": {
               borderColor: "#00CC92"
