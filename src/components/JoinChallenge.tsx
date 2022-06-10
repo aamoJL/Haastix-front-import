@@ -212,7 +212,7 @@ function JoinChallenge() {
           </TextField>
           <Typography variant="body1">Avatar</Typography>
           <Avatar id="player_avatar" variant="rounded" sx={{height: 150, width: 150}} onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
-          <Button disabled={formIsNotValid} variant="contained" id="joinChallenge-btn" onClick={joinChallengeRoom}>Liity haasteeseen</Button>
+          <Button disabled={formIsNotValid} variant="contained" id="joinChallenge-btn" onClick={joinChallengeRoom}>Join</Button>
         </Stack>
       }
     </Box>
