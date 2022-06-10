@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, WaitingRoomList } from '../interfaces';
@@ -171,47 +171,61 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
   }
 
   return (
-    <div>
-      <Typography id="room-title" variant="body1" component="p">Huone: {roomInfo?.details.challengeRoomName}</Typography>
+    <Stack alignItems="center" justifyContent="center" spacing={1}>
+      {!timeIsUp && 
+      <>
+        <Typography variant="h3" component="h3">Game room</Typography>
+        <Box sx={{display:"grid", gridTemplateColumns: 'repeat(2, 1fr)', maxWidth:380}} textAlign="left" columnGap={3} pl={8}>
+          <Typography variant="body1" component="p">Room</Typography>
+          <Typography variant="body1" component="p">{roomInfo?.details.challengeRoomName}</Typography>
+          <Typography variant="body1" component="p">User</Typography>
+          {isGameMaster && 
+          <>
+            <Typography id="user-title-gm" variant="body1" component="p">GameMaster</Typography>
+            <Typography id="room-code-title-gm" variant="body1" component="p">Room code</Typography>
+            <Typography id="room-code-title-gm" variant="body1" component="p">{roomInfo?.details.challengeRoomCode}</Typography>
+          </>}
+          {!isGameMaster && 
+          <>
+            <Typography variant="body1" component="p">{roomInfo.details.username}</Typography>
+            <Typography variant="body1" component="p">Challenge</Typography>
+            <Typography variant="body1" component="p"><span id="current-task-number-player">{(currentTaskNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
+            <Typography variant="body1" component="p">Description</Typography>
+            <Typography variant="body1" component="p">{roomInfo.details.challengeTasks[currentTaskNumber].description}</Typography>
+          </>}
+            <Typography variant="body1" component="p">Time remaining</Typography>
+            <Typography variant="body1" component="p">{getFormattedTime(timeLeft)}</Typography>
+        </Box>
+      </>}
       {/* GameMaster */}
       {isGameMaster && !timeIsUp &&
         <>
-          <Typography id="user-title-gm" variant="body1" component="p">Käyttäjä: GameMaster</Typography>
-          <Typography id="room-code-title-gm" variant="body1" component="p">Huoneen koodi:<br/><b>{roomInfo?.details.challengeRoomCode}</b></Typography>
-          <Typography id="timer-gm" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
           <Button onClick={()=>setShowPlayers(!showPlayers)}>Players ({playerArray.length})</Button>
           <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
           {waitingSubmissions.length > 0 && 
-            <div>
-              <p>Arvioi suoritus:</p>
-              <p>{waitingSubmissions[0].description}</p>
+            <>
+              <Typography variant="body1" component="p">Accept submission?</Typography>
+              <Typography variant="body1" component="p">Challenge: {waitingSubmissions[0].description}</Typography>
               <img src={waitingSubmissionPhoto} alt="Arvioitava kuva" />
-              <div>
-                <Button id="accept-photo-btn-gm" variant="contained" color="success" onClick={(e) => handleReview(e,true)}>Hyväksy</Button>
-                <Button id="reject-photo-btn-gm" variant='outlined' color="warning" onClick={(e) => handleReview(e,false)}>Hylkää</Button>
-              </div>
-            </div>}
+              <Button id="accept-photo-btn-gm" variant="contained" color="success" onClick={(e) => handleReview(e,true)}>Accept</Button>
+              <Button id="reject-photo-btn-gm" variant='outlined' color="warning" onClick={(e) => handleReview(e,false)}>Decline</Button>
+            </>}
         </>}
       {/* Player */}
       {!isGameMaster && !timeIsUp &&
         <>
-          <Typography id="user-title-player" variant="body1" component="p">Käyttäjä: {roomInfo.details.username}</Typography>
-          <Typography id="task-title-player" variant="body1" component="p">Haaste: <span id="current-task-number-player">{(currentTaskNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
-          <Typography id="task-description-player" variant="body1" component="p">Haasteen kuvaus:<br/>{roomInfo.details.challengeTasks[currentTaskNumber].description}</Typography>
-          <Typography id="timer-player" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
-            <>
-              <Button disabled={playerWaitingReview} onClick={(e) => setShowCamera(!showCamera)}>{showCamera ? "Sulje kamera" : "Näytä kamera"}</Button>
-              {playerWaitingReview && <div>Odotetaan kuvan arviointia...</div>}
-              {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}}/>}
-            </>
+          <Button disabled={playerWaitingReview} onClick={(e) => setShowCamera(!showCamera)}>{showCamera ? "Close camera" : "Open camera"}</Button>
+          {playerWaitingReview && <div>Waiting photo to be accepted...</div>}
+          {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}}/>}
         </>}
       {/* Time is up, scoreboard */}
       {timeIsUp &&
       <>
         <Typography id="times-up-title" variant="h2" component="h2">The challenge is over!</Typography>
+        <Typography id="room-title" variant="body1" component="p">Room: {roomInfo?.details.challengeRoomName}</Typography>
         <Scoreboard socket={socket}/>
       </>} 
-    </div>
+    </Stack>
   );
 }
 

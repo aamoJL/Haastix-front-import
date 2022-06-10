@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { SendFileResponse } from '../interfaces';
 
@@ -122,19 +122,19 @@ function ChallengeRoomCamera({taskNumber, onSubmit}:Props) {
       <div hidden={takenPhoto !== "" || !allowed}>
         <canvas id="camera-canvas" />
         <div>
-          <Button id="take-photo-btn" variant='contained' onClick={takePhotoHandler}>Ota kuva</Button>
+          <Button id="take-photo-btn" variant='contained' onClick={takePhotoHandler}>Take a picture</Button>
         </div>
       </div>
       <div hidden={takenPhoto === "" || !allowed}>
         <div>
-          <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt="Otettu kuva" />
-          <div>
-            <Button id="send-photo-btn" variant='contained' color="success" onClick={sendPhotoHandler}>Lähetä kuva</Button>
-            <Button id="decline-photo-btn" variant='outlined' color="error" onClick={(e) => setTakenPhoto("")}>Ota uusi kuva</Button>
-          </div>
+          <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt="Take a picture" />
+          <Stack spacing={1}>
+            <Button id="send-photo-btn" variant='contained' color="success" onClick={sendPhotoHandler}>Send</Button>
+            <Button id="decline-photo-btn" variant='outlined' color="error" onClick={(e) => setTakenPhoto("")}>Retake</Button>
+          </Stack>
         </div>
       </div>
-      {!allowed && <div>Ei oikeuksia kameraan!</div>}
+      {!allowed && <div>Allow camera access!</div>}
     </div>
   );
 }

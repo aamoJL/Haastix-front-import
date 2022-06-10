@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box } from '@mui/material';
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, SxProps, Theme } from '@mui/material';
 import { Challenge, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
@@ -47,6 +47,12 @@ function WaitingRoom({roomInfo, socket} : Props) {
     timeString = timeString + (Math.abs(time.minutes) < 10 ? "0" : "") + Math.abs(time.minutes) + ":";
     timeString = timeString + (Math.abs(time.seconds) < 10 ? "0" : "") + Math.abs(time.seconds);
     return timeString;
+  }
+
+  const tableHeaderStyle : SxProps<Theme> = {
+    backgroundColor: "primary.main", 
+    color: "primary.contrastText",
+    borderBottomColor: "primary.contrastText"
   }
 
   const isGameMaster = roomInfo.details.username === undefined;
@@ -177,14 +183,23 @@ function WaitingRoom({roomInfo, socket} : Props) {
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
-      {!timeIsUp && (
+      {!timeIsUp && !alertWindow && (
         <>
-          <Typography id="room-name" variant="body1" component="p">Room name: {roomInfo.details.challengeRoomName}</Typography>
-          <Typography id="timer-gm" variant="body1" component="p">Haasteen alkuun: {getFormattedTime(timeLeft)}</Typography>
-          {isGameMaster &&
-          <>
-            <Typography id="room-code" variant="body1" component="p">Huone koodi : {roomInfo.details.challengeRoomCode}</Typography>
-            <Typography id="task" variant="body1" component="p">First task : {roomInfo.details.challengeTasks[0].description}</Typography>
+          <Typography variant="h3" component="h3">Waiting room</Typography>
+          <Box sx={{display:"grid", gridTemplateColumns: 'repeat(2, 1fr)', maxWidth:380}} textAlign="left" columnGap={3} pl={8}>
+            <Typography variant="body1" component="p">Room name</Typography>
+            <Typography id="room-name" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeRoomName}</Typography>
+            <Typography variant="body1" component="p">Challenge begins in</Typography>
+            <Typography id="timer-gm" variant="body1" component="p">{getFormattedTime(timeLeft)}</Typography>
+            {isGameMaster &&
+            <>
+              <Typography id="room-code" variant="body1" component="p">Room code</Typography>
+              <Typography id="room-code" variant="body1" component="p"><b>{roomInfo.details.challengeRoomCode}</b></Typography>
+              <Typography id="task" variant="body1" component="p">First challenge</Typography>
+              <Typography id="task" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeTasks[0].description}</Typography>
+              </>}
+          </Box>
+          {isGameMaster && <>
             <ButtonGroup>
               <Button id="show-players-btn" onClick={handleShowPlayers}>Players ({playerArray.length})</Button>
               <Button id="show-challenges-btn" onClick={handleShowChallenges}>Challenges ({roomInfo.details.challengeTasks.length})</Button>
@@ -193,36 +208,58 @@ function WaitingRoom({roomInfo, socket} : Props) {
             <Collapse in={showChallenges} unmountOnExit>
               {!edit && <Stack alignItems="center" >
                 {
-                  roomInfo.details.challengeTasks.map((value, i) => (
-                    <Typography variant="body1" component="p" key={i}>{value.description}</Typography>
-                  ))
+                  <TableContainer sx={{maxWidth: 300, overflow: 'hidden'}}>
+                    <Table size="small" stickyHeader>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={tableHeaderStyle}>#</TableCell>
+                          <TableCell sx={tableHeaderStyle}>Description</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {roomInfo.details.challengeTasks.map((value, i) => (
+                          <TableRow key={i}> 
+                            <TableCell align="left">
+                              <Typography variant="body1" component="p">{value.challengeNumber +1}</Typography>
+                            </TableCell>  
+                            <TableCell align="left">
+                              {value.description}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 }
                 <Button id="edit-btn" variant="text" onClick={handleEditView}>Edit</Button>
               </Stack>}
               {edit && 
-              <Stack alignItems="center" justifyContent="center" spacing={1}>
-                  {challengeArray.map((value, i) => (
-                    <Box key={i}>
-                      <TextField
-                        id={`challenge-edit-input-${i}`}
-                        value={value.description}
-                        size="small"
-                        onChange={(e)=>handleEditChallenge(e, i)}
-                        InputProps={{
-                          endAdornment: (
-                            <IconButton onClick={()=>handleRemoveChallenge(i)}>
-                              <CloseIcon/>
-                            </IconButton>
-                          )
-                        }}
-                      ></TextField>
-                    </Box>
+              <Box sx={{maxHeight: 255, overflow: 'auto', maxWidth: 300}}>
+                {challengeArray.map((value, i) => (
+                  <TextField
+                    key={i}
+                    autoFocus
+                    id={`challenge-edit-input-${i}`}
+                    sx={{mb:1}}
+                    value={value.description}
+                    size="small"
+                    multiline
+                    onChange={(e)=>handleEditChallenge(e, i)}
+                    inputProps={{maxLength: 256}}
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton color='error' onClick={()=>handleRemoveChallenge(i)}>
+                          <CloseIcon/>
+                        </IconButton>
+                      )
+                    }}
+                  ></TextField>
                   ))}
-                <ButtonGroup variant="text">
+                </Box>}
+                {edit && <ButtonGroup variant="text">
                   <Button id="add-challenge-btn" onClick={handleAddChallenge}>Add</Button>
                   <Button id="save-challenges-btn" onClick={handleSaveChallenges}>Save</Button>
-                </ButtonGroup>
-              </Stack>}
+                </ButtonGroup>}
             </Collapse>
           </>}
           {!isGameMaster && playerArray.length > 0 && 
