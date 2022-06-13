@@ -7,16 +7,17 @@ import HomePage from './components/HomePage';
 import JoinChallenge from './components/JoinChallenge';
 import NotFound from './components/NotFound';
 import WaitingRoomViewGamemaster from './components/WaitingRoomViewGamemaster';
-import { Language } from './Translation';
+import { getTranslation, Language, Translation } from './translation';
 import theme from './Theme';
 
 function App() {
-  const [language, setLanguage] = useState<Language>(localStorage.getItem("language") === null ? "en" : localStorage.getItem("language") as Language);
+  const [translation, setTranslation] = useState<Translation>(getTranslation(localStorage.getItem("language") === null ? "en" 
+  : localStorage.getItem("language") as Language));
 
   useEffect(() => {
     // Subscribe to language changed event
     function event(){
-      setLanguage(localStorage.getItem("language") as Language);
+      setTranslation(getTranslation(localStorage.getItem("language") as Language));
     }
 
     document.addEventListener("language-change", event);
@@ -32,9 +33,9 @@ function App() {
       <Box className='App'>
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<HomePage language={language}/>} />
-            <Route path='game' element={<JoinChallenge />} />
-            <Route path='create' element={<CreateChallengeRoom />} />
+            <Route path='/' element={<HomePage translation={translation}/>} />
+            <Route path='game' element={<JoinChallenge translation={translation} />} />
+            <Route path='create' element={<CreateChallengeRoom translation={translation} />} />
             <Route path='wait' element={<WaitingRoomViewGamemaster roomCode="a1B2" roomData={{
               roomName: "Test Room",
               challenges: [{description: "Test Challenge", challengeNumber: 0}],

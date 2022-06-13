@@ -7,6 +7,7 @@ import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
 import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { Translation } from '../translation';
 
 const defaultFormData : ChallengeRoomJoin = {
   roomCode: "",
@@ -31,7 +32,11 @@ const defaultRoomInfo: JoinChallengeSuccessResponse = {
   }
 }
 
-function JoinChallenge() {
+interface Props{
+  translation: Translation
+}
+
+function JoinChallenge({translation} : Props) {
   const [currentSocket, setSocket] = useState<Socket | undefined>(undefined);
   const [info, setInfo] = useState<ChallengeRoomJoin>(defaultFormData); //form state
   const {roomCode, userName, userAvatar} = info; //form state
@@ -174,11 +179,11 @@ function JoinChallenge() {
     <Box>
       <SettingsHomeButtons isLoggedIn={showWaitingRoom}/>
       {loading && <></>}
-      {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket}/>}
+      {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket} translation={translation}/>}
       {!loading && !showWaitingRoom &&
         <Stack  justifyContent="center" spacing={2} alignItems="center">
-          <Typography variant="h3">Join a game</Typography>
-          <Typography variant="body1">Ask the gamemaster for the code</Typography>
+          <Typography variant="h3">{translation.titles.joinAGame}</Typography>
+          <Typography variant="body1">{translation.texts.askCode}</Typography>
           <Collapse in={openAlert}>
             <Alert severity='error' 
             action={
@@ -186,14 +191,14 @@ function JoinChallenge() {
                 <CloseIcon fontSize= "small"/>
               </IconButton>
             }>
-              Room Code was invalid!
+              {translation.errors.roomCodeInvalid}
             </Alert>
           </Collapse>
           <TextField
-            helperText="Code must be 4 characters"
+            helperText={translation.inputs.texts.roomCodeDesc}
             type="text"
             id="roomCode"
-            label="Room code"
+            label={translation.inputs.texts.roomCode}
             onChange={onChange}
             value={roomCode}
             error={codeWasNotValid}
@@ -201,18 +206,18 @@ function JoinChallenge() {
             >
           </TextField>
           <TextField
-            helperText="Name must me between 3 and 30 characters"
+            helperText={translation.inputs.texts.userNameDesc}
             type="text"
             id="userName"
-            label="User name"
+            label={translation.inputs.texts.userName}
             onChange={onChange}
             value={userName}
             inputProps={{maxLength: 30}}
             >
           </TextField>
-          <Typography variant="body1">Avatar</Typography>
+          <Typography variant="body1">{translation.titles.avatar}</Typography>
           <Avatar id="player_avatar" variant="rounded" sx={{height: 150, width: 150}} onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
-          <Button disabled={formIsNotValid} variant="contained" id="joinChallenge-btn" onClick={joinChallengeRoom}>Join</Button>
+          <Button disabled={formIsNotValid} variant="contained" id="joinChallenge-btn" onClick={joinChallengeRoom}>{translation.inputs.buttons.join}</Button>
         </Stack>
       }
     </Box>
