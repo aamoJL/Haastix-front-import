@@ -45,7 +45,7 @@ function JoinChallenge() {
 
   const openWebsocket = (token: string) => {
     setSocket(setConnection(token))
-}
+  }
 
   useEffect(() => {
     //rejoin challenge if token is found
