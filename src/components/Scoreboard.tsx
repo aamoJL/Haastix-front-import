@@ -5,9 +5,11 @@ import { PlayerData } from '../interfaces';
 import { getEmojiImage } from './storage/Images';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Translation } from '../translations';
 
 interface Props{
   socket?: Socket,
+  translation: Translation,
 }
 
 const modalStyle : SxProps<Theme> = {
@@ -32,7 +34,7 @@ const tableHeaderStyle : SxProps<Theme> = {
  * Component that renders challenge room's scoreboard sorted by task completion time
  * @param socket Socket.io socket connection
  */
-function Scoreboard({socket}: Props) {
+function Scoreboard({socket, translation}: Props) {
   const [scores, setScores] = useState<PlayerData[]>([]);
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | undefined>(undefined);
   const [selectedPhoto, setSelectedPhoto] = useState<string | undefined>(undefined);
@@ -128,7 +130,7 @@ function Scoreboard({socket}: Props) {
 
   return (
     <Stack direction="column" alignItems="center">
-      <Typography id="times-up-title" variant="body1" component="p">Scoreboard</Typography>
+      <Typography id="times-up-title" variant="body1" component="p">{translation.titles.scoreboard}</Typography>
       <Modal open={openModal && !modalLoading} onClose={() => setOpenModal(false)} disableAutoFocus>
         <Stack sx={modalStyle} alignItems="center" direction="row" spacing={2}>
           <IconButton id="prev-photo-btn" onClick={(e) => handlePhotoArrowClick(e, selectedPhotoNumber - 1)}>
@@ -137,7 +139,7 @@ function Scoreboard({socket}: Props) {
           <Stack direction="column" alignItems="center" spacing={1}>
             <Typography sx={{fontWeight: 'bold'}} variant="body1" component="p">{`${selectedPlayer?.playerName}`}</Typography>
             <img src={selectedPhoto} alt="" />
-            <Typography variant="body1" component="p">{`Task number: ${selectedPhotoNumber + 1}`}</Typography>
+            <Typography variant="body1" component="p">{`${translation.texts.taskNumber}: ${selectedPhotoNumber + 1}`}</Typography>
           </Stack>
           <IconButton id="next-photo-btn" onClick={(e) => handlePhotoArrowClick(e, selectedPhotoNumber + 1)}>
             <ArrowForwardIcon />
@@ -149,10 +151,10 @@ function Scoreboard({socket}: Props) {
           <TableHead>
             <TableRow>
               <TableCell sx={tableHeaderStyle}>#</TableCell>
-              <TableCell sx={tableHeaderStyle}>Icon</TableCell>
-              <TableCell sx={tableHeaderStyle} align='left'>Name</TableCell>
-              <TableCell sx={tableHeaderStyle} align='right'>Time</TableCell>
-              <TableCell sx={tableHeaderStyle} align='right'>Tasks</TableCell>
+              <TableCell sx={tableHeaderStyle}>{translation.tables.avatar}</TableCell>
+              <TableCell sx={tableHeaderStyle} align='left'>{translation.tables.name}</TableCell>
+              <TableCell sx={tableHeaderStyle} align='right'>{translation.tables.time}</TableCell>
+              <TableCell sx={tableHeaderStyle} align='right'>{translation.tables.tasks}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
