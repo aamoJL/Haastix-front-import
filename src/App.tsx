@@ -7,8 +7,8 @@ import HomePage from './components/HomePage';
 import JoinChallenge from './components/JoinChallenge';
 import NotFound from './components/NotFound';
 import WaitingRoomViewGamemaster from './components/WaitingRoomViewGamemaster';
-import { getTranslation, Language, Translation } from './translation';
 import theme from './Theme';
+import { getTranslation, Language, Translation } from './translations';
 
 function App() {
   const [translation, setTranslation] = useState<Translation>(getTranslation(localStorage.getItem("language") === null ? "en" 

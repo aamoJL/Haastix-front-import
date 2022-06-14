@@ -3,7 +3,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { Collapse, IconButton, List, ListItem, SxProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, Typography } from '@mui/material';
 import { JoinChallengeSuccessResponse, WaitingRoomList} from '../interfaces';
 import { Socket } from 'socket.io-client';
-import { Translation } from '../translation';
+import { Translation } from '../translations';
 
 interface Props {
   socket?: Socket,

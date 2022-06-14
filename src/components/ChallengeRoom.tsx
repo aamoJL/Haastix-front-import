@@ -5,7 +5,7 @@ import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, 
 import ChallengeRoomCamera from './ChallengeRoomCamera';
 import Scoreboard from './Scoreboard';
 import RemovePlayer from './RemovePlayer';
-import { Translation } from '../translation';
+import { Translation } from '../translations';
 
 interface Props {
     roomInfo: JoinChallengeSuccessResponse,
@@ -102,7 +102,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
           let nextTaskNum = dataResponse.challengeNumber + 1;
           if(nextTaskNum >= roomInfo.details.challengeTasks.length){
             setTimeIsUp(true);
-            alert("Kaikki haasteet suoritettu!");
+            alert(translation.texts.allTasksCompleted);
           }
           else{
             setCurrentTaskNumber(nextTaskNum);
@@ -112,7 +112,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
         else if(dataResponse.fileStatus === "Rejected"){
           // If the current submission has been rejected, 
           // alert the user and allow the user to take another photo
-          alert("Kuvasi on hylätty! Ota uusi kuva.");
+          alert(translation.texts.submissionDeclined);
           setPlayerWaitingReview(false);
         }
         else if(dataResponse.fileStatus === "Not reviewed"){
@@ -217,7 +217,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       {!isGameMaster && !timeIsUp &&
         <>
           <Button disabled={playerWaitingReview} onClick={(e) => setShowCamera(!showCamera)}>{showCamera ? translation.inputs.buttons.closeCamera : translation.inputs.buttons.openCamera}</Button>
-          {playerWaitingReview && <div>{translation.texts.waitingSubmissions}</div>}
+          {playerWaitingReview && <div>{translation.texts.waitingReview}</div>}
           {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} translation={translation}/>}
         </>}
       {/* Time is up, scoreboard */}
@@ -225,7 +225,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       <>
         <Typography id="times-up-title" variant="h2" component="h2">{translation.texts.challengeIsOver}</Typography>
         <Typography id="room-title" variant="body1" component="p">{translation.texts.roomName}: {roomInfo?.details.challengeRoomName}</Typography>
-        <Scoreboard socket={socket}/>
+        <Scoreboard socket={socket} translation={translation}/>
       </>} 
     </Stack>
   );

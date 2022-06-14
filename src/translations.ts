@@ -21,6 +21,7 @@ export interface Translation{
     avatar: string,
     waitingRoom: string,
     gameRoom: string,
+    scoreboard: string,
   },
   inputs:{
     buttons:{
@@ -39,6 +40,8 @@ export interface Translation{
       takePicture: string,
       send: string,
       retake: string,
+      add: string,
+      save: string,
     },
     texts:{
       roomName: string,
@@ -65,13 +68,19 @@ export interface Translation{
     timeRemaining: string,
     userName: string,
     acceptSubmission: string,
-    waitingSubmissions: string,
+    waitingReview: string,
     challengeIsOver: string,
     allowCameraAccess: string,
+    allTasksCompleted: string,
+    submissionDeclined: string,
+    taskNumber: string,
   },
   tables:{
     name: string,
     description: string,
+    avatar: string,
+    time: string,
+    tasks: string,
   },
   errors: {
     nameLength: string,
@@ -97,6 +106,7 @@ const finnish: Translation = {
     avatar: "Hahmo",
     waitingRoom: "Odotushuone",
     gameRoom: "Pelihuone",
+    scoreboard: "Tulokset",
   },
   inputs:{
     buttons:{
@@ -115,6 +125,8 @@ const finnish: Translation = {
       takePicture: "Ota kuva",
       send: "Lähetä",
       retake: "Ota uusi kuva",
+      add: "Lisää",
+      save: "Tallenna",
     },
     texts:{
       roomName: "Huoneen nimi",
@@ -141,13 +153,19 @@ const finnish: Translation = {
     timeRemaining: "Aikaa jäljellä",
     userName: "Käyttäjänimi",
     acceptSubmission: "Hyväksy kuva?",
-    waitingSubmissions: "Odotetaan kuvia...",
+    waitingReview: "Odotetaan hyväksyntää...",
     challengeIsOver: "Haaste on päättynyt!",
-    allowCameraAccess: "Ei oikeuksia kameraan!"
+    allowCameraAccess: "Ei oikeuksia kameraan!",
+    allTasksCompleted: "Kaikki haasteet suoritettu!",
+    submissionDeclined: "Kuvasi on hylätty! Ota uusi kuva.",
+    taskNumber: "Haasteen numero",
   },
   tables:{
     name: "Nimi",
     description: "Kuvaus",
+    avatar: "Hahmo",
+    time: "Aika",
+    tasks: "Haasteet",
   },
   errors:{
     nameLength: "Huoneen nimi tulee olla 3-30 merkkiä pitkä.",
@@ -173,6 +191,7 @@ const english: Translation = {
     avatar: "Avatar",
     waitingRoom: "Waiting room",
     gameRoom: "Game room",
+    scoreboard: "Scoreboard",
   },
   inputs:{
     buttons:{
@@ -191,6 +210,8 @@ const english: Translation = {
       takePicture: "Take a picture",
       send: "Send",
       retake: "Retake",
+      add: "Add",
+      save: "Save",
     },
     texts:{
       roomName: "Room name",
@@ -217,13 +238,19 @@ const english: Translation = {
     timeRemaining: "Time remaining",
     userName: "Username",
     acceptSubmission: "Accept submission?",
-    waitingSubmissions: "Waiting photo to be accepted...",
+    waitingReview: "Waiting photo to be accepted...",
     challengeIsOver: "Challenge is over!",
     allowCameraAccess: "Allow camera access!",
+    allTasksCompleted: "All tasks have been completed!",
+    submissionDeclined: "Your submission has been declined! Take a new photo.",
+    taskNumber: "Task number",
   },
   tables:{
     name: "Name",
     description: "Description",
+    avatar: "Avatar",
+    time: "Time",
+    tasks: "Tasks",
   },
   errors: {
     nameLength: "Room name must be 3-30 characters long.",

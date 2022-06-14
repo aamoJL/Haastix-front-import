@@ -1,7 +1,7 @@
 import { Button, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { SendFileResponse } from '../interfaces';
-import { Translation } from '../translation';
+import { Translation } from '../translations';
 
 interface Props{
   taskNumber: number,

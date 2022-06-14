@@ -1,7 +1,7 @@
 import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, Grid } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'
 import React, { useState } from 'react';
-import { getTranslation, Language, Translation, translations } from '../translation';
+import { getTranslation, Language, Translation } from '../translations';
 
 const style = {
   position: 'absolute' as 'absolute',

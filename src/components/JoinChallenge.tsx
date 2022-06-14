@@ -7,7 +7,7 @@ import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
 import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Translation } from '../translation';
+import { Translation } from '../translations';
 
 const defaultFormData : ChallengeRoomJoin = {
   roomCode: "",

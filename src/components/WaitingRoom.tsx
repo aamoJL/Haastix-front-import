@@ -7,7 +7,7 @@ import ChallengeRoom from './ChallengeRoom';
 import RemovePlayer from './RemovePlayer';
 import AlertWindow from './AlertWindow';
 import CloseIcon from '@mui/icons-material/Close'
-import { Translation } from '../translation';
+import { Translation } from '../translations';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
@@ -259,8 +259,8 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
                   ))}
                 </Box>}
                 {edit && <ButtonGroup variant="text">
-                  <Button id="add-challenge-btn" onClick={handleAddChallenge}>Add</Button>
-                  <Button id="save-challenges-btn" onClick={handleSaveChallenges}>Save</Button>
+                  <Button id="add-challenge-btn" onClick={handleAddChallenge}>{translation.inputs.buttons.add}</Button>
+                  <Button id="save-challenges-btn" onClick={handleSaveChallenges}>{translation.inputs.buttons.save}</Button>
                 </ButtonGroup>}
             </Collapse>
           </>}

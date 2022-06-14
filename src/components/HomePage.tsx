@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import banner from '../assets/banner.svg';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import { Stack, Button, Box } from '@mui/material';
-import { Translation } from '../translation';
+import { Translation } from '../translations';
 
 interface Props{
   translation: Translation
