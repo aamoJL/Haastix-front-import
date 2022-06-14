@@ -86,6 +86,12 @@ const theme = createTheme({
           color: '#191919'
         }
       }
+    },
+    MuiTooltip: {
+      defaultProps: {
+        arrow: true,
+        enterDelay: 600,
+      }
     }
   }
 });
