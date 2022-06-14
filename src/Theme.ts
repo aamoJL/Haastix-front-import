@@ -7,6 +7,7 @@ const theme = createTheme({
     },
     text: {
       primary: '#E4E4E4',
+      secondary: "#e4e4e4"
     },
     primary: {
       main: '#00CC92',
@@ -52,6 +53,9 @@ const theme = createTheme({
     },
     MuiInput: {
       styleOverrides: {
+        root: {
+          maxWidth: 160
+        },
         underline: {
           ":before":{
             borderBottom: '2px solid #00CC92'
@@ -81,6 +85,12 @@ const theme = createTheme({
         paper: {
           color: '#191919'
         }
+      }
+    },
+    MuiTooltip: {
+      defaultProps: {
+        arrow: true,
+        enterDelay: 800,
       }
     }
   }
