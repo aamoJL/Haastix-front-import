@@ -6,7 +6,6 @@ import CreateChallengeRoom from './components/CreateChallengeRoom';
 import HomePage from './components/HomePage';
 import JoinChallenge from './components/JoinChallenge';
 import NotFound from './components/NotFound';
-import WaitingRoomViewGamemaster from './components/WaitingRoomViewGamemaster';
 import theme from './Theme';
 import { getTranslation, Language, Translation } from './translations';
 
@@ -36,12 +35,6 @@ function App() {
             <Route path='/' element={<HomePage translation={translation}/>} />
             <Route path='game' element={<JoinChallenge translation={translation} />} />
             <Route path='create' element={<CreateChallengeRoom translation={translation} />} />
-            <Route path='wait' element={<WaitingRoomViewGamemaster roomCode="a1B2" roomData={{
-              roomName: "Test Room",
-              challenges: [{description: "Test Challenge", challengeNumber: 0}],
-              time: 10,
-              delay: 10,
-            }}/>} />
             <Route path='*' element={<NotFound />}/>
           </Routes>
         </BrowserRouter>
