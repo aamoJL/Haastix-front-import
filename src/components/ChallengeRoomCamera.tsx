@@ -1,10 +1,12 @@
 import { Button, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { SendFileResponse } from '../interfaces';
+import { Translation } from '../translations';
 
 interface Props{
   taskNumber: number,
   onSubmit: () => void,
+  translation: Translation,
 }
 
 /**
@@ -13,7 +15,7 @@ interface Props{
  * After user takes a photo the component will render the taken photo and
  * buttons to submit or decline the photo. 
  */
-function ChallengeRoomCamera({taskNumber, onSubmit}:Props) {
+function ChallengeRoomCamera({taskNumber, onSubmit, translation}:Props) {
   let stream: MediaStream | undefined = undefined;
   let context: CanvasRenderingContext2D | null | undefined = undefined;
   let videoElement: HTMLVideoElement | undefined = undefined;
@@ -122,19 +124,19 @@ function ChallengeRoomCamera({taskNumber, onSubmit}:Props) {
       <div hidden={takenPhoto !== "" || !allowed}>
         <canvas id="camera-canvas" />
         <div>
-          <Button id="take-photo-btn" variant='contained' onClick={takePhotoHandler}>Take a picture</Button>
+          <Button id="take-photo-btn" variant='contained' onClick={takePhotoHandler}>{translation.inputs.buttons.takePicture}</Button>
         </div>
       </div>
       <div hidden={takenPhoto === "" || !allowed}>
         <div>
-          <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt="Take a picture" />
+          <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt={translation.imageAlts.cameraScreen}/>
           <Stack spacing={1}>
-            <Button id="send-photo-btn" variant='contained' color="success" onClick={sendPhotoHandler}>Send</Button>
-            <Button id="decline-photo-btn" variant='outlined' color="error" onClick={(e) => setTakenPhoto("")}>Retake</Button>
+            <Button id="send-photo-btn" variant='contained' color="success" onClick={sendPhotoHandler}>{translation.inputs.buttons.send}</Button>
+            <Button id="decline-photo-btn" variant='outlined' color="error" onClick={(e) => setTakenPhoto("")}>{translation.inputs.buttons.retake}</Button>
           </Stack>
         </div>
       </div>
-      {!allowed && <div>Allow camera access!</div>}
+      {!allowed && <div>{translation.texts.allowCameraAccess}</div>}
     </div>
   );
 }
