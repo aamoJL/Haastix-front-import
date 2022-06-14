@@ -5,7 +5,7 @@ import SettingsHomeButtons from './SettingsHomeButtons';
 import { setConnection } from './socket';
 import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
-import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box } from '@mui/material';
+import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const defaultFormData : ChallengeRoomJoin = {
@@ -37,11 +37,12 @@ function JoinChallenge() {
   const {roomCode, userName, userAvatar} = info; //form state
   const [token, setToken] = useState<string | null>(sessionStorage.getItem("token"));
   const [showWaitingRoom, setShowWaitingRoom] = useState(false);
-  const [loading, setLoading] = useState(true); // placeholder loading screen
+  const [loading, setLoading] = useState(true); //placeholder loading screen
   const [formIsNotValid, setFormIsNotValid] = useState(true); //if true form inputs are not valid and button is disabled
-  const [codeWasNotValid, setCodeWasNotValid] = useState(false); // if true code was not valid and code field is red
-  const [openAlert, setOpenAlert] = useState(false); // if true show error alert
+  const [codeWasNotValid, setCodeWasNotValid] = useState(false); //if true code was not valid and code field is red
+  const [openAlert, setOpenAlert] = useState(false); //if true show error alert
   const [roomInfo, setRoomInfo] = useState<JoinChallengeSuccessResponse>(defaultRoomInfo);
+  const [openTooltip, setOpenTooltip] = useState(false);
 
   const openWebsocket = (token: string) => {
     setSocket(setConnection(token))
@@ -169,7 +170,13 @@ function JoinChallenge() {
     }
   })
 
-  
+  const handleTooltip= () => {
+    if(formIsNotValid)
+      setOpenTooltip(!openTooltip);
+    else
+      setOpenTooltip(false);
+  }
+
   return (
     <Box>
       <SettingsHomeButtons isLoggedIn={showWaitingRoom}/>
@@ -212,7 +219,11 @@ function JoinChallenge() {
           </TextField>
           <Typography variant="body1">Avatar</Typography>
           <Avatar id="player_avatar" variant="rounded" sx={{height: 150, width: 150}} onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
-          <Button disabled={formIsNotValid} variant="contained" id="joinChallenge-btn" onClick={joinChallengeRoom}>Join</Button>
+          <Tooltip open={openTooltip} onOpen={handleTooltip} onClose={handleTooltip} enterDelay={0} title="Room code or user name is invalid">
+            <Box sx={{width: 300}}>
+              <Button disabled={formIsNotValid} variant="contained" id="joinChallenge-btn" onClick={joinChallengeRoom}>Join</Button>
+            </Box>
+          </Tooltip>
         </Stack>
       }
     </Box>

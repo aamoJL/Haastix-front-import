@@ -90,7 +90,7 @@ const theme = createTheme({
     MuiTooltip: {
       defaultProps: {
         arrow: true,
-        enterDelay: 600,
+        enterDelay: 800,
       }
     }
   }
