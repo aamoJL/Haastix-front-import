@@ -3,15 +3,19 @@ import { createTheme } from "@mui/material";
 const theme = createTheme({
   palette: {
     background: {
-      default: '#525252'
+      default: '#525252',
+      //paper: "#191919"
     },
     text: {
       primary: '#E4E4E4',
-      secondary: "#e4e4e4"
+      secondary: "#e4e4e4",
     },
     primary: {
       main: '#00CC92',
       contrastText: '#191919'
+    },
+    action: {
+      active: '#00CC92'
     }
   },
   components: {
@@ -23,7 +27,7 @@ const theme = createTheme({
     },
     MuiTextField: {
       defaultProps: {
-        color: 'primary',
+        //color: 'primary',
         fullWidth: true
       },
       styleOverrides: {
@@ -34,20 +38,6 @@ const theme = createTheme({
               borderColor: "#00CC92"
             }
           }
-        }
-      }
-    },
-    MuiFormHelperText: {
-      styleOverrides: {
-        root: {
-          color: '#e4e4e4'
-        }
-      }
-    },
-    MuiInputLabel: {
-      styleOverrides: {
-        root:{
-          color: '#e4e4e4',
         }
       }
     },
@@ -92,7 +82,7 @@ const theme = createTheme({
         arrow: true,
         enterDelay: 800,
       }
-    }
+    },
   }
 });
 

@@ -59,13 +59,13 @@ const Settings = (props: Props) => {
           </Stack>
           <FormControl>
             <FormLabel sx={{color: '#e4e4e4'}}>{translation.titles.theme}</FormLabel>
-            <RadioGroup row defaultValue="theme1" onChange={handleTheme}>
+            <RadioGroup row value={theme} onChange={handleTheme}>
               <FormControlLabel value="theme1" control={<Radio />} label={`${translation.titles.theme} 1`}/>
               <FormControlLabel value="theme2" control={<Radio />} label={`${translation.titles.theme} 2`}/>
             </RadioGroup>
           </FormControl>
-          <FormControlLabel control={<Switch id="darkmode-switch" checked={darkMode} onChange={handleDarkMode}/>} label={translation.inputs.texts.darkmode}/>
-          <FormControlLabel control={<Switch id="volume-switch" checked={sound} onChange={handleSound}/>} label={translation.inputs.texts.sound}/>
+            <FormControlLabel control={<Switch id="darkmode-switch" checked={darkMode} onChange={handleDarkMode}/>} label={translation.inputs.texts.darkmode}/>
+            <FormControlLabel control={<Switch id="volume-switch" checked={sound} onChange={handleSound}/>} label={translation.inputs.texts.sound}/>
           <Grid component="label" container alignItems="center" spacing={1}>
             <Grid item>Suomi</Grid>
             <Grid item>
