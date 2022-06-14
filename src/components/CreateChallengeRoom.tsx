@@ -1,10 +1,9 @@
-import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box, IconButton } from '@mui/material';
+import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box, IconButton, InputAdornment } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeRoomData, NewChallengeRoomSuccessResponse} from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
-import { maxWidth } from '@mui/system';
 
 // Form validation variables
 // required values from: https://gitlab.labranet.jamk.fi/wimmalab2021/iotitude/source-backend/-/blob/master/documents/restApiRoutesDocuments/newChallenge.md
@@ -184,7 +183,7 @@ function CreateChallengeRoom() {
   }
 
   return (
-    <Stack alignItems='center' spacing={1}>
+    <Stack alignItems='center' justifyContent="center" spacing={1}>
       <SettingsHomeButtons/>
       <Typography variant="h3" component="h3">Create game</Typography>
       <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} label="Room name"  inputProps={{ maxLength: formValidation.maxNameLength }}/>
@@ -218,14 +217,38 @@ function CreateChallengeRoom() {
       <Button sx={{m: 1}} id="add-challenge-btn" variant='text' size="medium" onClick={(e) => {handleAddChallenge()}}>Add new challenge</Button>
         <FormControl variant="standard">
           <InputLabel htmlFor="delay">Delay before game starts</InputLabel>
-          <Input onClick={handleNumberInputClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="delay" id="delay" value={delay} onChange={(e) => handleNumInputChange(e, formValidation.maxDelay)}/>
+          <Input
+            onClick={handleNumberInputClick}
+            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+            name="delay"
+            id="delay"
+            value={delay}
+            onChange={(e) => handleNumInputChange(e, formValidation.maxDelay)}
+            endAdornment= {
+              <InputAdornment position="end">
+                Min
+              </InputAdornment>
+            }
+            />
         </FormControl>
         <FormControl variant="standard">
           <InputLabel htmlFor="time">Game duration</InputLabel>
-          <Input onClick={handleNumberInputClick} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name="time" id="time" value={time} onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}/>
+          <Input
+            onClick={handleNumberInputClick}
+            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+            name="time"
+            id="time"
+            value={time}
+            onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}
+            endAdornment= {
+              <InputAdornment position="end">
+                Min
+              </InputAdornment>
+            }
+            />
         </FormControl>
       <Box>
-        <Button id="create-game-btn" sx={{m: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>Create game</Button>
+        <Button id="create-game-btn" sx={{mt: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>Create game</Button>
       </Box>
     </Stack>
   );
