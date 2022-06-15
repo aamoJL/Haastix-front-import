@@ -1,4 +1,4 @@
-import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, Grid } from '@mui/material';
+import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, Grid, Paper } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'
 import React, { useState } from 'react';
 import { getTranslation, Language, Translation } from '../translations';
@@ -47,32 +47,34 @@ const Settings = (props: Props) => {
   return (
     <div>
       <Modal open={props.open} onClose={props.handleClose}>
-        <Stack sx={style} >
-          <Stack direction="row-reverse" justifyContent="space-between">
-            <IconButton onClick={props.handleClose}>
-              <CloseIcon/>
-            </IconButton>
-            <Typography variant="h5">
-              {translation.titles.settings}
-            </Typography>
-          </Stack>
-          <FormControl>
-            <FormLabel sx={{color: '#e4e4e4'}}>{translation.titles.theme}</FormLabel>
-            <RadioGroup row value={theme} onChange={handleTheme}>
-              <FormControlLabel value="theme1" control={<Radio />} label={`${translation.titles.theme} 1`}/>
-              <FormControlLabel value="theme2" control={<Radio />} label={`${translation.titles.theme} 2`}/>
-            </RadioGroup>
-          </FormControl>
-            <FormControlLabel control={<Switch id="darkmode-switch" checked={darkMode} onChange={handleDarkMode}/>} label={translation.inputs.texts.darkmode}/>
-            <FormControlLabel control={<Switch id="volume-switch" checked={sound} onChange={handleSound}/>} label={translation.inputs.texts.sound}/>
-          <Grid component="label" container alignItems="center" spacing={1}>
-            <Grid item>Suomi</Grid>
-            <Grid item>
-              <Switch id="language-switch" checked={language === "en"} onChange={handleLanguage}/>
+        <Paper sx={style}>
+          <Stack >
+            <Stack direction="row-reverse" justifyContent="space-between">
+              <IconButton onClick={props.handleClose}>
+                <CloseIcon/>
+              </IconButton>
+              <Typography variant="h5">
+                {translation.titles.settings}
+              </Typography>
+            </Stack>
+            <FormControl>
+              <FormLabel sx={{color: '#e4e4e4'}}>{translation.titles.theme}</FormLabel>
+              <RadioGroup row value={theme} onChange={handleTheme}>
+                <FormControlLabel value="theme1" control={<Radio />} label={`${translation.titles.theme} 1`}/>
+                <FormControlLabel value="theme2" control={<Radio />} label={`${translation.titles.theme} 2`}/>
+              </RadioGroup>
+            </FormControl>
+              <FormControlLabel control={<Switch id="darkmode-switch" checked={darkMode} onChange={handleDarkMode}/>} label={translation.inputs.texts.darkmode}/>
+              <FormControlLabel control={<Switch id="volume-switch" checked={sound} onChange={handleSound}/>} label={translation.inputs.texts.sound}/>
+            <Grid component="label" container alignItems="center" spacing={1}>
+              <Grid item>Suomi</Grid>
+              <Grid item>
+                <Switch id="language-switch" checked={language === "en"} onChange={handleLanguage}/>
+              </Grid>
+              <Grid item>English</Grid>
             </Grid>
-            <Grid item>English</Grid>
-          </Grid>
-        </Stack>
+          </Stack>
+        </Paper>
       </Modal>
     </div>
   );

@@ -1,50 +1,71 @@
 import { createTheme } from "@mui/material";
 
-const theme = createTheme({
-  palette: {
-    background: {
-      default: '#525252',
-      paper: "#525252"
-    },
-    text: {
-      primary: '#E4E4E4',
-      secondary: "#e4e4e4",
-    },
-    primary: {
-      main: '#00CC92',
-      contrastText: '#191919'
-    },
-    secondary: {
-      main: '#fff'
-    },
-    action: {
-      active: '#00CC92',
-      hover: '#fc0303'
-    }
+export interface Palette {
+  background: {
+    default: string,
+    paper: string
   },
+  text: {
+    primary: string,
+    secondary: string
+  },
+  primary: {
+    main: string
+  }
+}
+
+const palette: Palette = {
+  background: {
+    default: '#525252',
+    paper: "#525252"
+  },
+  text: {
+    primary: '#e4e4e4',
+    secondary: "#e4e4e4",
+  },
+  primary: {
+    main: '#00CC92',
+  }
+}
+
+const palette2: Palette = {
+  background: {
+    default: "#cfd8dc",
+    paper: "#cfd8dc"
+  },
+  text: {
+    primary: "#212121",
+    secondary: "#212121"
+  },
+  primary: {
+    main: "#6200ea"
+  }
+}
+
+const theme = createTheme({
+  palette: palette,
   components: {
     MuiIconButton: {
       defaultProps: {
-        //color: 'primary',
+        color: 'primary',
         size: 'large',
       }
     },
     MuiTextField: {
       defaultProps: {
-        //color: 'primary',
         sx: {
           width: 200
         }
       },
-      // styleOverrides: {
-      //   root: {
-      //     "& .MuiOutlinedInput-root": {
-      //       "& > fieldset": {
-      //         borderColor: "#00CC92"
-      //       }
-      //     }
-      //   }
-      // }
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            "& > fieldset": {
+              borderColor: "#00CC92"
+            }
+          }
+        }
+      }
     },
     MuiInput: {
       styleOverrides: {
@@ -76,9 +97,6 @@ const theme = createTheme({
       styleOverrides: {
         scrollPaper: {
           alignItems: 'flex-start',
-        },
-        paper: {
-          color: 'secondary'
         }
       }
     },
@@ -89,12 +107,6 @@ const theme = createTheme({
       }
     },
   }
-});
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'light'
-  }
 })
 
-export {theme, darkTheme} ;
+export default theme ;
