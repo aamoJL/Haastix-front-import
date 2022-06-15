@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Collapse, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, WaitingRoomList } from '../interfaces';
@@ -176,6 +176,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
+      {/* Room info */}
       {!timeIsUp && 
       <>
         <Typography variant="h3" component="h3">{translation.titles.gameRoom}</Typography>
@@ -224,8 +225,9 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       {/* Player */}
       {!isGameMaster && !timeIsUp &&
         <>
-        {/* showCamera ? translation.inputs.buttons.closeCamera : translation.inputs.buttons.openCamera */}
-          <Button startIcon={<CameraAltIcon />} style={{alignItems:"center", borderRadius:"50%", width:64, height:64}} disabled={playerWaitingReview} onClick={()=>{setShowCamera(!showCamera); setShowScoreboard(false);}}></Button>
+          <Tooltip title={showCamera ? translation.tooltips.closeCamera : translation.tooltips.openCamera}>
+            <Button id="camera-btn" color={showCamera ? "error" : "primary"} style={{borderRadius:"50%", width:64, height:64}} disabled={playerWaitingReview} onClick={()=>{setShowCamera(!showCamera); setShowScoreboard(false);}}><CameraAltIcon/></Button>
+          </Tooltip>
           {playerWaitingReview && <div>{translation.texts.waitingReview}</div>}
           {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} translation={translation}/>}
           <Scoreboard socket={socket} translation={translation}/>

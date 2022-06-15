@@ -93,6 +93,10 @@ export interface Translation{
   imageAlts:{
     reviewingPhoto: string,
     cameraScreen: string,
+  },
+  tooltips:{
+    openCamera: string,
+    closeCamera: string,
   }
 }
 
@@ -178,6 +182,10 @@ const finnish: Translation = {
   imageAlts:{
     reviewingPhoto: "Arvioitava kuva",
     cameraScreen: "Kameranäkymä"
+  },
+  tooltips:{
+    openCamera: "Avaa kamera",
+    closeCamera: "Sulje kamera",
   }
 }
 
@@ -263,6 +271,10 @@ const english: Translation = {
   imageAlts:{
     reviewingPhoto: "Photo to review",
     cameraScreen: "Camera screen",
+  },
+  tooltips:{
+    openCamera: "Open camera",
+    closeCamera: "Close camera",
   }
 }
 
