@@ -1,20 +1,7 @@
-import { createTheme } from "@mui/material";
+import { createTheme, PaletteOptions } from "@mui/material";
 
-export interface Palette {
-  background: {
-    default: string,
-    paper: string
-  },
-  text: {
-    primary: string,
-    secondary: string
-  },
-  primary: {
-    main: string
-  }
-}
-
-const palette: Palette = {
+const palette: PaletteOptions = {
+  mode: "light",
   background: {
     default: '#525252',
     paper: "#525252"
@@ -25,22 +12,26 @@ const palette: Palette = {
   },
   primary: {
     main: '#00CC92',
-  }
+  },
+  secondary:{
+    main: "#00cc92",
+  },
 }
 
-const palette2: Palette = {
-  background: {
-    default: "#cfd8dc",
-    paper: "#cfd8dc"
-  },
-  text: {
-    primary: "#212121",
-    secondary: "#212121"
-  },
-  primary: {
-    main: "#6200ea"
-  }
-}
+// const palette2: PaletteOptions = {
+//   background: {
+//     default: "#cfd8dc",
+//     paper: "#cfd8dc"
+//   },
+//   text: {
+//     primary: "#212121",
+//     secondary: "#212121"
+//   },
+//   primary: {
+//     main: "#6200ea"
+//   }
+// }
+
 
 const theme = createTheme({
   palette: palette,
@@ -57,16 +48,23 @@ const theme = createTheme({
           width: 200
         }
       },
-      styleOverrides: {
-        root: {
-          "& .MuiOutlinedInput-root": {
-            "& > fieldset": {
-              borderColor: "#00CC92"
-            }
-          }
-        }
+      styleOverrides: {       
+      //   root: {
+      //     "& .MuiOutlinedInput-root": {
+      //       "& fieldset": {
+      //         borderColor: "#00CC92"
+      //       }
+      //     }
+      //   },
       }
     },
+    // MuiOutlinedInput: {
+    //   styleOverrides: {
+    //     notchedOutline: {
+    //       borderColor: "#00cc92"
+    //     }
+    //   }
+    // },
     MuiInput: {
       styleOverrides: {
         root: {
