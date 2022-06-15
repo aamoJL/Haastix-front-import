@@ -9,7 +9,6 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 300,
-  bgcolor: '#191919',
   pl: 2,
   pt: 1,
   pb: 1

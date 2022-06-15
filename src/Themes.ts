@@ -4,7 +4,7 @@ const theme = createTheme({
   palette: {
     background: {
       default: '#525252',
-      //paper: "#191919"
+      paper: "#525252"
     },
     text: {
       primary: '#E4E4E4',
@@ -14,32 +14,37 @@ const theme = createTheme({
       main: '#00CC92',
       contrastText: '#191919'
     },
+    secondary: {
+      main: '#fff'
+    },
     action: {
-      active: '#00CC92'
+      active: '#00CC92',
+      hover: '#fc0303'
     }
   },
   components: {
     MuiIconButton: {
       defaultProps: {
-        color: 'primary',
+        //color: 'primary',
         size: 'large',
       }
     },
     MuiTextField: {
       defaultProps: {
         //color: 'primary',
-        fullWidth: true
-      },
-      styleOverrides: {
-        root: {
-          maxWidth: 200,
-          "& .MuiOutlinedInput-root": {
-            "& > fieldset": {
-              borderColor: "#00CC92"
-            }
-          }
+        sx: {
+          width: 200
         }
-      }
+      },
+      // styleOverrides: {
+      //   root: {
+      //     "& .MuiOutlinedInput-root": {
+      //       "& > fieldset": {
+      //         borderColor: "#00CC92"
+      //       }
+      //     }
+      //   }
+      // }
     },
     MuiInput: {
       styleOverrides: {
@@ -73,7 +78,7 @@ const theme = createTheme({
           alignItems: 'flex-start',
         },
         paper: {
-          color: '#191919'
+          color: 'secondary'
         }
       }
     },
@@ -86,4 +91,10 @@ const theme = createTheme({
   }
 });
 
-export default theme;
+const darkTheme = createTheme({
+  palette: {
+    mode: 'light'
+  }
+})
+
+export {theme, darkTheme} ;

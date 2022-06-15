@@ -6,7 +6,7 @@ import CreateChallengeRoom from './components/CreateChallengeRoom';
 import HomePage from './components/HomePage';
 import JoinChallenge from './components/JoinChallenge';
 import NotFound from './components/NotFound';
-import theme from './Theme';
+import {theme, darkTheme} from './Themes';
 import { getTranslation, Language, Translation } from './translations';
 
 const App= () => {
