@@ -54,6 +54,9 @@ export interface Translation{
       roomCodeDesc: string,
       userName: string,
       userNameDesc: string,
+      roomNameLengthHelper: string,
+      taskCountHelper: string,
+      taskDescriptionLengthHelper: string,
     }
   },
   texts:{
@@ -131,14 +134,17 @@ const finnish: Translation = {
     texts:{
       roomName: "Huoneen nimi",
       description: "Kuvaus",
-      delayBeforeGameStarts: "Odotusaika",
-      gameDuration: "Pelin kesto",
+      delayBeforeGameStarts: "Odotusaika (0-60)",
+      gameDuration: "Pelin kesto (1-240)",
       darkmode: "Tumma tila",
       sound: "Ääni",
       roomCode: "Huoneen koodi",
       roomCodeDesc: "Huoneen koodi on 4 merkkiä",
       userName: "Käyttäjänimi",
       userNameDesc: "Käyttäjänimen tulee olla 3-30 merkkiä pitkä",
+      roomNameLengthHelper: "Huoneen nimi on 3-30 merkkiä",
+      taskCountHelper: "Huoneessa voi olla 1-20 haastetta",
+      taskDescriptionLengthHelper: "Haasteen kuvaus on 3-256 merkkiä",
     }
   },
   texts:{
@@ -216,14 +222,17 @@ const english: Translation = {
     texts:{
       roomName: "Room name",
       description: "Description",
-      delayBeforeGameStarts: "Delay before game starts",
-      gameDuration: "Game duration",
+      delayBeforeGameStarts: "Delay before game starts (0-60)",
+      gameDuration: "Game duration (1-240)",
       darkmode: "Darkmode",
       sound: "Sound",
       roomCode: "Room code",
       roomCodeDesc: "Code must be 4 characters",
       userName: "User name",
       userNameDesc: "Name must me between 3 and 30 characters",
+      roomNameLengthHelper: "Room name is 3-30 characters",
+      taskCountHelper: "Room can have 1-20 tasks",
+      taskDescriptionLengthHelper: "Task description is 3-256 characters",
     }
   },
   texts:{

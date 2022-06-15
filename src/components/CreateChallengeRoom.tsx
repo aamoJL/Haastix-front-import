@@ -39,17 +39,47 @@ function CreateChallengeRoom({translation}: Props) {
   const [formData, setFormData] = useState<ChallengeRoomData>(defaultFormData);
   const {roomName, challenges, delay, time} = formData;
   const navigate = useNavigate();
+  const [roomNameError, setRoomNameError] = useState(false);
+  const [delayAmountError, setDelayAmountError] = useState(false);
+  const [durationAmountError, setDurationAmountError] = useState(false);
+  const [taskErrors, setTaskErrors] = useState<boolean[]>([false]);
+  const [formIsValid, setFormIsValid] = useState(false);
 
   useEffect(() => {
     if(sessionStorage.getItem('token') !== null)
       navigate("/game");
-  })
+  },[])
+
+  useEffect(() => {
+    let taskErrorArray = new Array<boolean>(challenges.length).fill(false);
+    challenges.forEach((challenge,i) => {
+      if((challenge.description.length > formValidation.maxTaskDescription || challenge.description.length < formValidation.minTaskDescription) 
+        && challenge.description.length !== 0){
+          taskErrorArray[i] = true;
+        }
+    });
+    setTaskErrors(taskErrorArray);
+  },[challenges.length])
+
+  useEffect(() => {
+    setFormIsValid(roomName.length <= formValidation.maxNameLength
+      && roomName.length >= formValidation.minNameLength
+      && delay <= formValidation.maxDelay
+      && delay >= formValidation.minDelay
+      && time <= formValidation.maxDuration
+      && time >= formValidation.minDuration
+      && challenges.length <= formValidation.maxTaskCount
+      && challenges.length >= formValidation.minTaskCount)
+  }, [roomName, challenges, delay, time])
 
   /**
    * Generic change handler
    * @param e 
    */
   const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if(roomNameError && e.target.value.length >= formValidation.minNameLength){setRoomNameError(false);}
+    // TODO: validate inputs
+    
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
@@ -121,25 +151,38 @@ function CreateChallengeRoom({translation}: Props) {
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     let error = false;
+    let newTaskErrorArray = taskErrors;
 
     // Data validation
-    if(roomName.length > formValidation.maxNameLength){alert(translation.errors.nameLength); error = true;}
-    if(roomName.length < formValidation.minNameLength){alert(translation.errors.nameLength); error = true;}
-    if(delay && delay > formValidation.maxDelay){alert(translation.errors.delayAmount); error = true;}
-    if(delay && delay < formValidation.minDelay){alert(translation.errors.delayAmount); error = true;}
-    if(time > formValidation.maxDuration){alert(translation.errors.durationAmount); error = true;}
-    if(time < formValidation.minDuration){alert(translation.errors.durationAmount); error = true;}
-    if(challenges.length > formValidation.maxTaskCount){alert(translation.errors.taskCount); error = true;}
-    if(challenges.length < formValidation.minTaskCount){alert(translation.errors.taskCount); error = true;}
+    if(roomName.length > formValidation.maxNameLength){setRoomNameError(true); error = true;}
+    if(roomName.length < formValidation.minNameLength){setRoomNameError(true); error = true;}
+    if(delay > formValidation.maxDelay){setDelayAmountError(true); error = true;}
+    if(delay < formValidation.minDelay){setDelayAmountError(true); error = true;}
+    if(time > formValidation.maxDuration){setDurationAmountError(true); error = true;}
+    if(time < formValidation.minDuration){setDurationAmountError(true); error = true;}
+    // TODO: MUI alert
+    if(challenges.length > formValidation.maxTaskCount){ error = true;}
+    if(challenges.length < formValidation.minTaskCount){ error = true;}
 
+    // task length validations
     challenges.every((challenge, i) => {
-      if(challenge.description.length > formValidation.maxTaskDescription){alert(translation.errors.taskDescriptionLength); error = true;}
-      if(challenge.description.length < formValidation.minTaskDescription){alert(translation.errors.taskDescriptionLength); error = true;}
+      if(challenge.description.length > formValidation.maxTaskDescription 
+        || challenge.description.length < formValidation.minTaskDescription){
+          error = true;
+        }
+
+      newTaskErrorArray[i] = error;
+
       if(error){return false;}
       // Set challenge numbers
       challenge.challengeNumber = i;
       return true;
     });
+
+    setTaskErrors((prev) => ({
+      ...prev,
+      newTaskErrorArray
+    }));
 
     if(error){return;}
 
@@ -187,17 +230,56 @@ function CreateChallengeRoom({translation}: Props) {
     (document.getElementById(element.id) as HTMLInputElement)?.select();
   }
 
+  const handleRoomNameBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {
+    // Validation
+    setRoomNameError((roomName.length > formValidation.maxNameLength 
+      || roomName.length < formValidation.minNameLength));
+  }
+
+  const handleTaskDescBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>, i: number) => {
+    // validation
+    // let task = challenges[i];
+    // let newErrorArray = taskErrors;
+    // newErrorArray[i] = (task.description.length > formValidation.maxTaskDescription 
+    //   || task.description.length < formValidation.minTaskDescription);
+
+    // setTaskErrors(newErrorArray);
+  }
+
+  const handleDurationBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {
+    // Validation
+    setDurationAmountError(time > formValidation.maxDuration || time < formValidation.minDuration);
+  }
+
+  const handleDelayBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {
+    // Validation
+    setDelayAmountError(delay > formValidation.maxDelay || delay < formValidation.minDelay);
+  }
+
   return (
     <Stack alignItems='center' justifyContent="center" spacing={1}>
       <SettingsHomeButtons/>
       <Typography variant="h3" component="h3">{translation.titles.createGame}</Typography>
-      <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} label={translation.inputs.texts.roomName}  inputProps={{ maxLength: formValidation.maxNameLength }}/>
+      <TextField 
+        helperText={translation.inputs.texts.roomNameLengthHelper}
+        error={roomNameError}
+        type="text"
+        name="roomName"
+        id="roomName"
+        value={roomName}
+        onChange={(e)=>{onChange(e)}}
+        onBlur={handleRoomNameBlur}
+        label={translation.inputs.texts.roomName}
+        inputProps={{ maxLength: formValidation.maxNameLength }}/>
       <Typography variant="h4" component="h4">{translation.titles.challenges}</Typography>
+      <Typography fontSize="small">{translation.inputs.texts.taskDescriptionLengthHelper}</Typography>
+      <Typography fontSize="small">{translation.inputs.texts.taskCountHelper}</Typography>
       <Box sx={{maxHeight: 205, overflow: 'auto', maxWidth: 200}}>
       {
         challenges.map((challenge, i) => (
           <TextField
             autoFocus
+            error={taskErrors[i]}
             key={i} 
             id={`challenge-input-${i}`} 
             size="small"
@@ -205,7 +287,8 @@ function CreateChallengeRoom({translation}: Props) {
             multiline 
             type="text" 
             value={challenge.description} 
-            onChange={(e) => handleChallengeChange(e, i)} 
+            onChange={(e) => handleChallengeChange(e, i)}
+            onBlur={((e) => handleTaskDescBlur(e,i))}
             inputProps={{ maxLength: formValidation.maxTaskDescription }} 
             InputProps={{
               endAdornment: (
@@ -223,12 +306,14 @@ function CreateChallengeRoom({translation}: Props) {
         <FormControl variant="standard">
           <InputLabel htmlFor="delay">{translation.inputs.texts.delayBeforeGameStarts}</InputLabel>
           <Input
-            onClick={handleNumberInputClick}
+            onClick={(e)=>{handleNumberInputClick(e); setDelayAmountError(false);}}
+            error={delayAmountError}
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
             name="delay"
             id="delay"
             value={delay}
             onChange={(e) => handleNumInputChange(e, formValidation.maxDelay)}
+            onBlur={(e)=>handleDelayBlur(e)}
             endAdornment= {
               <InputAdornment position="end">
                 Min
@@ -239,12 +324,14 @@ function CreateChallengeRoom({translation}: Props) {
         <FormControl variant="standard">
           <InputLabel htmlFor="time">{translation.inputs.texts.gameDuration}</InputLabel>
           <Input
-            onClick={handleNumberInputClick}
+            onClick={(e)=>{handleNumberInputClick(e); setDurationAmountError(false);}}
+            error={durationAmountError}
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
             name="time"
             id="time"
             value={time}
             onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}
+            onBlur={(e)=>handleDurationBlur(e)}
             endAdornment= {
               <InputAdornment position="end">
                 Min
@@ -253,7 +340,7 @@ function CreateChallengeRoom({translation}: Props) {
             />
         </FormControl>
       <Box>
-        <Button id="create-game-btn" sx={{mt: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>{translation.inputs.buttons.createGame}</Button>
+        <Button disabled={!formIsValid} id="create-game-btn" sx={{mt: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>{translation.inputs.buttons.createGame}</Button>
       </Box>
     </Stack>
   );
