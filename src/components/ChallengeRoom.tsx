@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, WaitingRoomList } from '../interfaces';
@@ -67,23 +67,34 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const [waitingSubmissions, setWaitingSubmissions] = useState<ChallengeFile[]>([])
   const [waitingSubmissionPhoto, setWaitingSubmissionPhoto] = useState("");
   const [showPlayers, setShowPlayers] = useState(false);
+  const [showDeclineAlert, setShowDeclineAlert] = useState(false);
+  const [showAcceptAlert, setShowAcceptAlert] = useState(false);
+  const [showCompletedAlert, setShowCompletedAlert] = useState(false);
 
   useEffect(() => {
     // Player
     if(!isGameMaster){
-      // Check the state of the current task
-      socket?.emit('playerCheckFile', {
-        token: roomInfo?.details.token,
-        payload: {
-            challengeNumber: currentTaskNumber
-        }
-      })
+      if(currentTaskNumber < roomInfo.details.challengeTasks.length){
+        // More tasks available
+        // Check the state of the current task
+        socket?.emit('playerCheckFile', {
+          token: roomInfo?.details.token,
+          payload: {
+              challengeNumber: currentTaskNumber
+          }
+        })
+      }
+      else{
+        // No more tasks available
+        setTimeIsUp(true);
+        setShowCompletedAlert(true);
+      }
     }
   }, [currentTaskNumber])
 
-  // Game time timer
   useEffect(() => {
     const interval = setInterval(() => {
+      // Game time timer
       const endDate = new Date(roomInfo?.details.challengeEndDate as string);
       const milliseconds = endDate.getTime() - new Date().getTime();
       const segmentedTime = calculateTimeLeft(milliseconds);
@@ -100,19 +111,12 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
         if(dataResponse.fileStatus === "Approved"){
           // If current submission has been approved, move to the next challenge if possible
           let nextTaskNum = dataResponse.challengeNumber + 1;
-          if(nextTaskNum >= roomInfo.details.challengeTasks.length){
-            setTimeIsUp(true);
-            alert(translation.texts.allTasksCompleted);
-          }
-          else{
-            setCurrentTaskNumber(nextTaskNum);
-            setPlayerWaitingReview(false);
-          }
+          setCurrentTaskNumber(nextTaskNum);
         }
         else if(dataResponse.fileStatus === "Rejected"){
           // If the current submission has been rejected, 
           // alert the user and allow the user to take another photo
-          alert(translation.texts.submissionDeclined);
+          setShowDeclineAlert(true);
           setPlayerWaitingReview(false);
         }
         else if(dataResponse.fileStatus === "Not reviewed"){
@@ -227,6 +231,27 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
         <Typography id="room-title" variant="body1" component="p">{translation.texts.roomName}: {roomInfo?.details.challengeRoomName}</Typography>
         <Scoreboard socket={socket} translation={translation}/>
       </>} 
+      {/* Alerts */}
+      <Stack style={{position: 'absolute', top: '50px', left: '50%', transform: 'translate(-50%, 0%)'}} sx={{ width: 'auto', textAlign:"left" }} spacing={1}>
+        {showDeclineAlert && 
+          <Alert onClick={() => setShowDeclineAlert(false)} severity="error">
+            <AlertTitle>{translation.alerts.title.declined}</AlertTitle>
+            {translation.alerts.alert.submissionDeclined}
+          </Alert>
+        }
+        {showAcceptAlert && 
+          <Alert onClick={() => setShowAcceptAlert(false)} severity="success">
+            <AlertTitle>{translation.alerts.title.accepted}</AlertTitle>
+            {translation.alerts.success.submissionAccepted}
+          </Alert>
+        }
+        {showCompletedAlert && 
+          <Alert onClick={() => setShowCompletedAlert(false)} severity="info">
+            <AlertTitle>{translation.alerts.title.tasksCompleted}</AlertTitle>
+            {translation.alerts.info.tasksCompleted}
+          </Alert>
+        }
+      </Stack>
     </Stack>
   );
 }

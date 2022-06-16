@@ -93,6 +93,22 @@ export interface Translation{
     taskDescriptionLength: string,
     roomCodeInvalid: string,
   },
+  alerts:{
+    title:{
+      accepted: string,
+      declined: string,
+      tasksCompleted: string,
+    }
+    alert:{
+      submissionDeclined: string,
+    },
+    success:{
+      submissionAccepted: string,
+    },
+    info:{
+      tasksCompleted: string,
+    }
+  },
   imageAlts:{
     reviewingPhoto: string,
     cameraScreen: string,
@@ -187,6 +203,22 @@ const finnish: Translation = {
     taskDescriptionLength: "Haasteen kuvauksen tulee olla 3-256 merkkiä pitkä.",
     roomCodeInvalid: "Huoneen koodi on väärin!",
   },
+  alerts:{
+    title:{
+      accepted: "Hyväksytty",
+      declined: "Hylätty",
+      tasksCompleted: "Kaikki haasteet suoritettu!"
+    },
+    alert:{
+      submissionDeclined: "Lähettämäsi kuva on hylätty. Ota uusi kuva.",
+    },
+    success:{
+      submissionAccepted: "Lähettämäsi kuva on hyväksytty.",
+    },
+    info:{
+      tasksCompleted: "Olet suorittanut kaikki haasteet."
+    }
+  },
   imageAlts:{
     reviewingPhoto: "Arvioitava kuva",
     cameraScreen: "Kameranäkymä"
@@ -280,6 +312,22 @@ const english: Translation = {
     taskCount: "Room must have between 1-20 tasks.",
     taskDescriptionLength: "Task description must be 3-256 characters long.",
     roomCodeInvalid: "Room code was invalid!",
+  },
+  alerts:{
+    title:{
+      accepted: "Accepted",
+      declined: "Declined",
+      tasksCompleted: "All tasks completed!"  
+    },
+    alert:{
+      submissionDeclined: "Your submission has been declined. Take another photo.",
+    },
+    success:{
+      submissionAccepted: "Your submission has been accepted.",
+    },
+    info:{
+      tasksCompleted: "You have completed all tasks."
+    }
   },
   imageAlts:{
     reviewingPhoto: "Photo to review",
