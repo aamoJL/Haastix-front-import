@@ -55,8 +55,7 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
   }
   
   const isGameMaster = roomInfo?.details.username === undefined;
-  const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime();
-  
+  const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime();  
   
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
   const [currentTaskNumber, setCurrentTaskNumber] = useState(0);
@@ -66,8 +65,9 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
   const [waitingSubmissions, setWaitingSubmissions] = useState<ChallengeFile[]>([])
   const [waitingSubmissionPhoto, setWaitingSubmissionPhoto] = useState("");
   const [showPlayers, setShowPlayers] = useState(false);
-
   const [scores, setScores] = useState<PlayerData[]>([]);
+  const [playersDoneCount, setPlayersDoneCount] = useState(0);
+  // const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     // Player
@@ -87,7 +87,7 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
       token: sessionStorage.getItem("token"),
     });
     socket?.on("finalScore_update", (res: PlayerData[]) => {
-      console.log(res);
+      setPlayersDoneCount(res.length);
       let players = res;
       // Sort players by time
       players.sort((a,b) => {
@@ -105,8 +105,15 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
     return () => {
       // Clear socket.io Listeners
       socket?.off("finalScore_update");
+      
     };
   }, []);
+
+  useEffect(() => {
+    if(playersDoneCount === playerArray.length && playerArray.length > 0){
+      setTimeIsUp(true);
+    }
+  }, [playersDoneCount])
 
   // Game time timer
   useEffect(() => {
