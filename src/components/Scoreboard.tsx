@@ -8,6 +8,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 interface Props{
   socket?: Socket,
+  scores: PlayerData[]
 }
 
 const modalStyle : SxProps<Theme> = {
@@ -32,40 +33,13 @@ const tableHeaderStyle : SxProps<Theme> = {
  * Component that renders challenge room's scoreboard sorted by task completion time
  * @param socket Socket.io socket connection
  */
-function Scoreboard({socket}: Props) {
-  const [scores, setScores] = useState<PlayerData[]>([]);
+function Scoreboard({socket, scores}: Props) {
+  // const [scores, setScores] = useState<PlayerData[]>([]);
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | undefined>(undefined);
   const [selectedPhoto, setSelectedPhoto] = useState<string | undefined>(undefined);
   const [selectedPhotoNumber, setSelectedPhotoNumber] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const [modalLoading, setModalLoading] = useState(true);
-
-  useEffect(() => {
-    socket?.emit("fetchScoreBoard", {
-      token: sessionStorage.getItem("token"),
-    });
-    socket?.on("finalScore_update", (res: PlayerData[]) => {
-      console.log(res);
-      let players = res;
-      // Sort players by time
-      players.sort((a,b) => {
-        if(a.playerFileIds.length === b.playerFileIds.length){
-          // If players have same amount of tasks completed
-          return a.totalTime < b.totalTime ? -1 : a.totalTime > b.totalTime ? 1 : 0;
-        }
-        else{
-          // If players other player have more tasks completed
-          return a.playerFileIds.length > b.playerFileIds.length ? -1 : 1;
-        }
-      })
-      setScores(players);
-    });
-    
-    return () => {
-      // Clear socket.io Listeners
-      socket?.off("finalScore_update");
-    };
-  }, []);
 
   useEffect(() => {
     if(selectedPlayer){
