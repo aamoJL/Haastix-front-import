@@ -96,6 +96,12 @@ export interface Translation{
   imageAlts:{
     reviewingPhoto: string,
     cameraScreen: string,
+  },
+  tooltips:{
+    openCamera: string,
+    closeCamera: string,
+    joinGame: string,
+    createGame: string,
   }
 }
 
@@ -184,6 +190,12 @@ const finnish: Translation = {
   imageAlts:{
     reviewingPhoto: "Arvioitava kuva",
     cameraScreen: "Kameranäkymä"
+  },
+  tooltips:{
+    openCamera: "Avaa kamera",
+    closeCamera: "Sulje kamera",
+    joinGame: "Huoneen koodi tai käyttäjänimi on väärin",
+    createGame: "Osa tiedoista on väärin",
   }
 }
 
@@ -272,6 +284,12 @@ const english: Translation = {
   imageAlts:{
     reviewingPhoto: "Photo to review",
     cameraScreen: "Camera screen",
+  },
+  tooltips:{
+    openCamera: "Open camera",
+    closeCamera: "Close camera",
+    joinGame: "Room code or user name is invalid",
+    createGame: "Some information is invalid",
   }
 }
 

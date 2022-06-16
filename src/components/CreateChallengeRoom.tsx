@@ -1,4 +1,4 @@
-import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box, IconButton, InputAdornment } from '@mui/material';
+import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box, IconButton, InputAdornment, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -44,6 +44,7 @@ function CreateChallengeRoom({translation}: Props) {
   const [durationAmountError, setDurationAmountError] = useState(false);
   const [taskErrors, setTaskErrors] = useState<boolean[]>([false]);
   const [formIsValid, setFormIsValid] = useState(false);
+  const [openTooltip, setOpenTooltip] = useState(false);
 
   useEffect(() => {
     if(sessionStorage.getItem('token') !== null)
@@ -271,6 +272,13 @@ function CreateChallengeRoom({translation}: Props) {
     setDelayAmountError(delay > formValidation.maxDelay || delay < formValidation.minDelay);
   }
 
+  const handleTooltip= () => {
+    if(!formIsValid)
+      setOpenTooltip(!openTooltip);
+    else
+      setOpenTooltip(false);
+  }
+
   return (
     <Stack alignItems='center' justifyContent="center" spacing={1}>
       <SettingsHomeButtons/>
@@ -355,9 +363,11 @@ function CreateChallengeRoom({translation}: Props) {
             }
             />
         </FormControl>
-      <Box>
-        <Button disabled={!formIsValid} id="create-game-btn" sx={{mt: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>{translation.inputs.buttons.createGame}</Button>
-      </Box>
+        <Tooltip enterDelay={0} open={openTooltip} onOpen={handleTooltip} onClose={handleTooltip} title={translation.tooltips.createGame}>
+          <Box>
+            <Button disabled={!formIsValid} id="create-game-btn" sx={{mt: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>{translation.inputs.buttons.createGame}</Button>
+          </Box>
+        </Tooltip>
     </Stack>
   );
 }
