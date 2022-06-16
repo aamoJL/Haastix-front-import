@@ -48,20 +48,10 @@ function CreateChallengeRoom({translation}: Props) {
   useEffect(() => {
     if(sessionStorage.getItem('token') !== null)
       navigate("/game");
-  },[])
+  })
 
   useEffect(() => {
-    let taskErrorArray = new Array<boolean>(challenges.length).fill(false);
-    challenges.forEach((challenge,i) => {
-      if((challenge.description.length > formValidation.maxTaskDescription || challenge.description.length < formValidation.minTaskDescription) 
-        && challenge.description.length !== 0){
-          taskErrorArray[i] = true;
-        }
-    });
-    setTaskErrors(taskErrorArray);
-  },[challenges.length])
-
-  useEffect(() => {
+    // Form validation for the form submit button
     setFormIsValid(roomName.length <= formValidation.maxNameLength
       && roomName.length >= formValidation.minNameLength
       && delay <= formValidation.maxDelay
@@ -77,9 +67,6 @@ function CreateChallengeRoom({translation}: Props) {
    * @param e 
    */
   const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if(roomNameError && e.target.value.length >= formValidation.minNameLength){setRoomNameError(false);}
-    // TODO: validate inputs
-    
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
@@ -91,6 +78,15 @@ function CreateChallengeRoom({translation}: Props) {
       if(index !== i) return challenge;
       return {...challenge, description: e.target.value};
     })
+
+    //If error is shown, remove it if the length is right
+    let task = newChallenges[index];
+    if(taskErrors[index] && task.description.length >= formValidation.minTaskDescription
+      && task.description.length <= formValidation.maxTaskDescription){
+        let newErrorArray = taskErrors;
+        newErrorArray[index] = false;
+        setTaskErrors([...newErrorArray]);
+      }
 
     setFormData((prevState) => ({
       ...prevState,
@@ -109,22 +105,34 @@ function CreateChallengeRoom({translation}: Props) {
       ...prevState,
       challenges: newList,
     }));
+
+    // Update task error list
+    let taskErrorArray = [...taskErrors, false];
+    setTaskErrors([...taskErrorArray]);
   }
 
   const handleRemoveChallenge = (i: number) => {
     let newList = challenges;
     newList.splice(i, 1);
+    
+    let newErrorArray = taskErrors;
+    newErrorArray.splice(i,1);
 
-    // Add empty challenge if all challenges has been removed
-    // (Submit requires minimum of one challenge)
+    // Fill the arrays to be lenght of minimum requirements
     if(newList.length < formValidation.minTaskCount){
-      newList = [{description: "", challengeNumber: 0}];
+      for (let index = 0; index < formValidation.minTaskCount; index++) {
+        newList.push({description: "", challengeNumber: 0});
+        newErrorArray.push(false);
+      }
     }
 
     setFormData((prevState) => ({
       ...prevState,
       challenges: newList,
     }));
+
+    // Update taks error list
+    setTaskErrors([...newErrorArray]);
   }
 
   /**
@@ -160,7 +168,6 @@ function CreateChallengeRoom({translation}: Props) {
     if(delay < formValidation.minDelay){setDelayAmountError(true); error = true;}
     if(time > formValidation.maxDuration){setDurationAmountError(true); error = true;}
     if(time < formValidation.minDuration){setDurationAmountError(true); error = true;}
-    // TODO: MUI alert
     if(challenges.length > formValidation.maxTaskCount){ error = true;}
     if(challenges.length < formValidation.minTaskCount){ error = true;}
 
@@ -236,14 +243,22 @@ function CreateChallengeRoom({translation}: Props) {
       || roomName.length < formValidation.minNameLength));
   }
 
-  const handleTaskDescBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>, i: number) => {
-    // validation
-    // let task = challenges[i];
-    // let newErrorArray = taskErrors;
-    // newErrorArray[i] = (task.description.length > formValidation.maxTaskDescription 
-    //   || task.description.length < formValidation.minTaskDescription);
+  const handleRoomNameChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    //If error is shown, remove it if the length is right
+    if(roomNameError && e.target.value.length >= formValidation.minNameLength
+      && e.target.value.length <= formValidation.maxNameLength){setRoomNameError(false);}
+    
+    onChange(e);
+  }
 
-    // setTaskErrors(newErrorArray);
+  const handleChallengeDescBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>, i: number) => {
+    // validation
+    let task = challenges[i];
+    let newErrorArray = taskErrors;
+    newErrorArray[i] = (task.description.length > formValidation.maxTaskDescription 
+      || task.description.length < formValidation.minTaskDescription);
+
+    setTaskErrors([...newErrorArray]);
   }
 
   const handleDurationBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {
@@ -260,14 +275,15 @@ function CreateChallengeRoom({translation}: Props) {
     <Stack alignItems='center' justifyContent="center" spacing={1}>
       <SettingsHomeButtons/>
       <Typography variant="h3" component="h3">{translation.titles.createGame}</Typography>
-      <TextField 
+      <TextField
+        autoFocus
         helperText={translation.inputs.texts.roomNameLengthHelper}
         error={roomNameError}
         type="text"
         name="roomName"
         id="roomName"
         value={roomName}
-        onChange={(e)=>{onChange(e)}}
+        onChange={handleRoomNameChange}
         onBlur={handleRoomNameBlur}
         label={translation.inputs.texts.roomName}
         inputProps={{ maxLength: formValidation.maxNameLength }}/>
@@ -278,7 +294,7 @@ function CreateChallengeRoom({translation}: Props) {
       {
         challenges.map((challenge, i) => (
           <TextField
-            autoFocus
+            autoFocus={i > 0}
             error={taskErrors[i]}
             key={i} 
             id={`challenge-input-${i}`} 
@@ -288,7 +304,7 @@ function CreateChallengeRoom({translation}: Props) {
             type="text" 
             value={challenge.description} 
             onChange={(e) => handleChallengeChange(e, i)}
-            onBlur={((e) => handleTaskDescBlur(e,i))}
+            onBlur={((e) => handleChallengeDescBlur(e,i))}
             inputProps={{ maxLength: formValidation.maxTaskDescription }} 
             InputProps={{
               endAdornment: (
