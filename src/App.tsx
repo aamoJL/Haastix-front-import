@@ -1,17 +1,18 @@
-import React from 'react'
-import { Box, CssBaseline, ThemeProvider } from '@mui/material';
+import React, { useMemo } from 'react'
+import { Box, CssBaseline, PaletteMode, ThemeProvider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import CreateChallengeRoom from './components/CreateChallengeRoom';
 import HomePage from './components/HomePage';
 import JoinChallenge from './components/JoinChallenge';
 import NotFound from './components/NotFound';
-import theme from './Theme';
+import makeTheme from './Theme';
 import { getTranslation, Language, Translation } from './translations';
 
 const App= () => {
   const [translation, setTranslation] = useState<Translation>(getTranslation(localStorage.getItem("language") === null ? "en" 
   : localStorage.getItem("language") as Language));
+  const [mode, setMode] = useState<PaletteMode>("dark");
 
   useEffect(() => {
     // Subscribe to language changed event
@@ -26,6 +27,8 @@ const App= () => {
     }
   },[])
   
+  const theme = useMemo(() =>  makeTheme(mode), [mode]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline/>
