@@ -37,7 +37,6 @@ const tableHeaderStyle : SxProps<Theme> = {
  * @param socket Socket.io socket connection
  */
 function Scoreboard({socket, translation, scores}: Props) {
-  const [scores, setScores] = useState<PlayerData[]>([]);
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | undefined>(undefined);
   const [selectedPhoto, setSelectedPhoto] = useState<string | undefined>(undefined);
   const [selectedPhotoNumber, setSelectedPhotoNumber] = useState(0);
