@@ -3,12 +3,14 @@ import CloseIcon from '@mui/icons-material/Close'
 import { Collapse, IconButton, List, ListItem, SxProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, Typography } from '@mui/material';
 import { JoinChallengeSuccessResponse, WaitingRoomList} from '../interfaces';
 import { Socket } from 'socket.io-client';
+import { Translation } from '../translations';
 
 interface Props {
   socket?: Socket,
   roomInfo: JoinChallengeSuccessResponse,
   playerArray: WaitingRoomList[],
   open: boolean,
+  translation: Translation,
 }
 
 const tableHeaderStyle : SxProps<Theme> = {
@@ -17,7 +19,7 @@ const tableHeaderStyle : SxProps<Theme> = {
   borderBottomColor: "primary.contrastText"
 }
 
-function RemovePlayer({socket, roomInfo, playerArray, open} : Props) {  
+function RemovePlayer({socket, roomInfo, playerArray, open, translation} : Props) {  
 
   const handleRemovePlayer = (userName: string) => {
     socket?.emit("removePlayer", {
@@ -36,7 +38,7 @@ function RemovePlayer({socket, roomInfo, playerArray, open} : Props) {
           <TableHead>
             <TableRow>
               <TableCell sx={tableHeaderStyle}>#</TableCell>
-              <TableCell sx={tableHeaderStyle}>Name</TableCell>
+              <TableCell sx={tableHeaderStyle}>{translation.tables.name}</TableCell>
               <TableCell sx={tableHeaderStyle}></TableCell>
             </TableRow>
           </TableHead>
@@ -45,7 +47,7 @@ function RemovePlayer({socket, roomInfo, playerArray, open} : Props) {
             <TableRow>
               <TableCell></TableCell>
               <TableCell align='center'>
-                <Typography variant="body1" component="p">No joined players</Typography>
+                <Typography variant="body1" component="p">{translation.texts.noJoinedPlayers}</Typography>
               </TableCell>
               <TableCell></TableCell>
             </TableRow>

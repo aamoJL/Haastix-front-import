@@ -7,10 +7,12 @@ import ChallengeRoom from './ChallengeRoom';
 import RemovePlayer from './RemovePlayer';
 import AlertWindow from './AlertWindow';
 import CloseIcon from '@mui/icons-material/Close'
+import { Translation } from '../translations';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
-  socket?: Socket
+  socket?: Socket,
+  translation: Translation,
 }
 
 interface SegmentedTime{
@@ -20,7 +22,7 @@ interface SegmentedTime{
   seconds: number
 }
 
-function WaitingRoom({roomInfo, socket} : Props) {
+function WaitingRoom({roomInfo, socket, translation} : Props) {
   /**
    * Returns object with segmented time between now and end date
    * @param delayTime end date
@@ -185,26 +187,26 @@ function WaitingRoom({roomInfo, socket} : Props) {
     <Stack alignItems="center" justifyContent="center" spacing={1}>
       {!timeIsUp && !alertWindow && (
         <>
-          <Typography variant="h3" component="h3">Waiting room</Typography>
+          <Typography variant="h3" component="h3">{translation.titles.waitingRoom}</Typography>
           <Box sx={{display:"grid", gridTemplateColumns: 'repeat(2, 1fr)', maxWidth:380}} textAlign="left" columnGap={3} pl={8}>
-            <Typography variant="body1" component="p">Room name</Typography>
+            <Typography variant="body1" component="p">{translation.texts.roomName}</Typography>
             <Typography id="room-name" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeRoomName}</Typography>
-            <Typography variant="body1" component="p">Challenge begins in</Typography>
+            <Typography variant="body1" component="p">{translation.texts.challengeBeginsIn}</Typography>
             <Typography id="timer-gm" variant="body1" component="p">{getFormattedTime(timeLeft)}</Typography>
             {isGameMaster &&
             <>
-              <Typography id="room-code" variant="body1" component="p">Room code</Typography>
+              <Typography id="room-code" variant="body1" component="p">{translation.texts.roomCode}</Typography>
               <Typography id="room-code" variant="body1" component="p"><b>{roomInfo.details.challengeRoomCode}</b></Typography>
-              <Typography id="task" variant="body1" component="p">First challenge</Typography>
+              <Typography id="task" variant="body1" component="p">{translation.texts.firstChallenge}</Typography>
               <Typography id="task" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeTasks[0].description}</Typography>
               </>}
           </Box>
           {isGameMaster && <>
             <ButtonGroup>
-              <Button id="show-players-btn" onClick={handleShowPlayers}>Players ({playerArray.length})</Button>
-              <Button id="show-challenges-btn" onClick={handleShowChallenges}>Challenges ({roomInfo.details.challengeTasks.length})</Button>
+              <Button id="show-players-btn" onClick={handleShowPlayers}>{translation.inputs.buttons.players} ({playerArray.length})</Button>
+              <Button id="show-challenges-btn" onClick={handleShowChallenges}>{translation.inputs.buttons.challenges} ({roomInfo.details.challengeTasks.length})</Button>
             </ButtonGroup>
-            <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
+            <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} translation={translation} />
             <Collapse in={showChallenges} unmountOnExit>
               {!edit && <Stack alignItems="center" >
                 {
@@ -213,7 +215,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
                       <TableHead>
                         <TableRow>
                           <TableCell sx={tableHeaderStyle}>#</TableCell>
-                          <TableCell sx={tableHeaderStyle}>Description</TableCell>
+                          <TableCell sx={tableHeaderStyle}>{translation.tables.description}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -231,7 +233,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
                     </Table>
                   </TableContainer>
                 }
-                <Button id="edit-btn" variant="text" onClick={handleEditView}>Edit</Button>
+                <Button id="edit-btn" variant="text" onClick={handleEditView}>{translation.inputs.buttons.edit}</Button>
               </Stack>}
               {edit && 
               <Box sx={{maxHeight: 255, overflow: 'auto', maxWidth: 300}}>
@@ -257,8 +259,8 @@ function WaitingRoom({roomInfo, socket} : Props) {
                   ))}
                 </Box>}
                 {edit && <ButtonGroup variant="text">
-                  <Button id="add-challenge-btn" onClick={handleAddChallenge}>Add</Button>
-                  <Button id="save-challenges-btn" onClick={handleSaveChallenges}>Save</Button>
+                  <Button id="add-challenge-btn" onClick={handleAddChallenge}>{translation.inputs.buttons.add}</Button>
+                  <Button id="save-challenges-btn" onClick={handleSaveChallenges}>{translation.inputs.buttons.save}</Button>
                 </ButtonGroup>}
             </Collapse>
           </>}
@@ -280,7 +282,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
           }
         </>
       )}
-      {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray}/>}
+      {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} translation={translation}/>}
       {alertWindow && <AlertWindow message={alertMessage}/>}
     </Stack>
   );
