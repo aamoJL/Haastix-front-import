@@ -95,15 +95,15 @@ export interface Translation{
   },
   alerts:{
     title:{
-      accepted: string,
-      declined: string,
+      approved: string,
+      rejected: string,
       tasksCompleted: string,
     }
     alert:{
-      submissionDeclined: string,
+      submissionRejected: string,
     },
     success:{
-      submissionAccepted: string,
+      submissionApproved: string,
     },
     info:{
       tasksCompleted: string,
@@ -205,15 +205,15 @@ const finnish: Translation = {
   },
   alerts:{
     title:{
-      accepted: "Hyväksytty",
-      declined: "Hylätty",
+      approved: "Hyväksytty",
+      rejected: "Hylätty",
       tasksCompleted: "Kaikki haasteet suoritettu!"
     },
     alert:{
-      submissionDeclined: "Lähettämäsi kuva on hylätty. Ota uusi kuva.",
+      submissionRejected: "Lähettämäsi kuva on hylätty. Ota uusi kuva.",
     },
     success:{
-      submissionAccepted: "Lähettämäsi kuva on hyväksytty.",
+      submissionApproved: "Lähettämäsi kuva on hyväksytty.",
     },
     info:{
       tasksCompleted: "Olet suorittanut kaikki haasteet."
@@ -295,7 +295,7 @@ const english: Translation = {
     challengeIsOver: "Challenge is over!",
     allowCameraAccess: "Allow camera access!",
     allTasksCompleted: "All tasks have been completed!",
-    submissionDeclined: "Your submission has been declined! Take a new photo.",
+    submissionDeclined: "Your submission has been rejected! Take a new photo.",
     taskNumber: "Task number",
   },
   tables:{
@@ -315,15 +315,15 @@ const english: Translation = {
   },
   alerts:{
     title:{
-      accepted: "Accepted",
-      declined: "Declined",
+      approved: "Approved",
+      rejected: "Declined",
       tasksCompleted: "All tasks completed!"  
     },
     alert:{
-      submissionDeclined: "Your submission has been declined. Take another photo.",
+      submissionRejected: "Your submission has been rejected. Take another photo.",
     },
     success:{
-      submissionAccepted: "Your submission has been accepted.",
+      submissionApproved: "Your submission has been approved.",
     },
     info:{
       tasksCompleted: "You have completed all tasks."

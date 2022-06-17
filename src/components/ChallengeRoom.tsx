@@ -67,8 +67,8 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const [waitingSubmissions, setWaitingSubmissions] = useState<ChallengeFile[]>([])
   const [waitingSubmissionPhoto, setWaitingSubmissionPhoto] = useState("");
   const [showPlayers, setShowPlayers] = useState(false);
-  const [showDeclineAlert, setShowDeclineAlert] = useState(false);
-  const [showAcceptAlert, setShowAcceptAlert] = useState(false);
+  const [showRejectAlert, setShowRejectAlert] = useState(false);
+  const [showApproveAlert, setShowApproveAlert] = useState(false);
   const [showCompletedAlert, setShowCompletedAlert] = useState(false);
 
   useEffect(() => {
@@ -116,7 +116,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
         else if(dataResponse.fileStatus === "Rejected"){
           // If the current submission has been rejected, 
           // alert the user and allow the user to take another photo
-          setShowDeclineAlert(true);
+          setShowRejectAlert(true);
           setPlayerWaitingReview(false);
         }
         else if(dataResponse.fileStatus === "Not reviewed"){
@@ -233,16 +233,16 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       </>} 
       {/* Alerts */}
       <Stack style={{position: 'absolute', top: '50px', left: '50%', transform: 'translate(-50%, 0%)'}} sx={{ width: 'auto', textAlign:"left" }} spacing={1}>
-        {showDeclineAlert && 
-          <Alert onClick={() => setShowDeclineAlert(false)} severity="error">
-            <AlertTitle>{translation.alerts.title.declined}</AlertTitle>
-            {translation.alerts.alert.submissionDeclined}
+        {showRejectAlert && 
+          <Alert onClick={() => setShowRejectAlert(false)} severity="error">
+            <AlertTitle>{translation.alerts.title.rejected}</AlertTitle>
+            {translation.alerts.alert.submissionRejected}
           </Alert>
         }
-        {showAcceptAlert && 
-          <Alert onClick={() => setShowAcceptAlert(false)} severity="success">
-            <AlertTitle>{translation.alerts.title.accepted}</AlertTitle>
-            {translation.alerts.success.submissionAccepted}
+        {showApproveAlert && 
+          <Alert onClick={() => setShowApproveAlert(false)} severity="success">
+            <AlertTitle>{translation.alerts.title.approved}</AlertTitle>
+            {translation.alerts.success.submissionApproved}
           </Alert>
         }
         {showCompletedAlert && 
