@@ -87,7 +87,19 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
       token: sessionStorage.getItem("token"),
     });
     socket?.on("finalScore_update", (res: PlayerData[]) => {
-      setPlayersDoneCount(res.length);
+      // setPlayersDoneCount(res.length);
+      
+      let playerCounter = 0;
+
+      res.map((value, i) => (
+        playerCounter =+ value.playerFileIds.length + playerCounter
+      ))
+      //Game end when everyone done all tasks
+      //TODO change res.lenght to playerArray
+      if(playerCounter == roomInfo.details.challengeTasks.length * res.length){
+        setTimeIsUp(true);
+      }
+
       let players = res;
       // Sort players by time
       players.sort((a,b) => {
@@ -108,12 +120,6 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
       
     };
   }, []);
-
-  useEffect(() => {
-    if(playersDoneCount === playerArray.length && playerArray.length > 0){
-      setTimeIsUp(true);
-    }
-  }, [playersDoneCount])
 
   // Game time timer
   useEffect(() => {
