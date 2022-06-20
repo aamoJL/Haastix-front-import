@@ -102,6 +102,15 @@ const makeTheme = (mode: PaletteMode) => {
           enterDelay: 800,
         }
       },
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
+            borderBottomColor: theme.palette.primary.contrastText    
+          }
+        }
+      }
     }
   })
 

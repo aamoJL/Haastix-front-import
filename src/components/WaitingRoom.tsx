@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, SxProps, Theme } from '@mui/material';
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead } from '@mui/material';
 import { Challenge, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
@@ -49,12 +49,6 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
     timeString = timeString + (Math.abs(time.minutes) < 10 ? "0" : "") + Math.abs(time.minutes) + ":";
     timeString = timeString + (Math.abs(time.seconds) < 10 ? "0" : "") + Math.abs(time.seconds);
     return timeString;
-  }
-
-  const tableHeaderStyle : SxProps<Theme> = {
-    backgroundColor: "primary.main", 
-    color: "primary.contrastText",
-    borderBottomColor: "primary.contrastText"
   }
 
   const isGameMaster = roomInfo.details.username === undefined;
@@ -215,8 +209,8 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
                       <Table size="small" stickyHeader>
                         <TableHead>
                           <TableRow>
-                            <TableCell sx={tableHeaderStyle}>#</TableCell>
-                            <TableCell sx={tableHeaderStyle}>{translation.tables.description}</TableCell>
+                            <TableCell >#</TableCell>
+                            <TableCell>{translation.tables.description}</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>

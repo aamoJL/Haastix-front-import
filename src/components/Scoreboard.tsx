@@ -24,12 +24,6 @@ const modalStyle : SxProps<Theme> = {
   p: 4,
 };
 
-const tableHeaderStyle : SxProps<Theme> = {
-  backgroundColor: "primary.main", 
-  color: "primary.contrastText",
-  borderBottomColor: "primary.contrastText"
-}
-
 /**
  * Component that renders challenge room's scoreboard sorted by task completion time
  * @param socket Socket.io socket connection
@@ -150,11 +144,11 @@ function Scoreboard({socket, translation}: Props) {
         <Table size="small" stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell sx={tableHeaderStyle}>#</TableCell>
-              <TableCell sx={tableHeaderStyle}>{translation.tables.avatar}</TableCell>
-              <TableCell sx={tableHeaderStyle} align='left'>{translation.tables.name}</TableCell>
-              <TableCell sx={tableHeaderStyle} align='right'>{translation.tables.time}</TableCell>
-              <TableCell sx={tableHeaderStyle} align='right'>{translation.tables.tasks}</TableCell>
+              <TableCell>#</TableCell>
+              <TableCell>{translation.tables.avatar}</TableCell>
+              <TableCell align='left'>{translation.tables.name}</TableCell>
+              <TableCell align='right'>{translation.tables.time}</TableCell>
+              <TableCell align='right'>{translation.tables.tasks}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
