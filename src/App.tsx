@@ -53,7 +53,7 @@ const App= () => {
       <Box className='App'>
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<HomePage translation={translation}/>} />
+            <Route path='/' element={<HomePage translation={translation} themeColor={theme.palette.primary}/>} />
             <Route path='game' element={<JoinChallenge translation={translation} />} />
             <Route path='create' element={<CreateChallengeRoom translation={translation} />} />
             <Route path='*' element={<NotFound />}/>
