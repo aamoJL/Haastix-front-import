@@ -57,7 +57,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   }
   
   const isGameMaster = roomInfo?.details.username === undefined;
-  const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime();
+  const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime();  
   
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
   const [currentTaskNumber, setCurrentTaskNumber] = useState<number>(0);
@@ -70,8 +70,10 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const [showRejectAlert, setShowRejectAlert] = useState(false);
   const [showApproveAlert, setShowApproveAlert] = useState(false);
   const [showCompletedAlert, setShowCompletedAlert] = useState(false);
+  const [scores, setScores] = useState<PlayerData[]>([]);
 
   const initTasks = useRef(true); // Used to not show task alerts on page refresh
+  // const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     // Player
@@ -86,6 +88,46 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
     }
   }, [currentTaskNumber])
 
+  useEffect(() => {
+    socket?.emit("fetchScoreBoard", {
+      token: sessionStorage.getItem("token"),
+    });
+    socket?.on("finalScore_update", (res: PlayerData[]) => {
+      // setPlayersDoneCount(res.length);
+      
+      let tasksDoneCounter = 0;
+
+      res.map((value) => (
+        tasksDoneCounter =+ value.playerFileIds.length + tasksDoneCounter
+      ))
+      
+      //Game end when everyone done all tasks
+      if(tasksDoneCounter == roomInfo.details.challengeTasks.length * playerArray.length){
+        setTimeIsUp(true);
+      }
+
+      let players = res;
+      // Sort players by time
+      players.sort((a,b) => {
+        if(a.playerFileIds.length === b.playerFileIds.length){
+          // If players have same amount of tasks completed
+          return a.totalTime < b.totalTime ? -1 : a.totalTime > b.totalTime ? 1 : 0;
+        }
+        else{
+          // If players other player have more tasks completed
+          return a.playerFileIds.length > b.playerFileIds.length ? -1 : 1;
+        }
+      })
+      setScores(players);
+    });
+    return () => {
+      // Clear socket.io Listeners
+      socket?.off("finalScore_update");
+      
+    };
+  }, [playerArray]);
+
+  // Game time timer
   useEffect(() => {
     // Game time timer
     const interval = setInterval(() => {
@@ -242,7 +284,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       <>
         <Typography id="times-up-title" variant="h2" component="h2">{translation.texts.challengeIsOver}</Typography>
         <Typography id="room-title" variant="body1" component="p">{translation.texts.roomName}: {roomInfo?.details.challengeRoomName}</Typography>
-        <Scoreboard socket={socket} translation={translation}/>
+        <Scoreboard socket={socket} scores={scores} translation={translation}/>
       </>} 
       {/* Alerts */}
       <Stack style={{position: 'absolute', top: '50px', left: '50%', transform: 'translate(-50%, 0%)'}} sx={{ width: 'auto', textAlign:"left" }} spacing={1}>
