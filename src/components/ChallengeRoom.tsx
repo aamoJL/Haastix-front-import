@@ -68,7 +68,6 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const [waitingSubmissionPhoto, setWaitingSubmissionPhoto] = useState("");
   const [showPlayers, setShowPlayers] = useState(false);
   const [scores, setScores] = useState<PlayerData[]>([]);
-  const [playersDoneCount, setPlayersDoneCount] = useState(0);
   // const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
@@ -91,14 +90,14 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
     socket?.on("finalScore_update", (res: PlayerData[]) => {
       // setPlayersDoneCount(res.length);
       
-      let playerCounter = 0;
+      let tasksDoneCounter = 0;
 
-      res.map((value, i) => (
-        playerCounter =+ value.playerFileIds.length + playerCounter
+      res.map((value) => (
+        tasksDoneCounter =+ value.playerFileIds.length + tasksDoneCounter
       ))
+      
       //Game end when everyone done all tasks
-      //TODO change res.lenght to playerArray
-      if(playerCounter == roomInfo.details.challengeTasks.length * res.length){
+      if(tasksDoneCounter == roomInfo.details.challengeTasks.length * playerArray.length){
         setTimeIsUp(true);
       }
 
@@ -121,7 +120,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       socket?.off("finalScore_update");
       
     };
-  }, []);
+  }, [playerArray]);
 
   // Game time timer
   useEffect(() => {
