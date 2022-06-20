@@ -216,7 +216,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       {/* Player */}
       {!isGameMaster && !timeIsUp &&
         <>
-          <Button disabled={playerWaitingReview} onClick={(e) => setShowCamera(!showCamera)}>{showCamera ? translation.inputs.buttons.closeCamera : translation.inputs.buttons.openCamera}</Button>
+          <Button id="show-close-camera-btn" disabled={playerWaitingReview} onClick={(e) => setShowCamera(!showCamera)}>{showCamera ? translation.inputs.buttons.closeCamera : translation.inputs.buttons.openCamera}</Button>
           {playerWaitingReview && <div>{translation.texts.waitingReview}</div>}
           {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} translation={translation}/>}
         </>}

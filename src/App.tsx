@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Box, CssBaseline, PaletteMode, ThemeProvider } from '@mui/material';
+import { Box, CssBaseline, PaletteMode, ThemeProvider, useMediaQuery } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import CreateChallengeRoom from './components/CreateChallengeRoom';
@@ -10,9 +10,16 @@ import makeTheme from './Theme';
 import { getTranslation, Language, Translation } from './translations';
 
 const App= () => {
+  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
   const [translation, setTranslation] = useState<Translation>(getTranslation(localStorage.getItem("language") === null ? "en" 
   : localStorage.getItem("language") as Language));
-  const [mode, setMode] = useState<PaletteMode>("dark");
+  const [mode, setMode] = useState<PaletteMode>(localStorage.getItem("mode") !== null ? localStorage.getItem("mode") as PaletteMode
+    : prefersDark ? "dark"
+    : "light"
+  );
+
+  if(localStorage.getItem("mode") === null && mode !== null)
+    localStorage.setItem("mode", mode)
 
   useEffect(() => {
     // Subscribe to language changed event
@@ -26,7 +33,18 @@ const App= () => {
       document.removeEventListener("language-change", event);
     }
   },[])
-  
+
+  useEffect(() => {
+    function event() {
+      setMode(localStorage.getItem("mode") as PaletteMode)
+    }
+    document.addEventListener("mode-change", event);
+
+    return () => {
+      document.removeEventListener("mode-change", event);
+    }
+  })
+
   const theme = useMemo(() =>  makeTheme(mode), [mode]);
 
   return (
