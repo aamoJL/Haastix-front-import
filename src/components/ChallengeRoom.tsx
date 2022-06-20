@@ -1,17 +1,17 @@
 import { Alert, AlertTitle, Box, Button, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, WaitingRoomList } from '../interfaces';
+import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, PlayerData, WaitingRoomList } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
 import Scoreboard from './Scoreboard';
 import RemovePlayer from './RemovePlayer';
 import { Translation } from '../translations';
 
 interface Props {
-    roomInfo: JoinChallengeSuccessResponse,
-    socket?: Socket,
-    playerArray: WaitingRoomList[],
-    translation: Translation,
+  roomInfo: JoinChallengeSuccessResponse,
+  socket?: Socket,
+  playerArray: WaitingRoomList[],
+  translation: Translation,
 }
 
 interface SegmentedTime{
@@ -60,7 +60,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime();
   
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
-  const [currentTaskNumber, setCurrentTaskNumber] = useState(0);
+  const [currentTaskNumber, setCurrentTaskNumber] = useState<number>(0);
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
   const [showCamera, setShowCamera] = useState(false);
   const [playerWaitingReview, setPlayerWaitingReview] = useState(false);
@@ -71,30 +71,24 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const [showApproveAlert, setShowApproveAlert] = useState(false);
   const [showCompletedAlert, setShowCompletedAlert] = useState(false);
 
+  const initTasks = useRef(true); // Used to not show task alerts on page refresh
+
   useEffect(() => {
     // Player
     if(!isGameMaster){
-      if(currentTaskNumber < roomInfo.details.challengeTasks.length){
-        // More tasks available
-        // Check the state of the current task
-        socket?.emit('playerCheckFile', {
-          token: roomInfo?.details.token,
-          payload: {
-              challengeNumber: currentTaskNumber
-          }
-        })
-      }
-      else{
-        // No more tasks available
-        setTimeIsUp(true);
-        setShowCompletedAlert(true);
-      }
+      // Check current tasks status
+      socket?.emit('playerCheckFile', {
+        token: roomInfo?.details.token,
+        payload: {
+            challengeNumber: currentTaskNumber
+        }
+      })
     }
   }, [currentTaskNumber])
 
   useEffect(() => {
+    // Game time timer
     const interval = setInterval(() => {
-      // Game time timer
       const endDate = new Date(roomInfo?.details.challengeEndDate as string);
       const milliseconds = endDate.getTime() - new Date().getTime();
       const segmentedTime = calculateTimeLeft(milliseconds);
@@ -107,20 +101,39 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
 
     // Player
     if(!isGameMaster){
+      // Get file status response when currentChallengeNumber changes or file status changes
       socket?.on("fileStatusPlayer", (dataResponse: FileStatusPlayerResponse) => {
-        if(dataResponse.fileStatus === "Approved"){
-          // If current submission has been approved, move to the next challenge if possible
-          let nextTaskNum = dataResponse.challengeNumber + 1;
-          setCurrentTaskNumber(nextTaskNum);
-        }
-        else if(dataResponse.fileStatus === "Rejected"){
-          // If the current submission has been rejected, 
-          // alert the user and allow the user to take another photo
-          setShowRejectAlert(true);
-          setPlayerWaitingReview(false);
-        }
-        else if(dataResponse.fileStatus === "Not reviewed"){
-          setPlayerWaitingReview(true);
+        switch (dataResponse.fileStatus) {
+          case "Approved":
+            if(dataResponse.challengeNumber + 1 >= roomInfo.details.challengeTasks.length){
+              // No more tasks
+              if(!initTasks.current){setShowCompletedAlert(true);}
+              setTimeIsUp(true);
+              initTasks.current = false;
+            }
+            else{
+              // Go next
+              if(!initTasks.current){setShowApproveAlert(true);}
+              setCurrentTaskNumber(dataResponse.challengeNumber + 1);
+            }
+            setPlayerWaitingReview(false);
+            break;
+          case "Rejected":
+            // Stay
+            if(!initTasks.current){setShowRejectAlert(true);}
+            initTasks.current = false;
+            setPlayerWaitingReview(false);
+            break;
+          case "Not reviewed":
+            // Wait
+            setPlayerWaitingReview(true);
+            initTasks.current = false;
+            break;
+          case "Not submitted":
+          default:
+            // Stay
+            initTasks.current = false;
+            break;
         }
       })
     }
@@ -164,7 +177,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       socket?.off("fileStatusPlayer")
       socket?.off("newFile");
     }
-  }, [roomInfo?.details.challengeEndDate]);
+  }, []);
 
   const handleReview = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted:boolean) => {
     socket?.emit('approveFile', {
