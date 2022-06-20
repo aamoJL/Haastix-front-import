@@ -92,7 +92,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       
       let tasksDoneCounter = 0;
 
-      res.map((value, i) => (
+      res.map((value) => (
         tasksDoneCounter =+ value.playerFileIds.length + tasksDoneCounter
       ))
       
