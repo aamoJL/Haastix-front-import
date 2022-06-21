@@ -1,73 +1,120 @@
-import { createTheme } from "@mui/material";
+import { createTheme, PaletteMode } from "@mui/material";
 
-const theme = createTheme({
-  palette: {
-    background: {
-      default: '#525252'
-    },
-    text: {
-      primary: '#E4E4E4',
-    },
-    primary: {
-      main: '#00CC92',
-      contrastText: '#191919'
+const makeTheme = (mode: PaletteMode) => {
+  let theme = createTheme({
+    palette: {
+      mode: mode,
+      ...(mode === "dark"
+      ?{
+        //Colors for dark mode
+        background: {
+          default: '#292929',
+          paper: "#292929"
+        },
+        text: {
+          primary: '#e4e4e4',
+          secondary: "#e4e4e4",
+        },
+        primary: {
+          main: '#00cc92',
+        },
+        secondary:{
+          main: "#00cc92",
+        },
+      } 
+      :{
+        //Colors for light mode
+        background: {
+          default: '#f7f7f7',
+          paper: "#f7f7f7"
+        },
+        text: {
+          primary: '#1b1b1b',
+          secondary: "#1b1b1b",
+        },
+        primary: {
+          main: '#32b38e',
+        },
+        secondary:{
+          main: "#32b38e",
+        },   
+      })
     }
-  },
-  components: {
-    MuiIconButton: {
-      defaultProps: {
-        color: 'primary',
-        size: 'large',
-      }
-    },
-    MuiTextField: {
-      defaultProps: {
-        color: 'primary',
-      },
-      styleOverrides: {
-        root: {
-          "& .MuiOutlinedInput-root": {
-            "& > fieldset": {
-              borderColor: "#00CC92"
+  })
+
+  theme = createTheme(theme, {
+    components: {
+      MuiTextField: {
+        defaultProps: {
+          sx: {
+            width: 200,
+          }
+        },
+        styleOverrides: {       
+          root: {
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: theme.palette.primary.main
+              }
             }
-          }
-        }
-      }
-    },
-    MuiFormHelperText: {
-      styleOverrides: {
-        root: {
-          color: '#e4e4e4'
-        }
-      }
-    },
-    MuiInputLabel: {
-      styleOverrides: {
-        root:{
-          color: '#e4e4e4',
-        }
-      }
-    },
-    MuiInput: {
-      styleOverrides: {
-        underline: {
-          ":before":{
-            borderBottom: '2px solid #00CC92'
           },
-          ":after": {
-            borderBottom: '2px solid #e4e4e4'
+        }
+      },
+      MuiIconButton: {
+        defaultProps: {
+          color: 'primary',
+          size: 'large',
+        }
+      },
+      MuiInput: {
+        styleOverrides: {
+          root: {
+            maxWidth: 160,
+          },
+          underline: {
+            ":before":{
+              borderBottomColor: theme.palette.primary.main
+            },
           }
         }
-      }
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          minWidth: 200,
+      },
+      MuiButton: {
+        defaultProps: {
+          fullWidth: true,
+          variant: 'contained'
+        },
+        styleOverrides: {
+          root: {
+            maxWidth: 200,
+          }
+        }
+      },
+      MuiDialog: {
+        styleOverrides: {
+          scrollPaper: {
+            alignItems: 'flex-start',
+          }
+        }
+      },
+      MuiTooltip: {
+        defaultProps: {
+          arrow: true,
+          enterDelay: 800,
+        }
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
+            borderBottomColor: theme.palette.primary.contrastText    
+          }
         }
       }
     }
-  }
-});
+  })
 
-export default theme;
+  return theme;
+}
+
+export default makeTheme ;

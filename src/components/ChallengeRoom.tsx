@@ -1,12 +1,18 @@
-import { Button, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle } from '@mui/material';
+import { useEffect, useState, useRef } from 'react';
 import { Socket } from 'socket.io-client';
-import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse } from '../interfaces';
+import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, PlayerData, WaitingRoomList } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
+import Scoreboard from './Scoreboard';
+import RemovePlayer from './RemovePlayer';
+import { Translation } from '../translations';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 interface Props {
-    roomInfo: JoinChallengeSuccessResponse,
-    socket?: Socket
+  roomInfo: JoinChallengeSuccessResponse,
+  socket?: Socket,
+  playerArray: WaitingRoomList[],
+  translation: Translation,
 }
 
 interface SegmentedTime{
@@ -22,7 +28,7 @@ interface SegmentedTime{
  * Players and Game master will have different views.
  * @param roomInfo reJoin API response
  */
-function ChallengeRoom({roomInfo, socket} : Props) {
+function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   /**
    * Returns object with segmented time between now and end date
    * @param delayTime end date
@@ -52,20 +58,29 @@ function ChallengeRoom({roomInfo, socket} : Props) {
   }
   
   const isGameMaster = roomInfo?.details.username === undefined;
-  const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime();
+  const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime();  
   
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
-  const [currentTaskNumber, setCurrentTaskNumber] = useState(0);
+  const [currentTaskNumber, setCurrentTaskNumber] = useState<number>(0);
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
   const [showCamera, setShowCamera] = useState(false);
   const [playerWaitingReview, setPlayerWaitingReview] = useState(false);
   const [waitingSubmissions, setWaitingSubmissions] = useState<ChallengeFile[]>([])
   const [waitingSubmissionPhoto, setWaitingSubmissionPhoto] = useState("");
+  const [showPlayers, setShowPlayers] = useState(false);
+  const [showScoreboard, setShowScoreboard] = useState(false);
+  const [showRejectAlert, setShowRejectAlert] = useState(false);
+  const [showApproveAlert, setShowApproveAlert] = useState(false);
+  const [showCompletedAlert, setShowCompletedAlert] = useState(false);
+  const [scores, setScores] = useState<PlayerData[]>([]);
+
+  const initTasks = useRef(true); // Used to not show task alerts on page refresh
+  // const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     // Player
     if(!isGameMaster){
-      // Check the state of the current task
+      // Check current tasks status
       socket?.emit('playerCheckFile', {
         token: roomInfo?.details.token,
         payload: {
@@ -75,8 +90,48 @@ function ChallengeRoom({roomInfo, socket} : Props) {
     }
   }, [currentTaskNumber])
 
+  useEffect(() => {
+    socket?.emit("fetchScoreBoard", {
+      token: sessionStorage.getItem("token"),
+    });
+    socket?.on("finalScore_update", (res: PlayerData[]) => {
+      // setPlayersDoneCount(res.length);
+      
+      let tasksDoneCounter = 0;
+
+      res.map((value) => (
+        tasksDoneCounter =+ value.playerFileIds.length + tasksDoneCounter
+      ))
+      
+      //Game end when everyone done all tasks
+      if(tasksDoneCounter === roomInfo.details.challengeTasks.length * playerArray.length){
+        setTimeIsUp(true);
+      }
+
+      let players = res;
+      // Sort players by time
+      players.sort((a,b) => {
+        if(a.playerFileIds.length === b.playerFileIds.length){
+          // If players have same amount of tasks completed
+          return a.totalTime < b.totalTime ? -1 : a.totalTime > b.totalTime ? 1 : 0;
+        }
+        else{
+          // If players other player have more tasks completed
+          return a.playerFileIds.length > b.playerFileIds.length ? -1 : 1;
+        }
+      })
+      setScores(players);
+    });
+    return () => {
+      // Clear socket.io Listeners
+      socket?.off("finalScore_update");
+      
+    };
+  }, [playerArray]);
+
   // Game time timer
   useEffect(() => {
+    // Game time timer
     const interval = setInterval(() => {
       const endDate = new Date(roomInfo?.details.challengeEndDate as string);
       const milliseconds = endDate.getTime() - new Date().getTime();
@@ -90,27 +145,39 @@ function ChallengeRoom({roomInfo, socket} : Props) {
 
     // Player
     if(!isGameMaster){
+      // Get file status response when currentChallengeNumber changes or file status changes
       socket?.on("fileStatusPlayer", (dataResponse: FileStatusPlayerResponse) => {
-        if(dataResponse.fileStatus === "Approved"){
-          // If current submission has been approved, move to the next challenge if possible
-          let nextTaskNum = dataResponse.challengeNumber + 1;
-          if(nextTaskNum >= roomInfo.details.challengeTasks.length){
-            setTimeIsUp(true);
-            alert("Kaikki haasteet suoritettu!");
-          }
-          else{
-            setCurrentTaskNumber(nextTaskNum);
+        switch (dataResponse.fileStatus) {
+          case "Approved":
+            if(dataResponse.challengeNumber + 1 >= roomInfo.details.challengeTasks.length){
+              // No more tasks
+              if(!initTasks.current){setShowCompletedAlert(true);}
+              setTimeIsUp(true);
+              initTasks.current = false;
+            }
+            else{
+              // Go next
+              if(!initTasks.current){setShowApproveAlert(true);}
+              setCurrentTaskNumber(dataResponse.challengeNumber + 1);
+            }
             setPlayerWaitingReview(false);
-          }
-        }
-        else if(dataResponse.fileStatus === "Rejected"){
-          // If the current submission has been rejected, 
-          // alert the user and allow the user to take another photo
-          alert("Kuvasi on hylätty! Ota uusi kuva.");
-          setPlayerWaitingReview(false);
-        }
-        else if(dataResponse.fileStatus === "Not reviewed"){
-          setPlayerWaitingReview(true);
+            break;
+          case "Rejected":
+            // Stay
+            if(!initTasks.current){setShowRejectAlert(true);}
+            initTasks.current = false;
+            setPlayerWaitingReview(false);
+            break;
+          case "Not reviewed":
+            // Wait
+            setPlayerWaitingReview(true);
+            initTasks.current = false;
+            break;
+          case "Not submitted":
+          default:
+            // Stay
+            initTasks.current = false;
+            break;
         }
       })
     }
@@ -154,7 +221,7 @@ function ChallengeRoom({roomInfo, socket} : Props) {
       socket?.off("fileStatusPlayer")
       socket?.off("newFile");
     }
-  }, [roomInfo?.details.challengeEndDate]);
+  }, []);
 
   const handleReview = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted:boolean) => {
     socket?.emit('approveFile', {
@@ -167,44 +234,92 @@ function ChallengeRoom({roomInfo, socket} : Props) {
   }
 
   return (
-    <div>
-      <Typography id="room-title" variant="body1" component="p">Huone: {roomInfo?.details.challengeRoomName}</Typography>
+    <Stack alignItems="center" justifyContent="center" spacing={1}>
+      {/* Room info */}
+      {!timeIsUp && 
+      <>
+        <Typography variant="h3" component="h3">{translation.titles.gameRoom}</Typography>
+        <Box sx={{display:"grid", gridTemplateColumns: 'repeat(2, 1fr)', maxWidth:380}} textAlign="left" columnGap={3} pl={8}>
+          <Typography variant="body1" component="p">{translation.texts.roomName}</Typography>
+          <Typography variant="body1" component="p">{roomInfo?.details.challengeRoomName}</Typography>
+          <Typography variant="body1" component="p">{translation.texts.userName}</Typography>
+          {isGameMaster && 
+          <>
+            <Typography id="user-title-gm" variant="body1" component="p">GameMaster</Typography>
+            <Typography id="room-code-title-gm" variant="body1" component="p">{translation.texts.roomCode}</Typography>
+            <Typography id="room-code-title-gm-value" variant="body1" component="p">{roomInfo?.details.challengeRoomCode}</Typography>
+          </>}
+          {!isGameMaster && 
+          <>
+            <Typography variant="body1" component="p">{roomInfo.details.username}</Typography>
+            <Typography variant="body1" component="p">{translation.texts.challenge}</Typography>
+            <Typography variant="body1" component="p"><span id="current-task-number-player">{(currentTaskNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
+            <Typography variant="body1" component="p">{translation.texts.description}</Typography>
+            <Typography variant="body1" component="p">{roomInfo.details.challengeTasks[currentTaskNumber].description}</Typography>
+          </>}
+            <Typography variant="body1" component="p">{translation.texts.timeRemaining}</Typography>
+            <Typography variant="body1" component="p">{getFormattedTime(timeLeft)}</Typography>
+        </Box>
+      </>}
       {/* GameMaster */}
       {isGameMaster && !timeIsUp &&
         <>
-          <Typography id="user-title-gm" variant="body1" component="p">Käyttäjä: GameMaster</Typography>
-          <Typography id="room-code-title-gm" variant="body1" component="p">Huoneen koodi:<br/><b>{roomInfo?.details.challengeRoomCode}</b></Typography>
-          <Typography id="timer-gm" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
+          <ButtonGroup>
+            <Button onClick={()=>{setShowPlayers(!showPlayers); setShowScoreboard(false);}}>{translation.inputs.buttons.players} ({playerArray.length})</Button>
+            <Button onClick={()=>{setShowPlayers(false); setShowScoreboard(!showScoreboard);}}>{translation.titles.scoreboard}</Button>
+          </ButtonGroup>
+          <Collapse in={showScoreboard}>
+            <Scoreboard socket={socket} translation={translation} scores={scores}/>
+          </Collapse>
+          <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} translation={translation} />
           {waitingSubmissions.length > 0 && 
-            <div>
-              <p>Arvioi suoritus:</p>
-              <p>{waitingSubmissions[0].description}</p>
-              <img src={waitingSubmissionPhoto} alt="Arvioitava kuva" />
-              <div>
-                <Button id="accept-photo-btn-gm" variant="contained" color="success" onClick={(e) => handleReview(e,true)}>Hyväksy</Button>
-                <Button id="reject-photo-btn-gm" variant='outlined' color="warning" onClick={(e) => handleReview(e,false)}>Hylkää</Button>
-              </div>
-            </div>}
+            <>
+              <Typography variant="body1" component="p">{translation.texts.acceptSubmission}</Typography>
+              <Typography variant="body1" component="p">{translation.texts.challenge}: {waitingSubmissions[0].description}</Typography>
+              <img src={waitingSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
+              <Button id="accept-photo-btn-gm" variant="contained" color="success" onClick={(e) => handleReview(e,true)}>{translation.inputs.buttons.accept}</Button>
+              <Button id="reject-photo-btn-gm" variant='outlined' color="error" onClick={(e) => handleReview(e,false)}>{translation.inputs.buttons.decline}</Button>
+            </>}
         </>}
       {/* Player */}
       {!isGameMaster && !timeIsUp &&
         <>
-          <Typography id="user-title-player" variant="body1" component="p">Käyttäjä: {roomInfo.details.username}</Typography>
-          <Typography id="task-title-player" variant="body1" component="p">Haaste: <span id="current-task-number-player">{(currentTaskNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
-          <Typography id="task-description-player" variant="body1" component="p">Haasteen kuvaus:<br/>{roomInfo.details.challengeTasks[currentTaskNumber].description}</Typography>
-          <Typography id="timer-player" variant="body1" component="p">Aikaa jäljellä: {getFormattedTime(timeLeft)}</Typography>
-            <>
-              <Button disabled={playerWaitingReview} onClick={(e) => setShowCamera(!showCamera)}>{showCamera ? "Sulje kamera" : "Näytä kamera"}</Button>
-              {playerWaitingReview && <div>Odotetaan kuvan arviointia...</div>}
-              {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}}/>}
-            </>
+          <Tooltip title={showCamera ? translation.tooltips.closeCamera : translation.tooltips.openCamera}>
+            <Button id="show-close-camera-btn" color={showCamera ? "error" : "primary"} style={{borderRadius:"50%", width:64, height:64}} disabled={playerWaitingReview} onClick={()=>{setShowCamera(!showCamera); setShowScoreboard(false);}}><CameraAltIcon/></Button>
+          </Tooltip>
+          {playerWaitingReview && <div>{translation.texts.waitingReview}</div>}
+          {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} translation={translation}/>}
+          <Scoreboard socket={socket} translation={translation} scores={scores}/>
         </>}
       {/* Time is up, scoreboard */}
-      {timeIsUp && 
-        <>
-          <Typography id="times-up-title" variant="h2" component="h2">Haaste on päättynyt!</Typography>
-        </>}
-    </div>
+      {timeIsUp &&
+      <>
+        <Typography id="times-up-title" variant="h2" component="h2">{translation.texts.challengeIsOver}</Typography>
+        <Typography id="room-title" variant="body1" component="p">{translation.texts.roomName}: {roomInfo?.details.challengeRoomName}</Typography>
+        <Scoreboard socket={socket} scores={scores} translation={translation}/>
+      </>} 
+      {/* Alerts */}
+      <Stack style={{position: 'absolute', top: '50px', left: '50%', transform: 'translate(-50%, 0%)'}} sx={{ width: 'auto', textAlign:"left" }} spacing={1}>
+        {showRejectAlert && 
+          <Alert onClick={() => setShowRejectAlert(false)} severity="error">
+            <AlertTitle>{translation.alerts.title.rejected}</AlertTitle>
+            {translation.alerts.alert.submissionRejected}
+          </Alert>
+        }
+        {showApproveAlert && 
+          <Alert onClick={() => setShowApproveAlert(false)} severity="success">
+            <AlertTitle>{translation.alerts.title.approved}</AlertTitle>
+            {translation.alerts.success.submissionApproved}
+          </Alert>
+        }
+        {showCompletedAlert && 
+          <Alert onClick={() => setShowCompletedAlert(false)} severity="info">
+            <AlertTitle>{translation.alerts.title.tasksCompleted}</AlertTitle>
+            {translation.alerts.info.tasksCompleted}
+          </Alert>
+        }
+      </Stack>
+    </Stack>
   );
 }
 

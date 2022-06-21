@@ -1,4 +1,4 @@
- interface Challenge{
+ export interface Challenge{
   description: string,
   challengeNumber: number,
 }
@@ -27,8 +27,6 @@ export interface NewChallengeRoomSuccessResponse{
     challengeRoomId: string, 
     challengeRoomCode: string,
     challengeRoomName: string,
-    challengeRemainingDuration: number,
-    challengeRemainingDelay: number,
     challengeStartDate: string,
     challengeEndDate: string,
     challengeTasks: Challenge[],
@@ -53,9 +51,17 @@ export interface JoinChallengeSuccessResponse{
   }
 }
 
+export interface challengeModifyResponse {
+  challengeRoomName: string,
+  challengeStartDate: string,
+  challengeEndDate: string,
+  challengeTasks: Challenge[],
+}
+
 export interface WaitingRoomList{  
     name: string,
-    avatar: number
+    avatar: number,
+    userId: string
 }
 
 export interface WaitingRoomNewPlayer{  
@@ -66,7 +72,7 @@ export interface WaitingRoomNewPlayer{
  * Response from "fileStatusPlayer" socket
  */
 export interface FileStatusPlayerResponse {
-  fileStatus: "Not reviewed" | "Approved" | "Rejected",
+  fileStatus: "Not reviewed" | "Approved" | "Rejected" | "Not submitted",
   challengeNumber: number,
 }
 
@@ -107,5 +113,25 @@ export interface FetchFileResponse {
   FILE: string,
   statusCode: number,
   error?: string,
+  message: string
+}
+
+/**
+ * Player data for "finalScore_update" socket response
+ */
+export interface PlayerData{
+  playerAvatar: string,
+  playerFileIds: [{
+    CreatedAt: string,
+    challengeNumber: number,
+    fileId: string,
+  }],
+  playerName: string,
+  totalScore: number,
+  totalTime: number,
+}
+
+export interface YouWereRemovedResponse {
+  statusCode: number,
   message: string
 }
