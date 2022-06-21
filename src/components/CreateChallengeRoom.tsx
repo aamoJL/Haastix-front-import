@@ -364,8 +364,8 @@ function CreateChallengeRoom({translation}: Props) {
             />
         </FormControl>
         <Tooltip enterDelay={0} open={openTooltip} onOpen={handleTooltip} onClose={handleTooltip} title={translation.tooltips.createGame}>
-          <Box>
-            <Button disabled={!formIsValid} id="create-game-btn" sx={{mt: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>{translation.inputs.buttons.createGame}</Button>
+          <Box display="flex" alignItems="center" justifyContent="center" sx={{width: 300}}>
+            <Button disabled={!formIsValid} id="create-game-btn" onClick={(e) => onSubmit(e)}>{translation.inputs.buttons.createGame}</Button>
           </Box>
         </Tooltip>
     </Stack>
