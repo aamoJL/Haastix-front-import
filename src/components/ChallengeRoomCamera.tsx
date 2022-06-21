@@ -1,4 +1,4 @@
-import { Button, Modal, Paper, Stack } from '@mui/material';
+import { Box, Button, Dialog, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { SendFileResponse } from '../interfaces';
 import { Translation } from '../translations';
@@ -8,6 +8,7 @@ interface Props{
   onSubmit: () => void,
   translation: Translation,
   open: boolean,
+  close: () => void
 }
 
 /**
@@ -16,7 +17,7 @@ interface Props{
  * After user takes a photo the component will render the taken photo and
  * buttons to submit or decline the photo. 
  */
-function ChallengeRoomCamera({taskNumber, onSubmit, translation, open}:Props) {
+function ChallengeRoomCamera({taskNumber, onSubmit, translation, open, close}:Props) {
   let stream: MediaStream | undefined = undefined;
   let context: CanvasRenderingContext2D | null | undefined = undefined;
   let videoElement: HTMLVideoElement | undefined = undefined;
@@ -24,8 +25,8 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open}:Props) {
   const [loading, setLoading] = useState(true);
   const [takenPhoto, setTakenPhoto] = useState(""); // photo as base64 string
 
-  let canvasHeight = 200;
-  let canvasWidth = 200;
+  let canvasHeight = 300;
+  let canvasWidth = 300;
 
   /**
    * Updates camera image on video element
@@ -109,7 +110,6 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open}:Props) {
       })
       .then(res => res.json())
       .then((res: SendFileResponse) => {
-        console.log(res);
         if(res.statusCode === 200){
           onSubmit();
         }
@@ -121,26 +121,20 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open}:Props) {
   }
 
   return (
-  <Modal open={open}>
-    <Paper>
-      <div hidden={takenPhoto !== "" || !allowed}>
+  <Dialog hidden={loading} open={open} onClose={close}>
+    <Stack alignItems="center" spacing={1} p={1}>
+      {takenPhoto === "" && allowed && <>
         <canvas id="camera-canvas" />
-        <div>
-          <Button id="take-photo-btn" variant='contained' onClick={takePhotoHandler}>{translation.inputs.buttons.takePicture}</Button>
-        </div>
-      </div>
-      <div hidden={takenPhoto === "" || !allowed}>
-        <div>
-          <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt={translation.imageAlts.cameraScreen}/>
-          <Stack spacing={1}>
-            <Button id="send-photo-btn" variant='contained' color="success" onClick={sendPhotoHandler}>{translation.inputs.buttons.send}</Button>
-            <Button id="decline-photo-btn" variant='outlined' color="error" onClick={(e) => setTakenPhoto("")}>{translation.inputs.buttons.retake}</Button>
-          </Stack>
-        </div>
-      </div>
-      {!allowed && <div>{translation.texts.allowCameraAccess}</div>}
-    </Paper>
-  </Modal>
+        <Button id="take-photo-btn" onClick={takePhotoHandler}>{translation.inputs.buttons.takePicture}</Button>
+      </>}
+      {takenPhoto !== "" && allowed && <>
+        <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt={translation.imageAlts.cameraScreen}/>
+        <Button id="send-photo-btn" color="success" onClick={sendPhotoHandler}>{translation.inputs.buttons.send}</Button>
+        <Button id="decline-photo-btn"  color="error" onClick={(e) => setTakenPhoto("")}>{translation.inputs.buttons.retake}</Button>
+      </>}
+    </Stack>
+    {!allowed && <div>{translation.texts.allowCameraAccess}</div>}
+  </Dialog>
   );
 }
 
