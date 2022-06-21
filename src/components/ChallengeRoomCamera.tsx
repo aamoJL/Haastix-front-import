@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material';
+import { Button, Modal, Paper, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { SendFileResponse } from '../interfaces';
 import { Translation } from '../translations';
@@ -7,6 +7,7 @@ interface Props{
   taskNumber: number,
   onSubmit: () => void,
   translation: Translation,
+  open: boolean,
 }
 
 /**
@@ -15,7 +16,7 @@ interface Props{
  * After user takes a photo the component will render the taken photo and
  * buttons to submit or decline the photo. 
  */
-function ChallengeRoomCamera({taskNumber, onSubmit, translation}:Props) {
+function ChallengeRoomCamera({taskNumber, onSubmit, translation, open}:Props) {
   let stream: MediaStream | undefined = undefined;
   let context: CanvasRenderingContext2D | null | undefined = undefined;
   let videoElement: HTMLVideoElement | undefined = undefined;
@@ -45,7 +46,7 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation}:Props) {
   }
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({video: true})
+    navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}})
     .then((_stream) => {
       stream = _stream;
       // Create video element for the camera image
@@ -120,7 +121,8 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation}:Props) {
   }
 
   return (
-    <div hidden={loading}>
+  <Modal open={open}>
+    <Paper>
       <div hidden={takenPhoto !== "" || !allowed}>
         <canvas id="camera-canvas" />
         <div>
@@ -137,7 +139,8 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation}:Props) {
         </div>
       </div>
       {!allowed && <div>{translation.texts.allowCameraAccess}</div>}
-    </div>
+    </Paper>
+  </Modal>
   );
 }
 
