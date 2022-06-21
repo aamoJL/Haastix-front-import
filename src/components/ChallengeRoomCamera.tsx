@@ -45,7 +45,7 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation}:Props) {
   }
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({video: true})
+    navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}})
     .then((_stream) => {
       stream = _stream;
       // Create video element for the camera image
