@@ -104,7 +104,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       ))
       
       //Game end when everyone done all tasks
-      if(tasksDoneCounter == roomInfo.details.challengeTasks.length * playerArray.length){
+      if(tasksDoneCounter === roomInfo.details.challengeTasks.length * playerArray.length){
         setTimeIsUp(true);
       }
 

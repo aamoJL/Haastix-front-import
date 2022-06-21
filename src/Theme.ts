@@ -8,8 +8,8 @@ const makeTheme = (mode: PaletteMode) => {
       ?{
         //Colors for dark mode
         background: {
-          default: '#525252',
-          paper: "#525252"
+          default: '#292929',
+          paper: "#292929"
         },
         text: {
           primary: '#e4e4e4',
