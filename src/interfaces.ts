@@ -72,7 +72,7 @@ export interface WaitingRoomNewPlayer{
  * Response from "fileStatusPlayer" socket
  */
 export interface FileStatusPlayerResponse {
-  fileStatus: "Not reviewed" | "Approved" | "Rejected",
+  fileStatus: "Not reviewed" | "Approved" | "Rejected" | "Not submitted",
   challengeNumber: number,
 }
 
