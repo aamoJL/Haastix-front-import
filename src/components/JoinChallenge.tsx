@@ -224,8 +224,8 @@ function JoinChallenge({translation} : Props) {
           </TextField>
           <Typography variant="body1">{translation.titles.avatar}</Typography>
           <Avatar id="player_avatar" variant="rounded" sx={{height: 150, width: 150}} onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
-          <Tooltip open={openTooltip} onOpen={handleTooltip} onClose={handleTooltip} enterDelay={0} title="Room code or user name is invalid">
-            <Box sx={{width: 300}}>
+          <Tooltip open={openTooltip} onOpen={handleTooltip} onClose={handleTooltip} enterDelay={0} title={translation.tooltips.joinGame}>
+            <Box display="flex" alignItems="center" justifyContent="center" sx={{width: 300}}>
               <Button disabled={formIsNotValid} variant="contained" id="joinChallenge-btn" onClick={joinChallengeRoom}>{translation.inputs.buttons.join}</Button>
             </Box>
           </Tooltip>

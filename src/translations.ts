@@ -54,6 +54,9 @@ export interface Translation{
       roomCodeDesc: string,
       userName: string,
       userNameDesc: string,
+      roomNameLengthHelper: string,
+      taskCountHelper: string,
+      taskDescriptionLengthHelper: string,
     }
   },
   texts:{
@@ -90,6 +93,22 @@ export interface Translation{
     taskDescriptionLength: string,
     roomCodeInvalid: string,
   },
+  alerts:{
+    title:{
+      approved: string,
+      rejected: string,
+      tasksCompleted: string,
+    }
+    alert:{
+      submissionRejected: string,
+    },
+    success:{
+      submissionApproved: string,
+    },
+    info:{
+      tasksCompleted: string,
+    }
+  },
   imageAlts:{
     reviewingPhoto: string,
     cameraScreen: string,
@@ -97,6 +116,8 @@ export interface Translation{
   tooltips:{
     openCamera: string,
     closeCamera: string,
+    joinGame: string,
+    createGame: string,
   }
 }
 
@@ -135,14 +156,17 @@ const finnish: Translation = {
     texts:{
       roomName: "Huoneen nimi",
       description: "Kuvaus",
-      delayBeforeGameStarts: "Odotusaika",
-      gameDuration: "Pelin kesto",
+      delayBeforeGameStarts: "Odotusaika (0-60)",
+      gameDuration: "Pelin kesto (1-240)",
       darkmode: "Tumma tila",
       sound: "Ääni",
       roomCode: "Huoneen koodi",
       roomCodeDesc: "Huoneen koodi on 4 merkkiä",
       userName: "Käyttäjänimi",
       userNameDesc: "Käyttäjänimen tulee olla 3-30 merkkiä pitkä",
+      roomNameLengthHelper: "Huoneen nimi on 3-30 merkkiä",
+      taskCountHelper: "Huoneessa voi olla 1-20 haastetta",
+      taskDescriptionLengthHelper: "Haasteen kuvaus on 3-256 merkkiä",
     }
   },
   texts:{
@@ -179,6 +203,22 @@ const finnish: Translation = {
     taskDescriptionLength: "Haasteen kuvauksen tulee olla 3-256 merkkiä pitkä.",
     roomCodeInvalid: "Huoneen koodi on väärin!",
   },
+  alerts:{
+    title:{
+      approved: "Hyväksytty",
+      rejected: "Hylätty",
+      tasksCompleted: "Kaikki haasteet suoritettu!"
+    },
+    alert:{
+      submissionRejected: "Lähettämäsi kuva on hylätty. Ota uusi kuva.",
+    },
+    success:{
+      submissionApproved: "Lähettämäsi kuva on hyväksytty.",
+    },
+    info:{
+      tasksCompleted: "Olet suorittanut kaikki haasteet."
+    }
+  },
   imageAlts:{
     reviewingPhoto: "Arvioitava kuva",
     cameraScreen: "Kameranäkymä"
@@ -186,6 +226,8 @@ const finnish: Translation = {
   tooltips:{
     openCamera: "Avaa kamera",
     closeCamera: "Sulje kamera",
+    joinGame: "Huoneen koodi tai käyttäjänimi on väärin",
+    createGame: "Osa tiedoista on väärin",
   }
 }
 
@@ -224,14 +266,17 @@ const english: Translation = {
     texts:{
       roomName: "Room name",
       description: "Description",
-      delayBeforeGameStarts: "Delay before game starts",
-      gameDuration: "Game duration",
+      delayBeforeGameStarts: "Delay before game starts (0-60)",
+      gameDuration: "Game duration (1-240)",
       darkmode: "Darkmode",
       sound: "Sound",
       roomCode: "Room code",
       roomCodeDesc: "Code must be 4 characters",
       userName: "User name",
       userNameDesc: "Name must me between 3 and 30 characters",
+      roomNameLengthHelper: "Room name is 3-30 characters",
+      taskCountHelper: "Room can have 1-20 tasks",
+      taskDescriptionLengthHelper: "Task description is 3-256 characters",
     }
   },
   texts:{
@@ -250,7 +295,7 @@ const english: Translation = {
     challengeIsOver: "Challenge is over!",
     allowCameraAccess: "Allow camera access!",
     allTasksCompleted: "All tasks have been completed!",
-    submissionDeclined: "Your submission has been declined! Take a new photo.",
+    submissionDeclined: "Your submission has been rejected! Take a new photo.",
     taskNumber: "Task number",
   },
   tables:{
@@ -268,6 +313,22 @@ const english: Translation = {
     taskDescriptionLength: "Task description must be 3-256 characters long.",
     roomCodeInvalid: "Room code was invalid!",
   },
+  alerts:{
+    title:{
+      approved: "Approved",
+      rejected: "Declined",
+      tasksCompleted: "All tasks completed!"  
+    },
+    alert:{
+      submissionRejected: "Your submission has been rejected. Take another photo.",
+    },
+    success:{
+      submissionApproved: "Your submission has been approved.",
+    },
+    info:{
+      tasksCompleted: "You have completed all tasks."
+    }
+  },
   imageAlts:{
     reviewingPhoto: "Photo to review",
     cameraScreen: "Camera screen",
@@ -275,6 +336,8 @@ const english: Translation = {
   tooltips:{
     openCamera: "Open camera",
     closeCamera: "Close camera",
+    joinGame: "Room code or user name is invalid",
+    createGame: "Some information is invalid",
   }
 }
 
