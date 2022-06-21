@@ -247,7 +247,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
           <>
             <Typography id="user-title-gm" variant="body1" component="p">GameMaster</Typography>
             <Typography id="room-code-title-gm" variant="body1" component="p">{translation.texts.roomCode}</Typography>
-            <Typography id="room-code-title-gm" variant="body1" component="p">{roomInfo?.details.challengeRoomCode}</Typography>
+            <Typography id="room-code-title-gm-value" variant="body1" component="p">{roomInfo?.details.challengeRoomCode}</Typography>
           </>}
           {!isGameMaster && 
           <>

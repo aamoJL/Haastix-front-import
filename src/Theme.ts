@@ -25,18 +25,18 @@ const makeTheme = (mode: PaletteMode) => {
       :{
         //Colors for light mode
         background: {
-          default: '#fff',
-          paper: "#fff"
+          default: '#f7f7f7',
+          paper: "#f7f7f7"
         },
         text: {
-          primary: '#191919',
-          secondary: "#191919",
+          primary: '#1b1b1b',
+          secondary: "#1b1b1b",
         },
         primary: {
-          main: '#fc0303',
+          main: '#32b38e',
         },
         secondary:{
-          main: "#fc0303",
+          main: "#32b38e",
         },   
       })
     }

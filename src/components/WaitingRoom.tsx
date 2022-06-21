@@ -190,9 +190,9 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
             {isGameMaster &&
             <>
               <Typography id="room-code" variant="body1" component="p">{translation.texts.roomCode}</Typography>
-              <Typography id="room-code" variant="body1" component="p"><b>{roomInfo.details.challengeRoomCode}</b></Typography>
+              <Typography id="room-code-value" variant="body1" component="p"><b>{roomInfo.details.challengeRoomCode}</b></Typography>
               <Typography id="task" variant="body1" component="p">{translation.texts.firstChallenge}</Typography>
-              <Typography id="task" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeTasks[0].description}</Typography>
+              <Typography id="task-value" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeTasks[0].description}</Typography>
             </>}
           </Box>
           {isGameMaster && <>
