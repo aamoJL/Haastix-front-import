@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, SxProps, Theme } from '@mui/material';
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead } from '@mui/material';
 import { Challenge, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
@@ -49,12 +49,6 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
     timeString = timeString + (Math.abs(time.minutes) < 10 ? "0" : "") + Math.abs(time.minutes) + ":";
     timeString = timeString + (Math.abs(time.seconds) < 10 ? "0" : "") + Math.abs(time.seconds);
     return timeString;
-  }
-
-  const tableHeaderStyle : SxProps<Theme> = {
-    backgroundColor: "primary.main", 
-    color: "primary.contrastText",
-    borderBottomColor: "primary.contrastText"
   }
 
   const isGameMaster = roomInfo.details.username === undefined;
@@ -199,7 +193,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
               <Typography id="room-code" variant="body1" component="p"><b>{roomInfo.details.challengeRoomCode}</b></Typography>
               <Typography id="task" variant="body1" component="p">{translation.texts.firstChallenge}</Typography>
               <Typography id="task" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeTasks[0].description}</Typography>
-              </>}
+            </>}
           </Box>
           {isGameMaster && <>
             <ButtonGroup>
@@ -208,60 +202,65 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
             </ButtonGroup>
             <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} translation={translation} />
             <Collapse in={showChallenges} unmountOnExit>
-              {!edit && <Stack alignItems="center" >
-                {
-                  <TableContainer sx={{maxWidth: 300, overflow: 'hidden'}}>
-                    <Table size="small" stickyHeader>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell sx={tableHeaderStyle}>#</TableCell>
-                          <TableCell sx={tableHeaderStyle}>{translation.tables.description}</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {roomInfo.details.challengeTasks.map((value, i) => (
-                          <TableRow key={i}> 
-                            <TableCell align="left">
-                              <Typography variant="body1" component="p">{value.challengeNumber +1}</Typography>
-                            </TableCell>  
-                            <TableCell align="left">
-                              {value.description}
-                            </TableCell>
+              {!edit && 
+                <Stack alignItems="center">
+                  {
+                    <TableContainer sx={{maxWidth: 300, overflow: 'hidden'}}>
+                      <Table size="small" stickyHeader>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell >#</TableCell>
+                            <TableCell>{translation.tables.description}</TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                }
-                <Button id="edit-btn" variant="text" onClick={handleEditView}>{translation.inputs.buttons.edit}</Button>
-              </Stack>}
-              {edit && 
-              <Box sx={{maxHeight: 255, overflow: 'auto', maxWidth: 300}}>
-                {challengeArray.map((value, i) => (
-                  <TextField
-                    key={i}
-                    autoFocus
-                    id={`challenge-edit-input-${i}`}
-                    sx={{mb:1}}
-                    value={value.description}
-                    size="small"
-                    multiline
-                    onChange={(e)=>handleEditChallenge(e, i)}
-                    inputProps={{maxLength: 256}}
-                    InputProps={{
-                      endAdornment: (
-                        <IconButton color='error' onClick={()=>handleRemoveChallenge(i)}>
-                          <CloseIcon/>
-                        </IconButton>
-                      )
-                    }}
-                  ></TextField>
-                  ))}
-                </Box>}
-                {edit && <ButtonGroup variant="text">
-                  <Button id="add-challenge-btn" onClick={handleAddChallenge}>{translation.inputs.buttons.add}</Button>
-                  <Button id="save-challenges-btn" onClick={handleSaveChallenges}>{translation.inputs.buttons.save}</Button>
-                </ButtonGroup>}
+                        </TableHead>
+                        <TableBody>
+                          {roomInfo.details.challengeTasks.map((value, i) => (
+                            <TableRow key={i}> 
+                              <TableCell align="left">
+                                <Typography variant="body1" component="p">{value.challengeNumber +1}</Typography>
+                              </TableCell>  
+                              <TableCell align="left">
+                                {value.description}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  }
+                  <Button id="edit-btn" variant="text" onClick={handleEditView}>{translation.inputs.buttons.edit}</Button>
+                </Stack>
+              }
+              {edit &&
+                <Stack alignItems="center" spacing={1}>
+                  <Box sx={{maxHeight: 255, overflow: 'auto', maxWidth: 300}}>
+                    {challengeArray.map((value, i) => (
+                      <TextField
+                        key={i}
+                        autoFocus
+                        id={`challenge-edit-input-${i}`}
+                        sx={{mb:1}}
+                        value={value.description}
+                        size="small"
+                        multiline
+                        onChange={(e)=>handleEditChallenge(e, i)}
+                        inputProps={{maxLength: 256}}
+                        InputProps={{
+                          endAdornment: (
+                            <IconButton color='error' onClick={()=>handleRemoveChallenge(i)}>
+                              <CloseIcon/>
+                            </IconButton>
+                          )
+                        }}
+                      ></TextField>
+                    ))}
+                  </Box>
+                  <ButtonGroup variant="text">
+                    <Button id="add-challenge-btn" onClick={handleAddChallenge}>{translation.inputs.buttons.add}</Button>
+                    <Button id="save-challenges-btn" onClick={handleSaveChallenges}>{translation.inputs.buttons.save}</Button>
+                  </ButtonGroup>
+                </Stack>
+              }
             </Collapse>
           </>}
           {!isGameMaster && playerArray.length > 0 && 
