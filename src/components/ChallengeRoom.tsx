@@ -284,8 +284,8 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       {/* Player */}
       {!isGameMaster && !timeIsUp &&
         <>
-          <Tooltip title={showCamera ? translation.tooltips.closeCamera : translation.tooltips.openCamera}>
-            <Button id="show-close-camera-btn" color={showCamera ? "error" : "primary"} style={{borderRadius:"50%", width:64, height:64}} disabled={playerWaitingReview} onClick={()=>{setShowCamera(!showCamera); setShowScoreboard(false);}}><CameraAltIcon/></Button>
+          <Tooltip enterDelay={0} title={showCamera ? translation.tooltips.closeCamera : translation.tooltips.openCamera}>
+            <span><Button id="show-close-camera-btn" color={showCamera ? "error" : "primary"} style={{borderRadius:"50%", width:64, height:64}} disabled={playerWaitingReview} onClick={()=>{setShowCamera(!showCamera); setShowScoreboard(false);}}><CameraAltIcon/></Button></span>
           </Tooltip>
           {playerWaitingReview && <div>{translation.texts.waitingReview}</div>}
           {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} translation={translation}/>}
