@@ -1,5 +1,5 @@
-import { Box, Button, Dialog, Stack } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Button, Dialog, Stack } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
 import { SendFileResponse } from '../interfaces';
 import { Translation } from '../translations';
 
@@ -18,12 +18,12 @@ interface Props{
  * buttons to submit or decline the photo. 
  */
 function ChallengeRoomCamera({taskNumber, onSubmit, translation, open, close}:Props) {
-  let stream: MediaStream | undefined = undefined;
-  let context: CanvasRenderingContext2D | null | undefined = undefined;
-  let videoElement: HTMLVideoElement | undefined = undefined;
+  let stream = useRef<MediaStream | null>(null);
+  let context = useRef<CanvasRenderingContext2D | null>(null);
+  let videoElement = useRef<HTMLVideoElement | null>(null);
   const [allowed, setAllowed] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [takenPhoto, setTakenPhoto] = useState(""); // photo as base64 string
+  const [takenPhoto, setTakenPhoto] = useState(""); // photo undefineds base64 string
 
   let canvasHeight = 300;
   let canvasWidth = 300;
@@ -32,15 +32,15 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open, close}:Pr
    * Updates camera image on video element
    */
   function updateCamera() {
-    if(videoElement && context){
+    if(videoElement.current && context.current){
       // video's dimensions will be calculated so it will fit to the canvas
-      if(videoElement.videoWidth > videoElement.videoHeight){
-        let ratio = (canvasHeight / videoElement.videoHeight) * videoElement.videoWidth;
-        context?.drawImage(videoElement, 0 , 0, ratio, canvasHeight);
+      if(videoElement.current.videoWidth > videoElement.current.videoHeight){
+        let ratio = (canvasHeight / videoElement.current.videoHeight) * videoElement.current.videoWidth;
+        context.current?.drawImage(videoElement.current, 0 , 0, ratio, canvasHeight);
       }
       else{
-        let ratio = (canvasWidth / videoElement.videoWidth) * videoElement.videoHeight;
-        context?.drawImage(videoElement, videoElement.width / 2 , videoElement.height / 2, canvasWidth, ratio);
+        let ratio = (canvasWidth / videoElement.current.videoWidth) * videoElement.current.videoHeight;
+        context.current?.drawImage(videoElement.current, videoElement.current.width / 2 , videoElement.current.height / 2, canvasWidth, ratio);
       }
       window.requestAnimationFrame(updateCamera);
     }
@@ -49,19 +49,19 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open, close}:Pr
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}})
     .then((_stream) => {
-      stream = _stream;
+      stream.current = _stream;
       // Create video element for the camera image
-      videoElement = document.createElement("video");
-      videoElement.srcObject = stream;
-      videoElement.play();
+      videoElement.current = document.createElement("video");
+      videoElement.current.srcObject = stream.current;
+      videoElement.current.play();
       
       let canvas = document.getElementById("camera-canvas") as HTMLCanvasElement;
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
       
-      context = canvas?.getContext("2d");
+      context.current = canvas?.getContext("2d");
 
-      videoElement.onloadeddata = () => {
+      videoElement.current.onloadeddata = () => {
         updateCamera();
       }
       setAllowed(true);
@@ -75,12 +75,12 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open, close}:Pr
 
     return() => {
       // Stop all tracks from the media devices so the camera will shut down when this component umounts
-      let tracks = stream?.getTracks();
+      let tracks = stream.current?.getTracks();
       tracks?.forEach((track) => {
         track.stop();
       });
       // set context undefined so this component could unmount
-      context = undefined;
+      context.current = null;
     }
   }, [])
 
@@ -122,16 +122,14 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open, close}:Pr
 
   return (
   <Dialog hidden={loading} open={open} onClose={close}>
-    <Stack alignItems="center" spacing={1} p={1}>
-      {takenPhoto === "" && allowed && <>
-        <canvas id="camera-canvas" />
-        <Button id="take-photo-btn" onClick={takePhotoHandler}>{translation.inputs.buttons.takePicture}</Button>
-      </>}
-      {takenPhoto !== "" && allowed && <>
-        <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt={translation.imageAlts.cameraScreen}/>
-        <Button id="send-photo-btn" color="success" onClick={sendPhotoHandler}>{translation.inputs.buttons.send}</Button>
-        <Button id="decline-photo-btn"  color="error" onClick={(e) => setTakenPhoto("")}>{translation.inputs.buttons.retake}</Button>
-      </>}
+    <Stack display={takenPhoto === "" && allowed ? "flex" : "none"} alignItems="center" spacing={1} p={1}>
+      <canvas id="camera-canvas" />
+      <Button id="take-photo-btn" onClick={takePhotoHandler}>{translation.inputs.buttons.takePicture}</Button>
+    </Stack>
+    <Stack display={takenPhoto !== "" && allowed ? "flex" : "none"} alignItems="center" spacing={1} p={1}>
+      <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt={translation.imageAlts.cameraScreen}/>
+      <Button id="send-photo-btn" color="success" onClick={sendPhotoHandler}>{translation.inputs.buttons.send}</Button>
+      <Button id="decline-photo-btn"  color="error" onClick={(e) => setTakenPhoto("")}>{translation.inputs.buttons.retake}</Button>
     </Stack>
     {!allowed && <div>{translation.texts.allowCameraAccess}</div>}
   </Dialog>
