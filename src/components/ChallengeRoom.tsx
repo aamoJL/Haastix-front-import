@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle } from '@mui/material';
+import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle, Dialog, DialogTitle } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 import { Socket } from 'socket.io-client';
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, PlayerData, WaitingRoomList } from '../interfaces';
@@ -273,13 +273,16 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
           </Collapse>
           <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} translation={translation} />
           {waitingSubmissions.length > 0 && 
-            <>
-              <Typography variant="body1" component="p">{translation.texts.acceptSubmission}</Typography>
-              <Typography variant="body1" component="p">{translation.texts.challenge}: {waitingSubmissions[0].description}</Typography>
-              <img src={waitingSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
-              <Button id="accept-photo-btn-gm" variant="contained" color="success" onClick={(e) => handleReview(e,true)}>{translation.inputs.buttons.accept}</Button>
-              <Button id="reject-photo-btn-gm" variant='outlined' color="error" onClick={(e) => handleReview(e,false)}>{translation.inputs.buttons.decline}</Button>
-            </>}
+            <Dialog open={waitingSubmissions.length > 0 ? true : false}>
+              <Stack alignItems="center" spacing={1} p={1}>
+                <Typography variant="h5" component="p">{translation.texts.acceptSubmission}</Typography>
+                <Typography variant="body1" component="p">{translation.texts.challenge}: {waitingSubmissions[0].description}</Typography>
+                <img src={waitingSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
+                <Button id="accept-photo-btn-gm" color="success" onClick={(e) => handleReview(e,true)}>{translation.inputs.buttons.accept}</Button>
+                <Button id="reject-photo-btn-gm" color="error" onClick={(e) => handleReview(e,false)}>{translation.inputs.buttons.decline}</Button>
+              </Stack>
+            </Dialog>
+          }
         </>}
       {/* Player */}
       {!isGameMaster && !timeIsUp &&

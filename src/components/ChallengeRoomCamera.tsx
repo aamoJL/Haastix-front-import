@@ -25,9 +25,10 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open, close}:Pr
   const [loading, setLoading] = useState(true);
   const [takenPhoto, setTakenPhoto] = useState(""); // photo undefineds base64 string
 
-  let canvasHeight = 300;
-  let canvasWidth = 300;
-
+  let canvasHeight = 500;
+  let canvasWidth = 0;
+  window.innerWidth <= 768 ? canvasWidth = window.innerWidth : canvasWidth = 500
+  
   /**
    * Updates camera image on video element
    */
@@ -121,7 +122,12 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open, close}:Pr
   }
 
   return (
-  <Dialog hidden={loading} open={open} onClose={close}>
+  <Dialog 
+    hidden={loading}
+    open={open}
+    onClose={close}
+    PaperProps={{sx: {width: canvasWidth, m:0}}}  
+  >
     <Stack display={takenPhoto === "" && allowed ? "flex" : "none"} alignItems="center" spacing={1} p={1}>
       <canvas id="camera-canvas" />
       <Button id="take-photo-btn" onClick={takePhotoHandler}>{translation.inputs.buttons.takePicture}</Button>
