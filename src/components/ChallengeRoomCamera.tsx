@@ -126,7 +126,7 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open, close}:Pr
     hidden={loading}
     open={open}
     onClose={close}
-    PaperProps={{sx: {width: canvasWidth, m:0}}}  
+    PaperProps={{sx: {width: canvasWidth, mr: 0, ml: 0}}}  
   >
     <Stack display={takenPhoto === "" && allowed ? "flex" : "none"} alignItems="center" spacing={1} p={1}>
       <canvas id="camera-canvas" />
