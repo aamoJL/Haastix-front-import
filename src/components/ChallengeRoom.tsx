@@ -1,7 +1,7 @@
 import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 import { Socket } from 'socket.io-client';
-import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, PlayerData, WaitingRoomList } from '../interfaces';
+import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, PlayerData, PlayerFileStatusesResponse, WaitingRoomList } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
 import Scoreboard from './Scoreboard';
 import RemovePlayer from './RemovePlayer';
@@ -74,21 +74,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const [showCompletedAlert, setShowCompletedAlert] = useState(false);
   const [scores, setScores] = useState<PlayerData[]>([]);
 
-  const initTasks = useRef(true); // Used to not show task alerts on page refresh
   // const [gameOver, setGameOver] = useState(false);
-
-  useEffect(() => {
-    // Player
-    if(!isGameMaster){
-      // Check current tasks status
-      socket?.emit('playerCheckFile', {
-        token: roomInfo?.details.token,
-        payload: {
-            challengeNumber: currentTaskNumber
-        }
-      })
-    }
-  }, [currentTaskNumber])
 
   useEffect(() => {
     socket?.emit("fetchScoreBoard", {
@@ -151,34 +137,64 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
           case "Approved":
             if(dataResponse.challengeNumber + 1 >= roomInfo.details.challengeTasks.length){
               // No more tasks
-              if(!initTasks.current){setShowCompletedAlert(true);}
+              setShowCompletedAlert(true);
               setTimeIsUp(true);
-              initTasks.current = false;
             }
             else{
               // Go next
-              if(!initTasks.current){setShowApproveAlert(true);}
+              setShowApproveAlert(true)
               setCurrentTaskNumber(dataResponse.challengeNumber + 1);
             }
             setPlayerWaitingReview(false);
             break;
           case "Rejected":
             // Stay
-            if(!initTasks.current){setShowRejectAlert(true);}
-            initTasks.current = false;
+            setShowRejectAlert(true);
             setPlayerWaitingReview(false);
             break;
           case "Not reviewed":
             // Wait
             setPlayerWaitingReview(true);
-            initTasks.current = false;
             break;
           case "Not submitted":
           default:
             // Stay
-            initTasks.current = false;
             break;
         }
+      })
+
+      socket?.on("playerFileStatuses", (dataResponse: PlayerFileStatusesResponse) => {
+        if(dataResponse.statusCode === 200){
+          if(dataResponse.files.length === 0){
+            setCurrentTaskNumber(0);
+          }
+          else{
+            let lastFile = dataResponse.files[dataResponse.files.length - 1];
+            switch (lastFile.fileStatus) {
+              case "Approved":
+                if(lastFile.challengeNumber === roomInfo.details.challengeTasks.length - 1){
+                  // No more tasks
+                  setTimeIsUp(true);
+                }
+                else{
+                  setCurrentTaskNumber(lastFile.challengeNumber + 1);
+                }
+                break;
+              case "Not reviewed":
+                setPlayerWaitingReview(true);
+                break;
+              case "Rejected":
+              case "Not submitted": 
+              default:
+                setCurrentTaskNumber(lastFile.challengeNumber);
+                break;
+            }
+          }
+        }
+      })
+
+      socket?.emit("fetchPlayerFileStatuses", {
+        token: roomInfo?.details.token
       })
     }
 
