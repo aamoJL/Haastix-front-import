@@ -65,8 +65,8 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
   const [showCamera, setShowCamera] = useState(false);
   const [playerWaitingReview, setPlayerWaitingReview] = useState(false);
-  const [waitingSubmissions, setWaitingSubmissions] = useState<ChallengeFile[]>([])
-  const [waitingSubmissionPhoto, setWaitingSubmissionPhoto] = useState("");
+  const [unReviewedSubmissions, setUnReviewedSubmissions] = useState<ChallengeFile[]>([])
+  const [currentSubmissionPhoto, setCurrentSubmissionPhoto] = useState("");
   const [showPlayers, setShowPlayers] = useState(false);
   const [showScoreboard, setShowScoreboard] = useState(false);
   const [showRejectAlert, setShowRejectAlert] = useState(false);
@@ -75,6 +75,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const [scores, setScores] = useState<PlayerData[]>([]);
 
   const initTasks = useRef(true); // Used to not show task alerts on page refresh
+  const currentSubmissionFileName = useRef<ChallengeFile>();
   // const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
@@ -128,6 +129,29 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       
     };
   }, [playerArray]);
+
+  useEffect(() => {
+    if(unReviewedSubmissions.length === 0){setCurrentSubmissionPhoto(""); currentSubmissionFileName.current = undefined;}
+    else if(unReviewedSubmissions[0].fileName !== currentSubmissionFileName.current?.fileName){
+      fetch(`${process.env.REACT_APP_API_URL}/challenge/fetchfile/${unReviewedSubmissions[0].fileId}`, {
+        method: "GET",
+        headers: {
+          "Authorization": "bearer " + sessionStorage.getItem("token"),
+        }
+      })
+      .then(async res => {
+        currentSubmissionFileName.current = unReviewedSubmissions[0];
+        let file = await res.blob();
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          // Show currently reviewed photo
+          setCurrentSubmissionPhoto(reader.result as string);
+        }
+      })
+      .catch(error => console.log(error))
+    }
+  }, [unReviewedSubmissions])
 
   // Game time timer
   useEffect(() => {
@@ -187,26 +211,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       // Add new submissions to this component's state
       socket?.on("newFile", (dataResponse: NewFileResponse) => {
         if(dataResponse.statusCode === 200){
-          setWaitingSubmissions(dataResponse.challengeFiles);
-          if(dataResponse.challengeFiles.length > 0){
-            fetch(`${process.env.REACT_APP_API_URL}/challenge/fetchfile/${dataResponse.challengeFiles[0].fileId}`, {
-              method: "GET",
-              headers: {
-                "Authorization": "bearer " + sessionStorage.getItem("token"),
-              }
-            })
-            .then(async res => {
-              let file = await res.blob();
-              let reader = new FileReader();
-              reader.readAsDataURL(file);
-
-              reader.onloadend = () => {
-                // Show currently reviewed photo
-                setWaitingSubmissionPhoto(reader.result as string);
-              }
-            })
-            .catch(error => console.log(error))
-          }
+          setUnReviewedSubmissions([...dataResponse.challengeFiles]);
         }
       })
       
@@ -224,12 +229,17 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   }, []);
 
   const handleReview = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted:boolean) => {
-    socket?.emit('approveFile', {
+    if(unReviewedSubmissions[0] !== undefined){
+      socket?.emit('approveFile', {
+        token: roomInfo?.details.token,
+        payload: {
+            fileId: unReviewedSubmissions[0].fileId,
+            fileStatus: isAccepted
+        }
+      })
+    }
+    socket?.emit('listFiles', {
       token: roomInfo?.details.token,
-      payload: {
-          fileId: waitingSubmissions[0].fileId,
-          fileStatus: isAccepted
-      }
     })
   }
 
@@ -272,11 +282,11 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
             <Scoreboard socket={socket} translation={translation} scores={scores}/>
           </Collapse>
           <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} translation={translation} />
-          {waitingSubmissions.length > 0 && 
+          {unReviewedSubmissions.length > 0 && 
             <>
               <Typography variant="body1" component="p">{translation.texts.acceptSubmission}</Typography>
-              <Typography variant="body1" component="p">{translation.texts.challenge}: {waitingSubmissions[0].description}</Typography>
-              <img src={waitingSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
+              <Typography variant="body1" component="p">{translation.texts.challenge}: {unReviewedSubmissions[0].description}</Typography>
+              <img src={currentSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
               <Button id="accept-photo-btn-gm" variant="contained" color="success" onClick={(e) => handleReview(e,true)}>{translation.inputs.buttons.accept}</Button>
               <Button id="reject-photo-btn-gm" variant='outlined' color="error" onClick={(e) => handleReview(e,false)}>{translation.inputs.buttons.decline}</Button>
             </>}
