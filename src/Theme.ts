@@ -48,7 +48,8 @@ const makeTheme = (mode: PaletteMode) => {
         defaultProps: {
           sx: {
             width: 200,
-          }
+          },
+          autoComplete:"off"
         },
         styleOverrides: {       
           root: {
