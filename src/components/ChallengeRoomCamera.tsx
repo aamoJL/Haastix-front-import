@@ -1,12 +1,11 @@
 import { Button, Stack } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SendFileResponse } from '../interfaces';
-import { Translation } from '../translations';
+import LanguageContext from './Context/LanguageContext';
 
 interface Props{
   taskNumber: number,
   onSubmit: () => void,
-  translation: Translation,
 }
 
 /**
@@ -15,13 +14,14 @@ interface Props{
  * After user takes a photo the component will render the taken photo and
  * buttons to submit or decline the photo. 
  */
-function ChallengeRoomCamera({taskNumber, onSubmit, translation}:Props) {
+function ChallengeRoomCamera({taskNumber, onSubmit}:Props) {
   let stream: MediaStream | undefined = undefined;
   let context: CanvasRenderingContext2D | null | undefined = undefined;
   let videoElement: HTMLVideoElement | undefined = undefined;
   const [allowed, setAllowed] = useState(true);
   const [loading, setLoading] = useState(true);
   const [takenPhoto, setTakenPhoto] = useState(""); // photo as base64 string
+  const translation = useContext(LanguageContext);
 
   let canvasHeight = 200;
   let canvasWidth = 200;

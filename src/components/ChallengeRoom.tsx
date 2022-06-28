@@ -1,18 +1,17 @@
 import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle } from '@mui/material';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { Socket } from 'socket.io-client';
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, PlayerData, WaitingRoomList } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
 import Scoreboard from './Scoreboard';
 import RemovePlayer from './RemovePlayer';
-import { Translation } from '../translations';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import LanguageContext from './Context/LanguageContext';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
   socket?: Socket,
   playerArray: WaitingRoomList[],
-  translation: Translation,
 }
 
 interface SegmentedTime{
@@ -28,7 +27,7 @@ interface SegmentedTime{
  * Players and Game master will have different views.
  * @param roomInfo reJoin API response
  */
-function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
+function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
   /**
    * Returns object with segmented time between now and end date
    * @param delayTime end date
@@ -73,6 +72,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const [showApproveAlert, setShowApproveAlert] = useState(false);
   const [showCompletedAlert, setShowCompletedAlert] = useState(false);
   const [scores, setScores] = useState<PlayerData[]>([]);
+  const translation = useContext(LanguageContext);
 
   const initTasks = useRef(true); // Used to not show task alerts on page refresh
   const currentSubmissionFileName = useRef<ChallengeFile>();
@@ -279,10 +279,10 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
             <Button onClick={()=>{setShowPlayers(false); setShowScoreboard(!showScoreboard);}}>{translation.titles.scoreboard}</Button>
           </ButtonGroup>
           <Collapse in={showScoreboard}>
-            <Scoreboard socket={socket} translation={translation} scores={scores}/>
+            <Scoreboard socket={socket} scores={scores}/>
           </Collapse>
-          <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} translation={translation} />
-          {unReviewedSubmissions.length > 0 && 
+          <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
+          {waitingSubmissions.length > 0 && 
             <>
               <Typography variant="body1" component="p">{translation.texts.acceptSubmission}</Typography>
               <Typography variant="body1" component="p">{translation.texts.challenge}: {unReviewedSubmissions[0].description}</Typography>
@@ -298,15 +298,15 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
             <span><Button id="show-close-camera-btn" color={showCamera ? "error" : "primary"} style={{borderRadius:"50%", width:64, height:64}} disabled={playerWaitingReview} onClick={()=>{setShowCamera(!showCamera); setShowScoreboard(false);}}><CameraAltIcon/></Button></span>
           </Tooltip>
           {playerWaitingReview && <div>{translation.texts.waitingReview}</div>}
-          {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} translation={translation}/>}
-          <Scoreboard socket={socket} translation={translation} scores={scores}/>
+          {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} />}
+          <Scoreboard socket={socket} scores={scores}/>
         </>}
       {/* Time is up, scoreboard */}
       {timeIsUp &&
       <>
         <Typography id="times-up-title" variant="h2" component="h2">{translation.texts.challengeIsOver}</Typography>
         <Typography id="room-title" variant="body1" component="p">{translation.texts.roomName}: {roomInfo?.details.challengeRoomName}</Typography>
-        <Scoreboard socket={socket} scores={scores} translation={translation}/>
+        <Scoreboard socket={socket} scores={scores} />
       </>} 
       {/* Alerts */}
       <Stack style={{position: 'absolute', top: '50px', left: '50%', transform: 'translate(-50%, 0%)'}} sx={{ width: 'auto', textAlign:"left" }} spacing={1}>
