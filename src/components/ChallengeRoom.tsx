@@ -255,7 +255,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
             <Typography variant="body1" component="p">{translation.texts.challenge}</Typography>
             <Typography variant="body1" component="p"><span id="current-task-number-player">{(currentTaskNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
             <Typography variant="body1" component="p">{translation.texts.description}</Typography>
-            <Typography variant="body1" component="p">{roomInfo.details.challengeTasks[currentTaskNumber].description}</Typography>
+            <Typography variant="body1" component="p">{roomInfo.details.challengeTasks[currentTaskNumber].taskDescription}</Typography>
           </>}
             <Typography variant="body1" component="p">{translation.texts.timeRemaining}</Typography>
             <Typography variant="body1" component="p">{getFormattedTime(timeLeft)}</Typography>

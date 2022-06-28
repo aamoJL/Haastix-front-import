@@ -4,8 +4,9 @@
 }
 
 export interface ChallengeTask{
-  description: string,
-  challengeNumber: number,
+  taskNumber: number,
+  taskDescription: string,
+  
 }
 
 export interface ChallengeRoomData{
@@ -29,6 +30,7 @@ export interface NewChallengeRoomSuccessResponse{
   message: string,
   details: {
     userid: string,
+    isGameMaster: boolean,
     challengeRoomId: string, 
     challengeRoomCode: string,
     challengeRoomName: string,
@@ -44,6 +46,7 @@ export interface JoinChallengeSuccessResponse{
   message: string,
   details: {
     userid: string,
+    isGameMaster: boolean,
     challengeRoomId: string, 
     challengeRoomName: string,
     challengeStartDate: string,

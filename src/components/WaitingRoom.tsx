@@ -51,7 +51,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
     return timeString;
   }
 
-  const isGameMaster = roomInfo.details.username === undefined;
+  const isGameMaster = roomInfo.details.isGameMaster;
   const millisecondsLeft = new Date(roomInfo.details.challengeStartDate as string).getTime() - new Date().getTime();
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
@@ -130,7 +130,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
 
   const handleEditChallenge = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
     const newArray = challengeArray.map(challenge => {
-      if(challenge.challengeNumber === index)
+      if(challenge.taskNumber === index)
       {
         return {...challenge, description: e.target.value}
       }
@@ -140,30 +140,30 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
   }
 
   const handleAddChallenge = () => {
-    const newArr = challengeArray.concat({description: "", challengeNumber: challengeArray.length})
+    const newArr = challengeArray.concat({taskDescription: "", taskNumber: challengeArray.length})
     const fixedArr = changeChallengeNumbers(newArr);
     setChallengeArray(fixedArr);
   }
 
   const handleRemoveChallenge = (i: number) => {
-    const newArr = challengeArray.filter(challenge => challenge.challengeNumber !== i);
+    const newArr = challengeArray.filter(challenge => challenge.taskNumber !== i);
     if(newArr.length < 1)
-      setChallengeArray([{description:"", challengeNumber: 0}]);
+      setChallengeArray([{taskDescription:"", taskNumber: 0}]);
     else{
       const fixedArr = changeChallengeNumbers(newArr);
       setChallengeArray(fixedArr);
     }
   }
 
-  const changeChallengeNumbers = (arr: Challenge[]) => {
+  const changeChallengeNumbers = (arr: ChallengeTask[]) => {
     const newArr = arr.map((challenge, index) => {
-      return {...challenge, challengeNumber: index}
+      return {...challenge, taskNumber: index}
     })
     return newArr;
   }
 
   const handleSaveChallenges = () => {
-    const filteredArr = challengeArray.filter(challenge => challenge.description !== "");
+    const filteredArr = challengeArray.filter(challenge => challenge.taskDescription !== "");
     setChallengeArray(filteredArr);
 
     socket?.emit("modifyChallenge", {
@@ -192,7 +192,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
               <Typography id="room-code" variant="body1" component="p">{translation.texts.roomCode}</Typography>
               <Typography id="room-code" variant="body1" component="p"><b>{roomInfo.details.challengeRoomCode}</b></Typography>
               <Typography id="task" variant="body1" component="p">{translation.texts.firstChallenge}</Typography>
-              <Typography id="task" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeTasks[0].description}</Typography>
+              <Typography id="task" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeTasks[0].taskDescription}</Typography>
             </>}
           </Box>
           {isGameMaster && <>
@@ -217,10 +217,10 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
                           {roomInfo.details.challengeTasks.map((value, i) => (
                             <TableRow key={i}> 
                               <TableCell align="left">
-                                <Typography variant="body1" component="p">{challengeArray.length + 1}</Typography>
+                                <Typography variant="body1" component="p">{value.taskNumber}</Typography>
                               </TableCell>  
                               <TableCell align="left">
-                                {value.description}
+                                {value.taskDescription}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -240,7 +240,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
                         autoFocus
                         id={`challenge-edit-input-${i}`}
                         sx={{mb:1}}
-                        value={value.description}
+                        value={value.taskDescription}
                         size="small"
                         multiline
                         onChange={(e)=>handleEditChallenge(e, i)}
