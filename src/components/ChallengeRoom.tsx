@@ -1,18 +1,17 @@
-import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle } from '@mui/material';
-import { useEffect, useState, useRef } from 'react';
+import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle, Dialog, } from '@mui/material';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { Socket } from 'socket.io-client';
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, PlayerData, PlayerFileStatusesResponse, WaitingRoomList } from '../interfaces';
 import ChallengeRoomCamera from './ChallengeRoomCamera';
 import Scoreboard from './Scoreboard';
 import RemovePlayer from './RemovePlayer';
-import { Translation } from '../translations';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import LanguageContext from './Context/LanguageContext';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
   socket?: Socket,
   playerArray: WaitingRoomList[],
-  translation: Translation,
 }
 
 interface SegmentedTime{
@@ -28,7 +27,7 @@ interface SegmentedTime{
  * Players and Game master will have different views.
  * @param roomInfo reJoin API response
  */
-function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
+function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
   /**
    * Returns object with segmented time between now and end date
    * @param delayTime end date
@@ -65,15 +64,18 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
   const [showCamera, setShowCamera] = useState(false);
   const [playerWaitingReview, setPlayerWaitingReview] = useState(false);
-  const [waitingSubmissions, setWaitingSubmissions] = useState<ChallengeFile[]>([])
-  const [waitingSubmissionPhoto, setWaitingSubmissionPhoto] = useState("");
+  const [unReviewedSubmissions, setUnReviewedSubmissions] = useState<ChallengeFile[]>([])
+  const [currentSubmissionPhoto, setCurrentSubmissionPhoto] = useState("");
   const [showPlayers, setShowPlayers] = useState(false);
   const [showScoreboard, setShowScoreboard] = useState(false);
   const [showRejectAlert, setShowRejectAlert] = useState(false);
   const [showApproveAlert, setShowApproveAlert] = useState(false);
   const [showCompletedAlert, setShowCompletedAlert] = useState(false);
   const [scores, setScores] = useState<PlayerData[]>([]);
+  const translation = useContext(LanguageContext);
 
+  const initTasks = useRef(true); // Used to not show task alerts on page refresh
+  const currentSubmissionFileName = useRef<ChallengeFile>();
   // const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
@@ -114,6 +116,29 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       
     };
   }, [playerArray]);
+
+  useEffect(() => {
+    if(unReviewedSubmissions.length === 0){setCurrentSubmissionPhoto(""); currentSubmissionFileName.current = undefined;}
+    else if(unReviewedSubmissions[0].fileName !== currentSubmissionFileName.current?.fileName){
+      fetch(`${process.env.REACT_APP_API_URL}/challenge/fetchfile/${unReviewedSubmissions[0].fileId}`, {
+        method: "GET",
+        headers: {
+          "Authorization": "bearer " + sessionStorage.getItem("token"),
+        }
+      })
+      .then(async res => {
+        currentSubmissionFileName.current = unReviewedSubmissions[0];
+        let file = await res.blob();
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          // Show currently reviewed photo
+          setCurrentSubmissionPhoto(reader.result as string);
+        }
+      })
+      .catch(error => console.log(error))
+    }
+  }, [unReviewedSubmissions])
 
   // Game time timer
   useEffect(() => {
@@ -203,26 +228,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       // Add new submissions to this component's state
       socket?.on("newFile", (dataResponse: NewFileResponse) => {
         if(dataResponse.statusCode === 200){
-          setWaitingSubmissions(dataResponse.challengeFiles);
-          if(dataResponse.challengeFiles.length > 0){
-            fetch(`${process.env.REACT_APP_API_URL}/challenge/fetchfile/${dataResponse.challengeFiles[0].fileId}`, {
-              method: "GET",
-              headers: {
-                "Authorization": "bearer " + sessionStorage.getItem("token"),
-              }
-            })
-            .then(async res => {
-              let file = await res.blob();
-              let reader = new FileReader();
-              reader.readAsDataURL(file);
-
-              reader.onloadend = () => {
-                // Show currently reviewed photo
-                setWaitingSubmissionPhoto(reader.result as string);
-              }
-            })
-            .catch(error => console.log(error))
-          }
+          setUnReviewedSubmissions([...dataResponse.challengeFiles]);
         }
       })
       
@@ -240,12 +246,17 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   }, []);
 
   const handleReview = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted:boolean) => {
-    socket?.emit('approveFile', {
+    if(unReviewedSubmissions[0] !== undefined){
+      socket?.emit('approveFile', {
+        token: roomInfo?.details.token,
+        payload: {
+            fileId: unReviewedSubmissions[0].fileId,
+            fileStatus: isAccepted
+        }
+      })
+    }
+    socket?.emit('listFiles', {
       token: roomInfo?.details.token,
-      payload: {
-          fileId: waitingSubmissions[0].fileId,
-          fileStatus: isAccepted
-      }
     })
   }
 
@@ -285,17 +296,20 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
             <Button onClick={()=>{setShowPlayers(false); setShowScoreboard(!showScoreboard);}}>{translation.titles.scoreboard}</Button>
           </ButtonGroup>
           <Collapse in={showScoreboard}>
-            <Scoreboard socket={socket} translation={translation} scores={scores}/>
+            <Scoreboard socket={socket} scores={scores}/>
           </Collapse>
-          <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} translation={translation} />
-          {waitingSubmissions.length > 0 && 
-            <>
-              <Typography variant="body1" component="p">{translation.texts.acceptSubmission}</Typography>
-              <Typography variant="body1" component="p">{translation.texts.challenge}: {waitingSubmissions[0].description}</Typography>
-              <img src={waitingSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
-              <Button id="accept-photo-btn-gm" variant="contained" color="success" onClick={(e) => handleReview(e,true)}>{translation.inputs.buttons.accept}</Button>
-              <Button id="reject-photo-btn-gm" variant='outlined' color="error" onClick={(e) => handleReview(e,false)}>{translation.inputs.buttons.decline}</Button>
-            </>}
+          <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
+          {unReviewedSubmissions.length > 0 && 
+            <Dialog open={unReviewedSubmissions.length > 0 ? true : false}>
+              <Stack alignItems="center" spacing={1} p={1}>
+                <Typography variant="h5" component="p">{translation.texts.acceptSubmission}</Typography>
+                <Typography variant="body1" component="p">{translation.texts.challenge}: {unReviewedSubmissions[0].description}</Typography>
+                <img src={currentSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
+                <Button id="accept-photo-btn-gm" color="success" onClick={(e) => handleReview(e,true)}>{translation.inputs.buttons.accept}</Button>
+                <Button id="reject-photo-btn-gm" color="error" onClick={(e) => handleReview(e,false)}>{translation.inputs.buttons.decline}</Button>
+              </Stack>
+            </Dialog>
+          }
         </>}
       {/* Player */}
       {!isGameMaster && !timeIsUp &&
@@ -304,15 +318,15 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
             <span><Button id="show-close-camera-btn" color={showCamera ? "error" : "primary"} style={{borderRadius:"50%", width:64, height:64}} disabled={playerWaitingReview} onClick={()=>{setShowCamera(!showCamera); setShowScoreboard(false);}}><CameraAltIcon/></Button></span>
           </Tooltip>
           {playerWaitingReview && <div>{translation.texts.waitingReview}</div>}
-          {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} translation={translation}/>}
-          <Scoreboard socket={socket} translation={translation} scores={scores}/>
+          {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} open={showCamera} close={() => setShowCamera(false)}/>}
+          <Scoreboard socket={socket} scores={scores}/>
         </>}
       {/* Time is up, scoreboard */}
       {timeIsUp &&
       <>
         <Typography id="times-up-title" variant="h2" component="h2">{translation.texts.challengeIsOver}</Typography>
         <Typography id="room-title" variant="body1" component="p">{translation.texts.roomName}: {roomInfo?.details.challengeRoomName}</Typography>
-        <Scoreboard socket={socket} scores={scores} translation={translation}/>
+        <Scoreboard socket={socket} scores={scores} />
       </>} 
       {/* Alerts */}
       <Stack style={{position: 'absolute', top: '50px', left: '50%', transform: 'translate(-50%, 0%)'}} sx={{ width: 'auto', textAlign:"left" }} spacing={1}>
