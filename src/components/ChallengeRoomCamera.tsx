@@ -48,31 +48,38 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation, open, close}:Pr
   }
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}})
-    .then((_stream) => {
-      stream.current = _stream;
-      // Create video element for the camera image
-      videoElement.current = document.createElement("video");
-      videoElement.current.srcObject = stream.current;
-      videoElement.current.play();
-      
-      let canvas = document.getElementById("camera-canvas") as HTMLCanvasElement;
-      canvas.width = canvasWidth;
-      canvas.height = canvasHeight;
-      
-      context.current = canvas?.getContext("2d");
-
-      videoElement.current.onloadeddata = () => {
-        updateCamera();
-      }
-      setAllowed(true);
-      setLoading(false);
-    })
-    .catch((error: DOMException) => {
-      console.log(error);
+    if(navigator.mediaDevices === undefined){
+      // MediaDevices will be undefined if the connection is not secure
       setAllowed(false);
       setLoading(false);
-    });
+    }
+    else{
+      navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}})
+      .then((_stream) => {
+        stream.current = _stream;
+        // Create video element for the camera image
+        videoElement.current = document.createElement("video");
+        videoElement.current.srcObject = stream.current;
+        videoElement.current.play();
+        
+        let canvas = document.getElementById("camera-canvas") as HTMLCanvasElement;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        
+        context.current = canvas?.getContext("2d");
+  
+        videoElement.current.onloadeddata = () => {
+          updateCamera();
+        }
+        setAllowed(true);
+        setLoading(false);
+      })
+      .catch((error: DOMException) => {
+        console.log(error);
+        setAllowed(false);
+        setLoading(false);
+      });
+    }
 
     return() => {
       // Stop all tracks from the media devices so the camera will shut down when this component umounts
