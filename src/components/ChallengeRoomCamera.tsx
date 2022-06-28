@@ -45,31 +45,38 @@ function ChallengeRoomCamera({taskNumber, onSubmit}:Props) {
   }
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({video: true})
-    .then((_stream) => {
-      stream = _stream;
-      // Create video element for the camera image
-      videoElement = document.createElement("video");
-      videoElement.srcObject = stream;
-      videoElement.play();
-      
-      let canvas = document.getElementById("camera-canvas") as HTMLCanvasElement;
-      canvas.width = canvasWidth;
-      canvas.height = canvasHeight;
-      
-      context = canvas?.getContext("2d");
-
-      videoElement.onloadeddata = () => {
-        updateCamera();
-      }
-      setAllowed(true);
-      setLoading(false);
-    })
-    .catch((error: DOMException) => {
-      console.log(error);
+    if(navigator.mediaDevices === undefined){
+      // MediaDevices will be undefined if the connection is not secure
       setAllowed(false);
       setLoading(false);
-    });
+    }
+    else{
+      navigator.mediaDevices.getUserMedia({video: true})
+      .then((_stream) => {
+        stream = _stream;
+        // Create video element for the camera image
+        videoElement = document.createElement("video");
+        videoElement.srcObject = stream;
+        videoElement.play();
+        
+        let canvas = document.getElementById("camera-canvas") as HTMLCanvasElement;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        
+        context = canvas?.getContext("2d");
+  
+        videoElement.onloadeddata = () => {
+          updateCamera();
+        }
+        setAllowed(true);
+        setLoading(false);
+      })
+      .catch((error: DOMException) => {
+        console.log(error);
+        setAllowed(false);
+        setLoading(false);
+      });
+    }
 
     return() => {
       // Stop all tracks from the media devices so the camera will shut down when this component umounts
