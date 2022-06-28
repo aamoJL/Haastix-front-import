@@ -55,7 +55,6 @@ const Settings = (props: Props) => {
   }
  
   return (
-    <div>
       <Modal open={props.open} onClose={props.handleClose}>
         <Paper sx={style}>
           <Stack >
@@ -86,7 +85,6 @@ const Settings = (props: Props) => {
           </Stack>
         </Paper>
       </Modal>
-    </div>
   );
 }
 

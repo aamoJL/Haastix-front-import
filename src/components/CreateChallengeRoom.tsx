@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeRoomData, NewChallengeRoomSuccessResponse} from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
-import { Translation } from '../translations';
 import LanguageContext from './Context/LanguageContext';
 
 // Form validation variables
