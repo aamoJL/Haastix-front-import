@@ -44,6 +44,16 @@ const makeTheme = (mode: PaletteMode) => {
 
   theme = createTheme(theme, {
     components: {
+      MuiTypography: {
+        styleOverrides: {
+          h3: {
+            textAlign: "center"
+          },
+          h2: {
+            textAlign: "center"
+          }
+        }
+      },
       MuiTextField: {
         defaultProps: {
           sx: {
