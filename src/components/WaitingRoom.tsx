@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead } from '@mui/material';
-import { Challenge, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
+import { Challenge, ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
 import ChallengeRoom from './ChallengeRoom';
@@ -62,7 +62,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
   const [showPlayers, setShowPlayers] = useState(false);
   const [showChallenges, setShowChallenges] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [challengeArray, setChallengeArray] = useState<Challenge[]>(roomInfo.details.challengeTasks);
+  const [challengeArray, setChallengeArray] = useState<ChallengeTask[]>(roomInfo.details.challengeTasks);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -217,7 +217,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
                           {roomInfo.details.challengeTasks.map((value, i) => (
                             <TableRow key={i}> 
                               <TableCell align="left">
-                                <Typography variant="body1" component="p">{value.challengeNumber +1}</Typography>
+                                <Typography variant="body1" component="p">{challengeArray.length + 1}</Typography>
                               </TableCell>  
                               <TableCell align="left">
                                 {value.description}
