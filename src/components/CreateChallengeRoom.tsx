@@ -1,10 +1,10 @@
 import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box, IconButton, InputAdornment, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChallengeRoomData, NewChallengeRoomSuccessResponse} from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
-import { Translation } from '../translations';
+import LanguageContext from './Context/LanguageContext';
 
 // Form validation variables
 // required values from: https://gitlab.labranet.jamk.fi/wimmalab2021/iotitude/source-backend/-/blob/master/documents/restApiRoutesDocuments/newChallenge.md
@@ -31,11 +31,7 @@ const defaultFormData : ChallengeRoomData = {
   delay: 0,
 }
 
-interface Props{
-  translation: Translation
-}
-
-function CreateChallengeRoom({translation}: Props) {
+function CreateChallengeRoom() {
   const [formData, setFormData] = useState<ChallengeRoomData>(defaultFormData);
   const {roomName, challenges, delay, time} = formData;
   const navigate = useNavigate();
@@ -45,6 +41,7 @@ function CreateChallengeRoom({translation}: Props) {
   const [taskErrors, setTaskErrors] = useState<boolean[]>([false]);
   const [formIsValid, setFormIsValid] = useState(false);
   const [openTooltip, setOpenTooltip] = useState(false);
+  const translation = useContext(LanguageContext);
 
   useEffect(() => {
     if(sessionStorage.getItem('token') !== null)

@@ -2,14 +2,16 @@ import { Link } from 'react-router-dom';
 import {ReactComponent as Banner} from '../assets/banner.svg';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import { Stack, Button, Palette, } from '@mui/material';
-import { Translation } from '../translations';
+import LanguageContext from './Context/LanguageContext';
+import { useContext } from 'react';
 
 interface Props{
-  translation: Translation,
   palette: Palette
 }
 
-function HomePage({translation, palette} : Props) {
+function HomePage({palette} : Props) {
+  const translation = useContext(LanguageContext);
+
   return (
     <Stack justifyContent="flex-end" alignItems="center" spacing={3}>
       <SettingsHomeButtons isHomePage={true}/>
