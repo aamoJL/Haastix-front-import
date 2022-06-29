@@ -130,9 +130,9 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
 
   const handleEditChallenge = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
     const newArray = challengeArray.map(challenge => {
-      if(challenge.taskNumber === index)
+      if(challenge.taskNumber === index + 1)
       {
-        return {...challenge, description: e.target.value}
+        return {...challenge, taskDescription: e.target.value}
       }
       return challenge;
     })
@@ -140,15 +140,15 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
   }
 
   const handleAddChallenge = () => {
-    const newArr = challengeArray.concat({taskDescription: "", taskNumber: challengeArray.length})
+    const newArr = challengeArray.concat({taskNumber: challengeArray.length + 1, taskDescription: ""})
     const fixedArr = changeChallengeNumbers(newArr);
     setChallengeArray(fixedArr);
   }
 
   const handleRemoveChallenge = (i: number) => {
-    const newArr = challengeArray.filter(challenge => challenge.taskNumber !== i);
-    if(newArr.length < 1)
-      setChallengeArray([{taskDescription:"", taskNumber: 0}]);
+    const newArr = challengeArray.filter(challenge => challenge.taskNumber !== i + 1);
+    if(challengeArray.length < 1)
+      setChallengeArray(challengeArray);
     else{
       const fixedArr = changeChallengeNumbers(newArr);
       setChallengeArray(fixedArr);
@@ -157,15 +157,14 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
 
   const changeChallengeNumbers = (arr: ChallengeTask[]) => {
     const newArr = arr.map((challenge, index) => {
-      return {...challenge, taskNumber: index}
+      return {...challenge, taskNumber: index + 1}
     })
     return newArr;
   }
 
   const handleSaveChallenges = () => {
-    const filteredArr = challengeArray.filter(challenge => challenge.taskDescription !== "");
+    const filteredArr = challengeArray.filter(challenge => challenge.taskDescription !== ""); 
     setChallengeArray(filteredArr);
-
     socket?.emit("modifyChallenge", {
       token: roomInfo.details.token,
       payload: {
