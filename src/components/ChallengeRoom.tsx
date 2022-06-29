@@ -80,7 +80,7 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
 
   useEffect(() => {
     socket?.emit("fetchScoreBoard", {
-      token: sessionStorage.getItem("token"),
+      token: roomInfo.details.token,
     });
     socket?.on("finalScore_update", (res: PlayerData[]) => {
       // setPlayersDoneCount(res.length);

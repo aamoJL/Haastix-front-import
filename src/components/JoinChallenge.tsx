@@ -158,6 +158,7 @@ function JoinChallenge() {
 
   useEffect(() => {
     currentSocket?.on("challengeModify", (data: challengeModifyResponse)=> {
+      console.log(data)
       setRoomInfo(prevState => ({
         ...prevState,
         details: {
@@ -167,20 +168,21 @@ function JoinChallenge() {
       }))
     })
 
-    // currentSocket?.on("gameStarted", (data: startGameResponse) => {
-    //   setRoomInfo(prevState => ({
-    //     ...prevState,
-    //     details: {
-    //       ...prevState.details,
-    //       challengeStartDate: data.challengeStartDate,
-    //       challengeEndDate: data.challengeEndDate
-    //     }
-    //   }))
-    // })
+    currentSocket?.on("gameStarted", (data: startGameResponse) => {
+      console.log(data);
+      setRoomInfo(prevState => ({
+        ...prevState,
+        details: {
+          ...prevState.details,
+          challengeStartDate: data.challengeStartDate,
+          challengeEndDate: data.challengeEndDate
+        }
+      }))
+    })
 
     return()=> {
       currentSocket?.off("challengeModify");
-      //currentSocket?.off("gameStarted")
+      currentSocket?.off("gameStarted");
     }
   })
 

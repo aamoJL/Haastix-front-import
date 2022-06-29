@@ -177,14 +177,11 @@ function WaitingRoom({roomInfo, socket} : Props) {
     setEdit(false)
   }
   
-  // const handleStartGame = () => {
-  //   socket?.emit("startGame", {
-  //     token: roomInfo.details.token,
-  //     payload: {
-  //       challengeName: roomInfo.details.challengeRoomName,
-  //     }
-  //   })
-  // }
+  const handleStartGame = () => {
+    socket?.emit("startGame", {
+      token: roomInfo.details.token,
+    });
+  }
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
@@ -205,6 +202,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
             </>}
           </Box>
           {isGameMaster && <>
+          <Button id="start-game-btn" onClick={handleStartGame}>Start the game</Button>
             <ButtonGroup>
               <Button id="show-players-btn" onClick={handleShowPlayers}>{translation.inputs.buttons.players} ({playerArray.length})</Button>
               <Button id="show-challenges-btn" onClick={handleShowChallenges}>{translation.inputs.buttons.challenges} ({roomInfo.details.challengeTasks.length})</Button>
