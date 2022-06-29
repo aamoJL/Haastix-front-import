@@ -176,6 +176,15 @@ function WaitingRoom({roomInfo, socket} : Props) {
 
     setEdit(false)
   }
+  
+  // const handleStartGame = () => {
+  //   socket?.emit("startGame", {
+  //     token: roomInfo.details.token,
+  //     payload: {
+  //       challengeName: roomInfo.details.challengeRoomName,
+  //     }
+  //   })
+  // }
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>

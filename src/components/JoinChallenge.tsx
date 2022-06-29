@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { challengeModifyResponse, ChallengeRoomJoin, JoinChallengeSuccessResponse } from '../interfaces';
+import { challengeModifyResponse, ChallengeRoomJoin, JoinChallengeSuccessResponse, startGameResponse } from '../interfaces';
 import { Socket } from 'socket.io-client';
 import SettingsHomeButtons from './SettingsHomeButtons';
 import { setConnection } from './socket';
@@ -167,8 +167,20 @@ function JoinChallenge() {
       }))
     })
 
+    // currentSocket?.on("gameStarted", (data: startGameResponse) => {
+    //   setRoomInfo(prevState => ({
+    //     ...prevState,
+    //     details: {
+    //       ...prevState.details,
+    //       challengeStartDate: data.challengeStartDate,
+    //       challengeEndDate: data.challengeEndDate
+    //     }
+    //   }))
+    // })
+
     return()=> {
       currentSocket?.off("challengeModify");
+      //currentSocket?.off("gameStarted")
     }
   })
 

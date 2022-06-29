@@ -60,6 +60,11 @@ export interface challengeModifyResponse {
   challengeTasks: Challenge[],
 }
 
+export interface startGameResponse {
+  challengeStartDate: string,
+  challengeEndDate: string,
+}
+
 export interface WaitingRoomList{  
     name: string,
     avatar: number,
