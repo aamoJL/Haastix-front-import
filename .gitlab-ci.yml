@@ -11,8 +11,6 @@ build_test:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    #- echo "REACT_APP_API_URL=http://128.214.255.104:8000" > .env
-    #- echo "REACT_APP_API_URL=https://128.214.255.104:8000" > .env
     - echo "REACT_APP_API_URL=https://test.haastix.wimmalab.org/api" > .env
     - echo "DANGEROUSLY_DISABLE_HOST_CHECK=true" >> .env
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
@@ -29,7 +27,6 @@ build_production:
     entrypoint: [""]
   script:
     - echo "REACT_APP_API_URL=https://haastix.wimmalab.org:8000" > .env
-    #- echo "REACT_APP_API_URL=http://86.50.169.110:8000" > .env
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:production
   only:
