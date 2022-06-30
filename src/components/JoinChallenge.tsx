@@ -169,7 +169,6 @@ function JoinChallenge() {
     })
 
     currentSocket?.on("gameStarted", (data: startGameResponse) => {
-      console.log(data);
       setRoomInfo(prevState => ({
         ...prevState,
         details: {

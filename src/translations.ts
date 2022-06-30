@@ -42,6 +42,7 @@ export interface Translation{
       retake: string,
       add: string,
       save: string,
+      start: string,
     },
     texts:{
       roomName: string,
@@ -152,6 +153,7 @@ const finnish: Translation = {
       retake: "Ota uusi kuva",
       add: "Lisää",
       save: "Tallenna",
+      start: "Aloita peli",
     },
     texts:{
       roomName: "Huoneen nimi",
@@ -262,6 +264,7 @@ const english: Translation = {
       retake: "Retake",
       add: "Add",
       save: "Save",
+      start: "Start the game",
     },
     texts:{
       roomName: "Room name",

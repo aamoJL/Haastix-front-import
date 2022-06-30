@@ -62,18 +62,20 @@ function WaitingRoom({roomInfo, socket} : Props) {
   const [showChallenges, setShowChallenges] = useState(false);
   const [edit, setEdit] = useState(false);
   const [challengeArray, setChallengeArray] = useState<Challenge[]>(roomInfo.details.challengeTasks);
+  const [startGame, setStartGame] = useState(false);
+  const [timer, setTimer] = useState(10);
   const translation = useContext(LanguageContext);
 
   useEffect(() => {
     const interval = setInterval(() => {
-    const endDate = new Date(roomInfo.details.challengeStartDate as string);
-    const milliseconds = endDate.getTime() - new Date().getTime();
-    const segmentedTime = calculateTimeLeft(milliseconds);
-    setTimeLeft(segmentedTime);
-    if(milliseconds <= 0){
-      setTimeIsUp(true);
-      clearInterval(interval);
-    }
+      const endDate = new Date(roomInfo.details.challengeStartDate as string);
+      const milliseconds = endDate.getTime() - new Date().getTime();
+      const segmentedTime = calculateTimeLeft(milliseconds);
+      setTimeLeft(segmentedTime);
+      if(milliseconds <= 0){
+        setTimeIsUp(true);
+        clearInterval(interval);
+      }
     }, 1000);
     return () => {
       clearInterval(interval);
@@ -178,10 +180,24 @@ function WaitingRoom({roomInfo, socket} : Props) {
   }
   
   const handleStartGame = () => {
-    socket?.emit("startGame", {
-      token: roomInfo.details.token,
-    });
+    setStartGame(!startGame)
+    setTimer(10)
   }
+
+  useEffect(() => {
+    if(startGame && timer > 0) {
+      const interval = setInterval(() => {
+        setTimer(timer - 1);
+      }, 1000);
+      
+      return () => clearInterval(interval);
+    }
+    if(timer === 0) {
+      socket?.emit("startGame", {
+        token: roomInfo.details.token,
+      });      
+    }
+  }, [timer, startGame]);
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
@@ -202,7 +218,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
             </>}
           </Box>
           {isGameMaster && <>
-          <Button id="start-game-btn" onClick={handleStartGame}>Start the game</Button>
+          <Button id="start-game-btn" onClick={handleStartGame}>{startGame ? timer : `${translation.inputs.buttons.start}`}</Button>
             <ButtonGroup>
               <Button id="show-players-btn" onClick={handleShowPlayers}>{translation.inputs.buttons.players} ({playerArray.length})</Button>
               <Button id="show-challenges-btn" onClick={handleShowChallenges}>{translation.inputs.buttons.challenges} ({roomInfo.details.challengeTasks.length})</Button>
