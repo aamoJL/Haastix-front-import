@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { Box, CssBaseline, PaletteMode, ThemeProvider, useMediaQuery } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -8,6 +8,7 @@ import JoinChallenge from './components/JoinChallenge';
 import NotFound from './components/NotFound';
 import makeTheme from './Theme';
 import { getTranslation, Language, Translation } from './translations';
+import LanguageContext from './components/Context/LanguageContext';
 
 const App= () => {
   const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
@@ -48,19 +49,21 @@ const App= () => {
   const theme = useMemo(() =>  makeTheme(mode), [mode]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline/>
-      <Box className='App'>
-        <BrowserRouter>
-          <Routes>
-            <Route path='/' element={<HomePage translation={translation} palette={theme.palette}/>} />
-            <Route path='game' element={<JoinChallenge translation={translation} />} />
-            <Route path='create' element={<CreateChallengeRoom translation={translation} />} />
-            <Route path='*' element={<NotFound />}/>
-          </Routes>
-        </BrowserRouter>
-      </Box>
-    </ThemeProvider>
+    <LanguageContext.Provider value={translation}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline/>
+        <Box className='App'>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/' element={<HomePage palette={theme.palette}/>} />
+              <Route path='game' element={<JoinChallenge />} />
+              <Route path='create' element={<CreateChallengeRoom />} />
+              <Route path='*' element={<NotFound />}/>
+            </Routes>
+          </BrowserRouter>
+        </Box>
+      </ThemeProvider>
+    </LanguageContext.Provider>
   );
 }
 

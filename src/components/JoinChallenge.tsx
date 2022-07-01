@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { challengeModifyResponse, ChallengeRoomJoin, JoinChallengeSuccessResponse } from '../interfaces';
 import { Socket } from 'socket.io-client';
 import SettingsHomeButtons from './SettingsHomeButtons';
@@ -7,7 +7,7 @@ import {emojiArray, getEmojiImage} from './storage/Images'
 import WaitingRoom from './WaitingRoom';
 import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Translation } from '../translations';
+import LanguageContext from './Context/LanguageContext';
 
 const defaultFormData : ChallengeRoomJoin = {
   roomCode: "",
@@ -32,11 +32,7 @@ const defaultRoomInfo: JoinChallengeSuccessResponse = {
   }
 }
 
-interface Props{
-  translation: Translation
-}
-
-function JoinChallenge({translation} : Props) {
+function JoinChallenge() {
   const [currentSocket, setSocket] = useState<Socket | undefined>(undefined);
   const [info, setInfo] = useState<ChallengeRoomJoin>(defaultFormData); //form state
   const {roomCode, userName, userAvatar} = info; //form state
@@ -48,6 +44,7 @@ function JoinChallenge({translation} : Props) {
   const [openAlert, setOpenAlert] = useState(false); //if true show error alert
   const [roomInfo, setRoomInfo] = useState<JoinChallengeSuccessResponse>(defaultRoomInfo);
   const [openTooltip, setOpenTooltip] = useState(false);
+  const translation = useContext(LanguageContext);
 
   const openWebsocket = (token: string) => {
     setSocket(setConnection(token))
@@ -186,7 +183,7 @@ function JoinChallenge({translation} : Props) {
     <Box>
       <SettingsHomeButtons isLoggedIn={showWaitingRoom}/>
       {loading && <></>}
-      {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket} translation={translation}/>}
+      {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket}/>}
       {!loading && !showWaitingRoom &&
         <Stack  justifyContent="center" spacing={2} alignItems="center">
           <Typography variant="h3">{translation.titles.joinAGame}</Typography>
