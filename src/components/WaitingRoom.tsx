@@ -218,7 +218,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
             </>}
           </Box>
           {isGameMaster && <>
-          <Button id="start-game-btn" onClick={handleStartGame}>{startGame ? timer : `${translation.inputs.buttons.start}`}</Button>
+          <Button id="start-game-btn" onClick={handleStartGame}>{startGame ? `${translation.inputs.buttons.cancel} (${timer})` : `${translation.inputs.buttons.start}`}</Button>
             <ButtonGroup>
               <Button id="show-players-btn" onClick={handleShowPlayers}>{translation.inputs.buttons.players} ({playerArray.length})</Button>
               <Button id="show-challenges-btn" onClick={handleShowChallenges}>{translation.inputs.buttons.challenges} ({roomInfo.details.challengeTasks.length})</Button>

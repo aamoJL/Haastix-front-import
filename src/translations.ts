@@ -43,6 +43,7 @@ export interface Translation{
       add: string,
       save: string,
       start: string,
+      cancel: string,
     },
     texts:{
       roomName: string,
@@ -154,6 +155,7 @@ const finnish: Translation = {
       add: "Lisää",
       save: "Tallenna",
       start: "Aloita peli",
+      cancel: "Peruuta"
     },
     texts:{
       roomName: "Huoneen nimi",
@@ -265,6 +267,7 @@ const english: Translation = {
       add: "Add",
       save: "Save",
       start: "Start the game",
+      cancel: "Cancel",
     },
     texts:{
       roomName: "Room name",
