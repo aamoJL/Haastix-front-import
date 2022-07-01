@@ -12,6 +12,7 @@ build_test:
     entrypoint: [""]
   script:
     - echo "REACT_APP_API_URL=https://test.haastix.wimmalab.org/api" > .env
+    - echo "REACT_APP_WEBSOCKET_ENDPOINT=https://test.haastix.wimmalab.org" >> .env
     - echo "DANGEROUSLY_DISABLE_HOST_CHECK=true" >> .env
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --snapshotMode=redo --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:test
