@@ -41,28 +41,29 @@ function FeedbackModal({ open, onClose }: Props) {
   const translation = useContext(LanguageContext);
 
   const sendEmail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    fetch(`${process.env.REACT_APP_API_URL}/feedback/send`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        text: feedbackText,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.statusCode === 200) {
-          setFeedbackText("");
-          onClose && onClose();
-        } else {
-          if (feedbackText.length < 10) {
-            setShowLengthAlert(true);
-          }
-          throw Error(res.message);
-        }
+    if (feedbackText.length < 10) {
+      setShowLengthAlert(true);
+    } else {
+      fetch(`${process.env.REACT_APP_API_URL}/feedback/send`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: feedbackText,
+        }),
       })
-      .catch((error) => console.log(error));
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.statusCode === 200) {
+            setFeedbackText("");
+            onClose && onClose();
+          } else {
+            throw Error(res.message);
+          }
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   return (
