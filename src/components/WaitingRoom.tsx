@@ -91,6 +91,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
 
     socket?.on("youWereRemoved", (data: YouWereRemovedResponse) => {
           sessionStorage.removeItem("token");
+          sessionStorage.removeItem("taskOrder");
           setAlertMessage(data.message);
           setAlertWindow(true);
         }
