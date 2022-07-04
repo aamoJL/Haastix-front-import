@@ -22,6 +22,7 @@ export interface Translation{
     waitingRoom: string,
     gameRoom: string,
     scoreboard: string,
+    feedbackForm: string,
   },
   inputs:{
     buttons:{
@@ -42,6 +43,7 @@ export interface Translation{
       retake: string,
       add: string,
       save: string,
+      feedback: string,
     },
     texts:{
       roomName: string,
@@ -101,6 +103,7 @@ export interface Translation{
     }
     alert:{
       submissionRejected: string,
+      feedbackTooShort: string,
     },
     success:{
       submissionApproved: string,
@@ -132,6 +135,7 @@ const finnish: Translation = {
     waitingRoom: "Odotushuone",
     gameRoom: "Pelihuone",
     scoreboard: "Tulokset",
+    feedbackForm: "Lähetä palautetta"
   },
   inputs:{
     buttons:{
@@ -152,6 +156,7 @@ const finnish: Translation = {
       retake: "Ota uusi kuva",
       add: "Lisää",
       save: "Tallenna",
+      feedback: "Palaute"
     },
     texts:{
       roomName: "Huoneen nimi",
@@ -211,6 +216,7 @@ const finnish: Translation = {
     },
     alert:{
       submissionRejected: "Lähettämäsi kuva on hylätty. Ota uusi kuva.",
+      feedbackTooShort: "Palaute on liian lyhyt."
     },
     success:{
       submissionApproved: "Lähettämäsi kuva on hyväksytty.",
@@ -242,6 +248,7 @@ const english: Translation = {
     waitingRoom: "Waiting room",
     gameRoom: "Game room",
     scoreboard: "Scoreboard",
+    feedbackForm: "Send feedback"
   },
   inputs:{
     buttons:{
@@ -262,6 +269,7 @@ const english: Translation = {
       retake: "Retake",
       add: "Add",
       save: "Save",
+      feedback: "Feedback"
     },
     texts:{
       roomName: "Room name",
@@ -321,6 +329,7 @@ const english: Translation = {
     },
     alert:{
       submissionRejected: "Your submission has been rejected. Take another photo.",
+      feedbackTooShort: "Feedback is too short."
     },
     success:{
       submissionApproved: "Your submission has been approved.",
