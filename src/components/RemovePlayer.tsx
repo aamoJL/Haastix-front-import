@@ -15,7 +15,7 @@ interface Props {
 
 function RemovePlayer({socket, roomInfo, playerArray, open, translation} : Props) {  
 
-  const handleRemovePlayer = (userName: string) => {
+  const handleRemovePlayer = (userName: string) => {    
     socket?.emit("removePlayer", {
       token: roomInfo.details.token,
       payload: {

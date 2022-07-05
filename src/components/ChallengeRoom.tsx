@@ -57,7 +57,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
     return timeString;
   }
   
-  const isGameMaster = roomInfo?.details.username === undefined;
+  const isGameMaster = roomInfo.details.isGameMaster;
   const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime();  
   
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
@@ -90,44 +90,44 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
     }
   }, [currentTaskNumber])
 
-  useEffect(() => {
-    socket?.emit("fetchScoreBoard", {
-      token: sessionStorage.getItem("token"),
-    });
-    socket?.on("finalScore_update", (res: PlayerData[]) => {
-      // setPlayersDoneCount(res.length);
+  // useEffect(() => {
+  //   socket?.emit("fetchScoreBoard", {
+  //     token: sessionStorage.getItem("token"),
+  //   });
+  //   socket?.on("finalScore_update", (res: PlayerData[]) => {
+  //     // setPlayersDoneCount(res.length);
       
-      let tasksDoneCounter = 0;
+  //     let tasksDoneCounter = 0;
 
-      res.map((value) => (
-        tasksDoneCounter =+ value.playerFileIds.length + tasksDoneCounter
-      ))
+  //     res.map((value) => (
+  //       tasksDoneCounter =+ value.playerFileIds.length + tasksDoneCounter
+  //     ))
       
-      //Game end when everyone done all tasks
-      if(tasksDoneCounter == roomInfo.details.challengeTasks.length * playerArray.length){
-        setTimeIsUp(true);
-      }
+  //     //Game end when everyone done all tasks
+  //     if(tasksDoneCounter == roomInfo.details.challengeTasks.length * playerArray.length){
+  //       setTimeIsUp(true);
+  //     }
 
-      let players = res;
-      // Sort players by time
-      players.sort((a,b) => {
-        if(a.playerFileIds.length === b.playerFileIds.length){
-          // If players have same amount of tasks completed
-          return a.totalTime < b.totalTime ? -1 : a.totalTime > b.totalTime ? 1 : 0;
-        }
-        else{
-          // If players other player have more tasks completed
-          return a.playerFileIds.length > b.playerFileIds.length ? -1 : 1;
-        }
-      })
-      setScores(players);
-    });
-    return () => {
-      // Clear socket.io Listeners
-      socket?.off("finalScore_update");
+  //     let players = res;
+  //     // Sort players by time
+  //     players.sort((a,b) => {
+  //       if(a.playerFileIds.length === b.playerFileIds.length){
+  //         // If players have same amount of tasks completed
+  //         return a.totalTime < b.totalTime ? -1 : a.totalTime > b.totalTime ? 1 : 0;
+  //       }
+  //       else{
+  //         // If players other player have more tasks completed
+  //         return a.playerFileIds.length > b.playerFileIds.length ? -1 : 1;
+  //       }
+  //     })
+  //     setScores(players);
+  //   });
+  //   return () => {
+  //     // Clear socket.io Listeners
+  //     socket?.off("finalScore_update");
       
-    };
-  }, [playerArray]);
+  //   };
+  // }, [playerArray]);
 
   // Game time timer
   useEffect(() => {
@@ -189,7 +189,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
         if(dataResponse.statusCode === 200){
           setWaitingSubmissions(dataResponse.challengeFiles);
           if(dataResponse.challengeFiles.length > 0){
-            fetch(`${process.env.REACT_APP_API_URL}/challenge/fetchfile/${dataResponse.challengeFiles[0].fileId}`, {
+            fetch(`${process.env.REACT_APP_API_URL}/challenge/fetchfile/${dataResponse.challengeFiles[0].submissionId}`, {
               method: "GET",
               headers: {
                 "Authorization": "bearer " + sessionStorage.getItem("token"),
@@ -227,7 +227,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
     socket?.emit('approveFile', {
       token: roomInfo?.details.token,
       payload: {
-          fileId: waitingSubmissions[0].fileId,
+          submissionId: waitingSubmissions[0].submissionId,
           fileStatus: isAccepted
       }
     })
@@ -251,7 +251,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
           </>}
           {!isGameMaster && 
           <>
-            <Typography variant="body1" component="p">{roomInfo.details.username}</Typography>
+            <Typography variant="body1" component="p">{roomInfo.details.userName}</Typography>
             <Typography variant="body1" component="p">{translation.texts.challenge}</Typography>
             <Typography variant="body1" component="p"><span id="current-task-number-player">{(currentTaskNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
             <Typography variant="body1" component="p">{translation.texts.description}</Typography>
@@ -288,7 +288,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
             <Button id="show-close-camera-btn" color={showCamera ? "error" : "primary"} style={{borderRadius:"50%", width:64, height:64}} disabled={playerWaitingReview} onClick={()=>{setShowCamera(!showCamera); setShowScoreboard(false);}}><CameraAltIcon/></Button>
           </Tooltip>
           {playerWaitingReview && <div>{translation.texts.waitingReview}</div>}
-          {showCamera && <ChallengeRoomCamera taskNumber={currentTaskNumber} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} translation={translation}/>}
+          {showCamera && <ChallengeRoomCamera taskId={roomInfo.details.challengeTasks[currentTaskNumber].taskId} onSubmit={() => {setPlayerWaitingReview(true); setShowCamera(false)}} translation={translation}/>}
           <Scoreboard socket={socket} translation={translation} scores={scores}/>
         </>}
       {/* Time is up, scoreboard */}

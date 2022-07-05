@@ -140,7 +140,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
   }
 
   const handleAddChallenge = () => {
-    const newArr = challengeArray.concat({taskNumber: challengeArray.length + 1, taskDescription: ""})
+    const newArr = challengeArray.concat({taskNumber: challengeArray.length + 1,  taskDescription: "", taskId: "taskId"})
     const fixedArr = changeChallengeNumbers(newArr);
     setChallengeArray(fixedArr);
   }

@@ -26,9 +26,9 @@ const defaultRoomInfo: JoinChallengeSuccessResponse = {
     challengeRoomName: "",
     challengeStartDate: "",
     challengeEndDate: "",
-    challengeTasks: [{ taskDescription: "", taskNumber: 0}],
+    challengeTasks: [{ taskDescription: "", taskId: "", taskNumber: 0}],
     token: "",
-    username: "",
+    userName: "",
     userAvatar: 0,
   }
 }

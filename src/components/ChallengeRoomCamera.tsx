@@ -1,10 +1,11 @@
 import { Button, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { NamedTupleMember } from 'typescript';
 import { SendFileResponse } from '../interfaces';
 import { Translation } from '../translations';
 
 interface Props{
-  taskNumber: number,
+  taskId: string,
   onSubmit: () => void,
   translation: Translation,
 }
@@ -15,7 +16,7 @@ interface Props{
  * After user takes a photo the component will render the taken photo and
  * buttons to submit or decline the photo. 
  */
-function ChallengeRoomCamera({taskNumber, onSubmit, translation}:Props) {
+function ChallengeRoomCamera({taskId, onSubmit, translation}:Props) {
   let stream: MediaStream | undefined = undefined;
   let context: CanvasRenderingContext2D | null | undefined = undefined;
   let videoElement: HTMLVideoElement | undefined = undefined;
@@ -103,12 +104,12 @@ function ChallengeRoomCamera({taskNumber, onSubmit, translation}:Props) {
         },
         body: JSON.stringify({
           challengeFile: takenPhoto.split(';base64,')[1],
-          challengeNumber: taskNumber,
+          taskId: taskId,
         })
       })
       .then(res => res.json())
       .then((res: SendFileResponse) => {
-        console.log(res);
+        // console.log(res);
         if(res.statusCode === 200){
           onSubmit();
         }

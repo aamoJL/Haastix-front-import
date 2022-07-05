@@ -6,7 +6,7 @@
 export interface ChallengeTask{
   taskNumber: number,
   taskDescription: string,
-  
+  taskId: string,
 }
 
 export interface ChallengeRoomData{
@@ -53,7 +53,7 @@ export interface JoinChallengeSuccessResponse{
     challengeEndDate: string,
     challengeTasks: ChallengeTask[],
     token: string,
-    username: string,
+    userName: string,
     userAvatar: number,
     challengeRoomCode: string
   }
@@ -107,7 +107,7 @@ export interface NewFileResponse {
 }
 
 export interface ChallengeFile {
-  fileId: string,
+  submissionId: string,
   fileName: string,
   fileStatus: "Not reviewed" | "Approved" | "Rejected",
   challengeNumber: number,
