@@ -73,7 +73,6 @@ function JoinChallenge() {
         }
         else
         {
-          console.log(res);
           setRoomInfo(res);
           openWebsocket(token);
           setShowWaitingRoom(true);
@@ -160,7 +159,6 @@ function JoinChallenge() {
 
   useEffect(() => {
     currentSocket?.on("challengeModify", (data: challengeModifyResponse)=> {
-      console.log(data)
       setRoomInfo(prevState => ({
         ...prevState,
         details: {
