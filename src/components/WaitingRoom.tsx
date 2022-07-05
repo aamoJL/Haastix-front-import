@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead } from '@mui/material';
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch } from '@mui/material';
 import { Challenge, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
 import { Socket } from 'socket.io-client';
 import {getEmojiImage} from './storage/Images'
@@ -62,6 +62,7 @@ function WaitingRoom({roomInfo, socket} : Props) {
   const [showChallenges, setShowChallenges] = useState(false);
   const [edit, setEdit] = useState(false);
   const [challengeArray, setChallengeArray] = useState<Challenge[]>(roomInfo.details.challengeTasks);
+  const [randomOrder, setRandomOrder] = useState(roomInfo.details.isRandom);
   const translation = useContext(LanguageContext);
 
   useEffect(() => {
@@ -171,7 +172,8 @@ function WaitingRoom({roomInfo, socket} : Props) {
       token: roomInfo.details.token,
       payload: {
         challengeName: roomInfo.details.challengeRoomName,
-        challengeTasks: filteredArr
+        challengeTasks: filteredArr,
+        isRandom: randomOrder,
       }
     });
 
@@ -234,6 +236,11 @@ function WaitingRoom({roomInfo, socket} : Props) {
               }
               {edit &&
                 <Stack alignItems="center" spacing={1}>
+                  <FormControlLabel 
+                    control={<Switch id="edit-randomOrder-switch" checked={randomOrder} onChange={() => setRandomOrder(!randomOrder)}/>}
+                    labelPlacement="start"
+                    label={translation.texts.randomTasks}
+                  ></FormControlLabel>
                   <Box sx={{maxHeight: 255, overflow: 'auto', maxWidth: 300}}>
                     {challengeArray.map((value, i) => (
                       <TextField

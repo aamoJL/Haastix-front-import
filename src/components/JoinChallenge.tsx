@@ -27,6 +27,7 @@ const defaultRoomInfo: JoinChallengeSuccessResponse = {
     challengeEndDate: "",
     challengeTasks: [{ description: "", challengeNumber: 0}],
     token: "",
+    isRandom: true,
     username: "",
     userAvatar: 0,
   }
@@ -72,6 +73,7 @@ function JoinChallenge() {
         }
         else
         {
+          console.log(res);
           setRoomInfo(res);
           openWebsocket(token);
           setShowWaitingRoom(true);
@@ -158,11 +160,13 @@ function JoinChallenge() {
 
   useEffect(() => {
     currentSocket?.on("challengeModify", (data: challengeModifyResponse)=> {
+      console.log(data)
       setRoomInfo(prevState => ({
         ...prevState,
         details: {
           ...prevState.details,
-          challengeTasks: data.challengeTasks
+          challengeTasks: data.challengeTasks,
+          isRandom: data.isRandom,
         }
       }))
     })

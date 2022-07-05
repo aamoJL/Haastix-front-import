@@ -74,7 +74,9 @@ function ChallengeRoom({roomInfo, socket, playerArray} : Props) {
     let taskNumbers =  roomInfo.details.challengeTasks.map((task) => {
       return task.challengeNumber;
     })
-    shuffle(taskNumbers);
+    if(roomInfo.details.isRandom) {
+      shuffle(taskNumbers);
+    }
     sessionStorage.setItem("taskOrder", JSON.stringify(taskNumbers));
     return taskNumbers;
   }
