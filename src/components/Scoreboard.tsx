@@ -1,16 +1,15 @@
-import { Avatar, IconButton, Modal, Stack, SxProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
-import { Socket } from "socket.io-client"
-import { PlayerData } from "../interfaces"
-import { getEmojiImage } from "./storage/Images"
-import ArrowBackIcon from "@mui/icons-material/ArrowBack"
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
-import { Translation } from "../translations"
+import { Avatar, IconButton, Modal, Stack, SxProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, Typography } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
+import { Socket } from 'socket.io-client';
+import { PlayerData } from '../interfaces';
+import { getEmojiImage } from './storage/Images';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import LanguageContext from './Context/LanguageContext';
 
-interface Props {
-  socket?: Socket
-  scores: PlayerData[]
-  translation: Translation
+interface Props{
+  socket?: Socket,
+  scores: PlayerData[],
 }
 
 const modalStyle: SxProps<Theme> = {
@@ -29,12 +28,13 @@ const modalStyle: SxProps<Theme> = {
  * Component that renders challenge room's scoreboard sorted by task completion time
  * @param socket Socket.io socket connection
  */
-function Scoreboard({ socket, translation, scores }: Props) {
-  const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | undefined>(undefined)
-  const [selectedPhoto, setSelectedPhoto] = useState<string | undefined>(undefined)
-  const [selectedPhotoNumber, setSelectedPhotoNumber] = useState(0)
-  const [openModal, setOpenModal] = useState(false)
-  const [modalLoading, setModalLoading] = useState(true)
+function Scoreboard({socket, scores}: Props) {
+  const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | undefined>(undefined);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | undefined>(undefined);
+  const [selectedPhotoNumber, setSelectedPhotoNumber] = useState(0);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalLoading, setModalLoading] = useState(true);
+  const translation = useContext(LanguageContext);
 
   useEffect(() => {
     if (selectedPlayer) {

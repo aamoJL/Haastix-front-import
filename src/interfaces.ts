@@ -1,3 +1,5 @@
+ type fileStatus =  "Not reviewed" | "Approved" | "Rejected" | "Not submitted";
+ 
  export interface Challenge{
   description: string,
   // challengeNumber?: number,
@@ -80,7 +82,7 @@ export interface WaitingRoomNewPlayer{
  * Response from "fileStatusPlayer" socket
  */
 export interface FileStatusPlayerResponse {
-  status: "Not reviewed" | "Approved" | "Rejected" | "Not submitted",
+  status: fileStatus,
   taskNumber: number,
 }
 
@@ -109,7 +111,7 @@ export interface NewFileResponse {
 export interface ChallengeFile {
   submissionId: string,
   fileName: string,
-  fileStatus: "Not reviewed" | "Approved" | "Rejected",
+  fileStatus: fileStatus,
   challengeNumber: number,
   taskDescription: string,
 }
@@ -132,7 +134,7 @@ export interface FetchFileResponse {
   playerAvatar: string
   submissions: {
     submissionId: string
-    status: "Not reviewed" | "Approved" | "Rejected" | "Not submitted" // TODO change to FileStatus
+    status: fileStatus
     fileName: string
     mimeType?: string
     createdAt: string
@@ -154,4 +156,14 @@ export interface FetchFileResponse {
 export interface YouWereRemovedResponse {
   statusCode: number,
   message: string
+}
+
+export interface PlayerFileStatusesResponse{
+  statusCode: number,
+  files: {
+    fileId: string,
+    fileName: string,
+    fileStatus: fileStatus,
+    challengeNumber: number,
+  }[]
 }

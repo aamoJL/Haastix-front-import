@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead } from '@mui/material';
 import { Challenge, ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
 import { Socket } from 'socket.io-client';
@@ -7,12 +7,11 @@ import ChallengeRoom from './ChallengeRoom';
 import RemovePlayer from './RemovePlayer';
 import AlertWindow from './AlertWindow';
 import CloseIcon from '@mui/icons-material/Close'
-import { Translation } from '../translations';
+import LanguageContext from './Context/LanguageContext';
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse,
   socket?: Socket,
-  translation: Translation,
 }
 
 interface SegmentedTime{
@@ -22,7 +21,7 @@ interface SegmentedTime{
   seconds: number
 }
 
-function WaitingRoom({roomInfo, socket, translation} : Props) {
+function WaitingRoom({roomInfo, socket} : Props) {
   /**
    * Returns object with segmented time between now and end date
    * @param delayTime end date
@@ -63,6 +62,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
   const [showChallenges, setShowChallenges] = useState(false);
   const [edit, setEdit] = useState(false);
   const [challengeArray, setChallengeArray] = useState<ChallengeTask[]>(roomInfo.details.challengeTasks);
+  const translation = useContext(LanguageContext);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -189,9 +189,9 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
             {isGameMaster &&
             <>
               <Typography id="room-code" variant="body1" component="p">{translation.texts.roomCode}</Typography>
-              <Typography id="room-code" variant="body1" component="p"><b>{roomInfo.details.challengeRoomCode}</b></Typography>
+              <Typography id="room-code-value" variant="body1" component="p"><b>{roomInfo.details.challengeRoomCode}</b></Typography>
               <Typography id="task" variant="body1" component="p">{translation.texts.firstChallenge}</Typography>
-              <Typography id="task" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeTasks[0].taskDescription}</Typography>
+              <Typography id="taskDescription" variant="body1" component="p" sx={{textOverflow:"ellipsis", overflow:"hidden"}}>{roomInfo.details.challengeTasks[0].taskDescription}</Typography>
             </>}
           </Box>
           {isGameMaster && <>
@@ -199,7 +199,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
               <Button id="show-players-btn" onClick={handleShowPlayers}>{translation.inputs.buttons.players} ({playerArray.length})</Button>
               <Button id="show-challenges-btn" onClick={handleShowChallenges}>{translation.inputs.buttons.challenges} ({roomInfo.details.challengeTasks.length})</Button>
             </ButtonGroup>
-            <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} translation={translation} />
+            <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
             <Collapse in={showChallenges} unmountOnExit>
               {!edit && 
                 <Stack alignItems="center">
@@ -280,7 +280,7 @@ function WaitingRoom({roomInfo, socket, translation} : Props) {
           }
         </>
       )}
-      {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} translation={translation}/>}
+      {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray}/>}
       {alertWindow && <AlertWindow message={alertMessage}/>}
     </Stack>
   );

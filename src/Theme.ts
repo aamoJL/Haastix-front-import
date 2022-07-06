@@ -8,8 +8,8 @@ const makeTheme = (mode: PaletteMode) => {
       ?{
         //Colors for dark mode
         background: {
-          default: '#525252',
-          paper: "#525252"
+          default: '#292929',
+          paper: "#292929"
         },
         text: {
           primary: '#e4e4e4',
@@ -25,18 +25,18 @@ const makeTheme = (mode: PaletteMode) => {
       :{
         //Colors for light mode
         background: {
-          default: '#fff',
-          paper: "#fff"
+          default: '#f7f7f7',
+          paper: "#f7f7f7"
         },
         text: {
-          primary: '#191919',
-          secondary: "#191919",
+          primary: '#1b1b1b',
+          secondary: "#1b1b1b",
         },
         primary: {
-          main: '#fc0303',
+          main: '#32b38e',
         },
         secondary:{
-          main: "#fc0303",
+          main: "#32b38e",
         },   
       })
     }
@@ -44,11 +44,22 @@ const makeTheme = (mode: PaletteMode) => {
 
   theme = createTheme(theme, {
     components: {
+      MuiTypography: {
+        styleOverrides: {
+          h3: {
+            textAlign: "center"
+          },
+          h2: {
+            textAlign: "center"
+          }
+        }
+      },
       MuiTextField: {
         defaultProps: {
           sx: {
             width: 200,
-          }
+          },
+          autoComplete:"off"
         },
         styleOverrides: {       
           root: {

@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import CloseIcon from '@mui/icons-material/Close'
 import { Collapse, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { JoinChallengeSuccessResponse, WaitingRoomList} from '../interfaces';
 import { Socket } from 'socket.io-client';
-import { Translation } from '../translations';
+import LanguageContext from './Context/LanguageContext';
 
 interface Props {
   socket?: Socket,
   roomInfo: JoinChallengeSuccessResponse,
   playerArray: WaitingRoomList[],
   open: boolean,
-  translation: Translation,
 }
 
-function RemovePlayer({socket, roomInfo, playerArray, open, translation} : Props) {  
+function RemovePlayer({socket, roomInfo, playerArray, open} : Props) {  
+  const translation = useContext(LanguageContext);
 
   const handleRemovePlayer = (userName: string) => {    
     socket?.emit("removePlayer", {
