@@ -127,17 +127,29 @@ export interface FetchFileResponse {
 /**
  * Player data for "finalScore_update" socket response
  */
-export interface PlayerData{
-  playerAvatar: string,
-  playerFileIds: [{
-    CreatedAt: string,
-    challengeNumber: number,
-    fileId: string,
-  }],
-  playerName: string,
-  totalScore: number,
-  totalTime: number,
+ export interface PlayerData {
+  playerName: string
+  playerAvatar: string
+  submissions: {
+    submissionId: string
+    status: "Not reviewed" | "Approved" | "Rejected" | "Not submitted" // TODO change to FileStatus
+    fileName: string
+    mimeType?: string
+    createdAt: string
+    updatedAt: string
+    taskTaskId: string
+    userUserId: string
+    taskDescription: string
+    taskNumber: number
+  }[]
+  playerResult: {
+    time: number
+    score?: number
+  }
+  totalScore: number
+  totalTime: number
 }
+
 
 export interface YouWereRemovedResponse {
   statusCode: number,

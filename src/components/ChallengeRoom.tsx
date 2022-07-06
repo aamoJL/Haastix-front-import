@@ -77,61 +77,56 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const initTasks = useRef(true); // Used to not show task alerts on page refresh
   // const [gameOver, setGameOver] = useState(false);
 
-  // useEffect(() => {
-  //   // Player
-  //   if(!isGameMaster){
-  //     // Check current tasks status
-  //     socket?.emit('playerCheckFile', {
-  //       token: roomInfo?.details.token,
-  //       payload: {
-  //           challengeNumber: currentTaskNumber
-  //       }
-  //     })
-  //   }
-  // }, [currentTaskNumber])
+  useEffect(() => {
+    // Player
+    if(!isGameMaster){
+      // Check current tasks status
+      socket?.emit('playerCheckFile', {
+        token: roomInfo?.details.token,
+        payload: {
+            challengeNumber: currentTaskNumber
+        }
+      })
+    }
+  }, [currentTaskNumber])
 
-  // useEffect(() => {
-  //   socket?.emit("fetchScoreBoard", {
-  //     token: sessionStorage.getItem("token"),
-  //   });
-  //   socket?.on("finalScore_update", (res: PlayerData[]) => {
-  //     // setPlayersDoneCount(res.length);
-      
-  //     let tasksDoneCounter = 0;
+  useEffect(() => {
+    socket?.emit("fetchScoreBoard", {
+      token: sessionStorage.getItem("token"),
+    })
+    socket?.on("finalScore_update", (res: PlayerData[]) => {
+      // setPlayersDoneCount(res.length);
+      console.log(res)
+      let tasksDoneCounter = 0
+      res.map((value) => (tasksDoneCounter = +value.submissions.length + tasksDoneCounter))
 
-  //     res.map((value) => (
-  //       tasksDoneCounter =+ value.playerFileIds.length + tasksDoneCounter
-  //     ))
-      
-  //     //Game end when everyone done all tasks
-  //     if(tasksDoneCounter == roomInfo.details.challengeTasks.length * playerArray.length){
-  //       setTimeIsUp(true);
-  //     }
+      //Game end when everyone done all tasks
+      if (tasksDoneCounter == roomInfo.details.challengeTasks.length * playerArray.length) {
+        setTimeIsUp(true)
+      }
 
-  //     let players = res;
-  //     // Sort players by time
-  //     players.sort((a,b) => {
-  //       if(a.playerFileIds.length === b.playerFileIds.length){
-  //         // If players have same amount of tasks completed
-  //         return a.totalTime < b.totalTime ? -1 : a.totalTime > b.totalTime ? 1 : 0;
-  //       }
-  //       else{
-  //         // If players other player have more tasks completed
-  //         return a.playerFileIds.length > b.playerFileIds.length ? -1 : 1;
-  //       }
-  //     })
-  //     setScores(players);
-  //   });
-  //   return () => {
-  //     // Clear socket.io Listeners
-  //     socket?.off("finalScore_update");
-      
-  //   };
-  // }, [playerArray]);
+      let players = res
+      // Sort players by time
+      players.sort((a, b) => {
+        if (a.submissions.length === b.submissions.length) {
+          // If players have same amount of tasks completed
+          return a.totalTime < b.totalTime ? -1 : a.totalTime > b.totalTime ? 1 : 0
+        } else {
+          // If players other player have more tasks completed
+          return a.submissions.length > b.submissions.length ? -1 : 1
+        }
+      })
+      setScores(players)
+    })
+    return () => {
+      // Clear socket.io Listeners
+      socket?.off("finalScore_update")
+    }
+  }, [playerArray])
+
 
   // Game time timer
   useEffect(() => {
-    console.log(roomInfo);
     // Game time timer
     const interval = setInterval(() => {
       const endDate = new Date(roomInfo?.details.challengeEndDate as string);
