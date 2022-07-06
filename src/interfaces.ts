@@ -111,7 +111,7 @@ export interface ChallengeFile {
   fileName: string,
   fileStatus: "Not reviewed" | "Approved" | "Rejected",
   challengeNumber: number,
-  description: string,
+  taskDescription: string,
 }
 
 /**
