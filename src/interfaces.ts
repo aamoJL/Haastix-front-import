@@ -80,8 +80,8 @@ export interface WaitingRoomNewPlayer{
  * Response from "fileStatusPlayer" socket
  */
 export interface FileStatusPlayerResponse {
-  fileStatus: "Not reviewed" | "Approved" | "Rejected" | "Not submitted",
-  challengeNumber: number,
+  status: "Not reviewed" | "Approved" | "Rejected" | "Not submitted",
+  taskNumber: number,
 }
 
 /**

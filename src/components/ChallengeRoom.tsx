@@ -61,7 +61,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime();  
   
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
-  const [currentTaskNumber, setCurrentTaskNumber] = useState<number>(0);
+  const [currentTaskNumber, setCurrentTaskNumber] = useState<number>(1);
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
   const [showCamera, setShowCamera] = useState(false);
   const [playerWaitingReview, setPlayerWaitingReview] = useState(false);
@@ -77,18 +77,18 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
   const initTasks = useRef(true); // Used to not show task alerts on page refresh
   // const [gameOver, setGameOver] = useState(false);
 
-  useEffect(() => {
-    // Player
-    if(!isGameMaster){
-      // Check current tasks status
-      socket?.emit('playerCheckFile', {
-        token: roomInfo?.details.token,
-        payload: {
-            challengeNumber: currentTaskNumber
-        }
-      })
-    }
-  }, [currentTaskNumber])
+  // useEffect(() => {
+  //   // Player
+  //   if(!isGameMaster){
+  //     // Check current tasks status
+  //     socket?.emit('playerCheckFile', {
+  //       token: roomInfo?.details.token,
+  //       payload: {
+  //           challengeNumber: currentTaskNumber
+  //       }
+  //     })
+  //   }
+  // }, [currentTaskNumber])
 
   // useEffect(() => {
   //   socket?.emit("fetchScoreBoard", {
@@ -131,6 +131,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
 
   // Game time timer
   useEffect(() => {
+    console.log(roomInfo);
     // Game time timer
     const interval = setInterval(() => {
       const endDate = new Date(roomInfo?.details.challengeEndDate as string);
@@ -145,11 +146,12 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
 
     // Player
     if(!isGameMaster){
-      // Get file status response when currentChallengeNumber changes or file status changes
+      // Get file status response when currentTaskNumber changes or file status changes
       socket?.on("fileStatusPlayer", (dataResponse: FileStatusPlayerResponse) => {
-        switch (dataResponse.fileStatus) {
+        console.log(dataResponse)
+        switch (dataResponse.status) {
           case "Approved":
-            if(dataResponse.challengeNumber + 1 >= roomInfo.details.challengeTasks.length){
+            if(dataResponse.taskNumber  >= roomInfo.details.challengeTasks.length){
               // No more tasks
               if(!initTasks.current){setShowCompletedAlert(true);}
               setTimeIsUp(true);
@@ -158,7 +160,7 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
             else{
               // Go next
               if(!initTasks.current){setShowApproveAlert(true);}
-              setCurrentTaskNumber(dataResponse.challengeNumber + 1);
+              setCurrentTaskNumber(dataResponse.taskNumber + 1);
             }
             setPlayerWaitingReview(false);
             break;
@@ -228,7 +230,8 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
       token: roomInfo?.details.token,
       payload: {
           submissionId: waitingSubmissions[0].submissionId,
-          fileStatus: isAccepted
+          fileStatus: isAccepted,
+          taskNumber: currentTaskNumber
       }
     })
   }
@@ -253,9 +256,9 @@ function ChallengeRoom({roomInfo, socket, playerArray, translation} : Props) {
           <>
             <Typography variant="body1" component="p">{roomInfo.details.userName}</Typography>
             <Typography variant="body1" component="p">{translation.texts.challenge}</Typography>
-            <Typography variant="body1" component="p"><span id="current-task-number-player">{(currentTaskNumber as number) + 1}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
+            <Typography variant="body1" component="p"><span id="current-task-number-player">{(currentTaskNumber as number)}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span></Typography>
             <Typography variant="body1" component="p">{translation.texts.description}</Typography>
-            <Typography variant="body1" component="p">{roomInfo.details.challengeTasks[currentTaskNumber].taskDescription}</Typography>
+            <Typography variant="body1" component="p">{roomInfo.details.challengeTasks[currentTaskNumber - 1].taskDescription}</Typography>
           </>}
             <Typography variant="body1" component="p">{translation.texts.timeRemaining}</Typography>
             <Typography variant="body1" component="p">{getFormattedTime(timeLeft)}</Typography>
