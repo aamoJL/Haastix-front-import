@@ -16,4 +16,3 @@ export const setConnection = (token: string) => {
     throw error
   }
 }
-
