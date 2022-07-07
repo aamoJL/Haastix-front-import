@@ -26,7 +26,7 @@ const formValidation = {
  */
 const defaultFormData : ChallengeRoomData = {
   roomName: "",
-  challenges: [{description: "", challengeNumber: 0}],
+  challenges: [{description: ""}],
   time: 0,
   delay: 0,
 }
@@ -96,7 +96,7 @@ function CreateChallengeRoom() {
     let newList = challenges;    
 
     if(newList.length < formValidation.maxTaskCount){
-      newList = challenges.concat([{description: "", challengeNumber: 0}]);
+      newList = challenges.concat([{description: ""}]);
     }
 
     setFormData((prevState) => ({
@@ -119,7 +119,7 @@ function CreateChallengeRoom() {
     // Fill the arrays to be lenght of minimum requirements
     if(newList.length < formValidation.minTaskCount){
       for (let index = 0; index < formValidation.minTaskCount; index++) {
-        newList.push({description: "", challengeNumber: 0});
+        newList.push({description: ""});
         newErrorArray.push(false);
       }
     }
@@ -180,7 +180,7 @@ function CreateChallengeRoom() {
 
       if(error){return false;}
       // Set challenge numbers
-      challenge.challengeNumber = i;
+      // challenge.challengeNumber = i;
       return true;
     });
 
