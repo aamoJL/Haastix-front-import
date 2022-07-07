@@ -1,7 +1,10 @@
-import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input } from '@mui/material';
-import React, { useState } from 'react';
+import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box, IconButton, InputAdornment, Tooltip } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close'
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChallengeRoomData, NewChallengeRoomSuccessResponse} from '../interfaces';
 import SettingsHomeButtons from './SettingsHomeButtons';
+import LanguageContext from './Context/LanguageContext';
 
 // Form validation variables
 // required values from: https://gitlab.labranet.jamk.fi/wimmalab2021/iotitude/source-backend/-/blob/master/documents/restApiRoutesDocuments/newChallenge.md
@@ -24,13 +27,38 @@ const formValidation = {
 const defaultFormData : ChallengeRoomData = {
   roomName: "",
   challenges: [{description: "", challengeNumber: 0}],
-  time: formValidation.minDuration,
-  delay: formValidation.minDelay,
+  time: 0,
+  delay: 0,
 }
 
 function CreateChallengeRoom() {
   const [formData, setFormData] = useState<ChallengeRoomData>(defaultFormData);
   const {roomName, challenges, delay, time} = formData;
+  const navigate = useNavigate();
+  const [roomNameError, setRoomNameError] = useState(false);
+  const [delayAmountError, setDelayAmountError] = useState(false);
+  const [durationAmountError, setDurationAmountError] = useState(false);
+  const [taskErrors, setTaskErrors] = useState<boolean[]>([false]);
+  const [formIsValid, setFormIsValid] = useState(false);
+  const [openTooltip, setOpenTooltip] = useState(false);
+  const translation = useContext(LanguageContext);
+
+  useEffect(() => {
+    if(sessionStorage.getItem('token') !== null)
+      navigate("/game");
+  })
+
+  useEffect(() => {
+    // Form validation for the form submit button
+    setFormIsValid(roomName.length <= formValidation.maxNameLength
+      && roomName.length >= formValidation.minNameLength
+      && delay <= formValidation.maxDelay
+      && delay >= formValidation.minDelay
+      && time <= formValidation.maxDuration
+      && time >= formValidation.minDuration
+      && challenges.length <= formValidation.maxTaskCount
+      && challenges.length >= formValidation.minTaskCount)
+  }, [roomName, challenges, delay, time])
 
   /**
    * Generic change handler
@@ -49,6 +77,15 @@ function CreateChallengeRoom() {
       return {...challenge, description: e.target.value};
     })
 
+    //If error is shown, remove it if the length is right
+    let task = newChallenges[index];
+    if(taskErrors[index] && task.description.length >= formValidation.minTaskDescription
+      && task.description.length <= formValidation.maxTaskDescription){
+        let newErrorArray = taskErrors;
+        newErrorArray[index] = false;
+        setTaskErrors([...newErrorArray]);
+      }
+
     setFormData((prevState) => ({
       ...prevState,
       challenges: newChallenges,
@@ -66,22 +103,34 @@ function CreateChallengeRoom() {
       ...prevState,
       challenges: newList,
     }));
+
+    // Update task error list
+    let taskErrorArray = [...taskErrors, false];
+    setTaskErrors([...taskErrorArray]);
   }
 
   const handleRemoveChallenge = (i: number) => {
     let newList = challenges;
     newList.splice(i, 1);
+    
+    let newErrorArray = taskErrors;
+    newErrorArray.splice(i,1);
 
-    // Add empty challenge if all challenges has been removed
-    // (Submit requires minimum of one challenge)
+    // Fill the arrays to be lenght of minimum requirements
     if(newList.length < formValidation.minTaskCount){
-      newList = [{description: "", challengeNumber: 0}];
+      for (let index = 0; index < formValidation.minTaskCount; index++) {
+        newList.push({description: "", challengeNumber: 0});
+        newErrorArray.push(false);
+      }
     }
 
     setFormData((prevState) => ({
       ...prevState,
       challenges: newList,
     }));
+
+    // Update taks error list
+    setTaskErrors([...newErrorArray]);
   }
 
   /**
@@ -90,11 +139,13 @@ function CreateChallengeRoom() {
    * @param min input's min value
    * @param max input's max value
    */
-  const handleNumInputChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, min?: number, max?: number) => {
+  const handleNumInputChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, max?: number) => {
     let newValue = Number(e.target.value);
-    
+    // The new value will be NaN if the value does not match the input pattern validation
+    // Don't do anything if the new value is NaN
+    if(isNaN(newValue)){return;}
+
     // Clamp value
-    newValue = (min !== undefined && newValue < min) ? min : newValue;
     newValue = (max !== undefined && newValue > max) ? max : newValue;
 
     setFormData((prevState) => ({
@@ -106,25 +157,37 @@ function CreateChallengeRoom() {
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     let error = false;
+    let newTaskErrorArray = taskErrors;
 
     // Data validation
-    if(roomName.length > formValidation.maxNameLength){alert(`Room name can't be over ${formValidation.maxNameLength} characters long!`); error = true;}
-    if(roomName.length < formValidation.minNameLength){alert(`Room name must be at least ${formValidation.minNameLength} characters long!`); error = true;}
-    if(delay > formValidation.maxDelay){alert(`Delay can't be over ${formValidation.maxDelay} seconds long!`); error = true;}
-    if(delay < formValidation.minDelay){alert(`Delay must be at least ${formValidation.minDelay} seconds long!`); error = true;}
-    if(time > formValidation.maxDuration){alert(`Duration can't be over ${formValidation.maxDuration} seconds long!`); error = true;}
-    if(time < formValidation.minDuration){alert(`Duration must be at least ${formValidation.minDuration} seconds long!`); error = true;}
-    if(challenges.length > formValidation.maxTaskCount){alert(`The room can't have more than ${formValidation.maxTaskCount} tasks!`); error = true;}
-    if(challenges.length < formValidation.minTaskCount){alert(`The room needs at least ${formValidation.minTaskCount} tasks!`); error = true;}
+    if(roomName.length > formValidation.maxNameLength){setRoomNameError(true); error = true;}
+    if(roomName.length < formValidation.minNameLength){setRoomNameError(true); error = true;}
+    if(delay > formValidation.maxDelay){setDelayAmountError(true); error = true;}
+    if(delay < formValidation.minDelay){setDelayAmountError(true); error = true;}
+    if(time > formValidation.maxDuration){setDurationAmountError(true); error = true;}
+    if(time < formValidation.minDuration){setDurationAmountError(true); error = true;}
+    if(challenges.length > formValidation.maxTaskCount){ error = true;}
+    if(challenges.length < formValidation.minTaskCount){ error = true;}
 
+    // task length validations
     challenges.every((challenge, i) => {
-      if(challenge.description.length > formValidation.maxTaskDescription){alert(`Task description can't be more than ${formValidation.maxTaskDescription} characters long!`); error = true;}
-      if(challenge.description.length < formValidation.minTaskDescription){alert(`Task description must be at least ${formValidation.minTaskDescription} characters long!`); error = true;}
+      if(challenge.description.length > formValidation.maxTaskDescription 
+        || challenge.description.length < formValidation.minTaskDescription){
+          error = true;
+        }
+
+      newTaskErrorArray[i] = error;
+
       if(error){return false;}
       // Set challenge numbers
       challenge.challengeNumber = i;
       return true;
     });
+
+    setTaskErrors((prev) => ({
+      ...prev,
+      newTaskErrorArray
+    }));
 
     if(error){return;}
 
@@ -158,39 +221,151 @@ function CreateChallengeRoom() {
   }
 
   const onSuccess = (response: NewChallengeRoomSuccessResponse) => {
-    console.log(response);
+    // save token
+    sessionStorage.setItem("token", response.details.token);
+    navigate("/game");
+  }
+
+  /**
+   * Number input click handler will be used to select the input's text on click
+   * @param e event
+   */
+  const handleNumberInputClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    let element = e.target as HTMLInputElement;
+    (document.getElementById(element.id) as HTMLInputElement)?.select();
+  }
+
+  const handleRoomNameBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {
+    // Validation
+    setRoomNameError((roomName.length > formValidation.maxNameLength 
+      || roomName.length < formValidation.minNameLength));
+  }
+
+  const handleRoomNameChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    //If error is shown, remove it if the length is right
+    if(roomNameError && e.target.value.length >= formValidation.minNameLength
+      && e.target.value.length <= formValidation.maxNameLength){setRoomNameError(false);}
+    
+    onChange(e);
+  }
+
+  const handleChallengeDescBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>, i: number) => {
+    // validation
+    let task = challenges[i];
+    let newErrorArray = taskErrors;
+    newErrorArray[i] = (task.description.length > formValidation.maxTaskDescription 
+      || task.description.length < formValidation.minTaskDescription);
+
+    setTaskErrors([...newErrorArray]);
+  }
+
+  const handleDurationBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {
+    // Validation
+    setDurationAmountError(time > formValidation.maxDuration || time < formValidation.minDuration);
+  }
+
+  const handleDelayBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {
+    // Validation
+    setDelayAmountError(delay > formValidation.maxDelay || delay < formValidation.minDelay);
+  }
+
+  const handleTooltip= () => {
+    if(!formIsValid)
+      setOpenTooltip(!openTooltip);
+    else
+      setOpenTooltip(false);
   }
 
   return (
-    <div>
-      <SettingsHomeButtons />
-      <Typography variant="h2" component="h2">Otsikko</Typography>
-      <TextField type="text" name="roomName" id="roomName" value={roomName} onChange={onChange} placeholder="Type room name..." inputProps={{ maxLength: formValidation.maxNameLength }}/>
-      <Typography variant="h3" component="h2">Haaste</Typography>
+    <Stack alignItems='center' justifyContent="center" spacing={1}>
+      <SettingsHomeButtons/>
+      <Typography variant="h3" component="h3">{translation.titles.createGame}</Typography>
+      <TextField
+        autoFocus
+        helperText={translation.inputs.texts.roomNameLengthHelper}
+        error={roomNameError}
+        type="text"
+        name="roomName"
+        id="roomName"
+        value={roomName}
+        onChange={handleRoomNameChange}
+        onBlur={handleRoomNameBlur}
+        label={translation.inputs.texts.roomName}
+        inputProps={{ maxLength: formValidation.maxNameLength }}/>
+      <Typography variant="h4" component="h4">{translation.titles.challenges}</Typography>
+      <Typography fontSize="small">{translation.inputs.texts.taskDescriptionLengthHelper}</Typography>
+      <Typography fontSize="small">{translation.inputs.texts.taskCountHelper}</Typography>
+      <Box sx={{maxHeight: 205, overflow: 'auto', maxWidth: 200}}>
       {
         challenges.map((challenge, i) => (
-          <div key={i}>
-              <TextField multiline variant="standard" type="text" value={challenge.description} onChange={(e) => handleChallengeChange(e, i)} inputProps={{ maxLength: formValidation.maxTaskDescription }} placeholder="Kuvaus..."/>
-              <Button size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>X</Button>
-          </div>
+          <TextField
+            autoFocus={i > 0}
+            error={taskErrors[i]}
+            key={i} 
+            id={`challenge-input-${i}`} 
+            size="small"
+            sx={{mb:1}}
+            multiline 
+            type="text" 
+            value={challenge.description} 
+            onChange={(e) => handleChallengeChange(e, i)}
+            onBlur={((e) => handleChallengeDescBlur(e,i))}
+            inputProps={{ maxLength: formValidation.maxTaskDescription }} 
+            InputProps={{
+              endAdornment: (
+                <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>
+                <CloseIcon/>
+              </IconButton>
+              )
+            }}
+            placeholder={`${translation.inputs.texts.description}...`}
+            />
         ))
       }
-      <Button sx={{m: 1}} variant='outlined' size="medium" onClick={(e) => {handleAddChallenge()}}>Lisää haasteita</Button>
-      <Typography variant="h3" component="h2">Aloitus & kesto</Typography>
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
+      </Box>
+      <Button sx={{m: 1}} id="add-challenge-btn" variant='text' size="medium" onClick={(e) => {handleAddChallenge()}}>{translation.inputs.buttons.addNewChallenge}</Button>
         <FormControl variant="standard">
-          <InputLabel htmlFor="delay">Viive</InputLabel>
-          <Input type='number' name="delay" id="delay" value={delay} onChange={(e) => handleNumInputChange(e, formValidation.minDelay, formValidation.maxDelay)}/>
+          <InputLabel htmlFor="delay">{translation.inputs.texts.delayBeforeGameStarts}</InputLabel>
+          <Input
+            onClick={(e)=>{handleNumberInputClick(e); setDelayAmountError(false);}}
+            error={delayAmountError}
+            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+            name="delay"
+            id="delay"
+            value={delay}
+            onChange={(e) => handleNumInputChange(e, formValidation.maxDelay)}
+            onBlur={(e)=>handleDelayBlur(e)}
+            endAdornment= {
+              <InputAdornment position="end">
+                Min
+              </InputAdornment>
+            }
+            />
         </FormControl>
         <FormControl variant="standard">
-          <InputLabel htmlFor="time">Kesto</InputLabel>
-          <Input type="number" name="time" id="time" value={time} onChange={(e) => handleNumInputChange(e, formValidation.minDuration, formValidation.maxDuration)}/>
+          <InputLabel htmlFor="time">{translation.inputs.texts.gameDuration}</InputLabel>
+          <Input
+            onClick={(e)=>{handleNumberInputClick(e); setDurationAmountError(false);}}
+            error={durationAmountError}
+            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+            name="time"
+            id="time"
+            value={time}
+            onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}
+            onBlur={(e)=>handleDurationBlur(e)}
+            endAdornment= {
+              <InputAdornment position="end">
+                Min
+              </InputAdornment>
+            }
+            />
         </FormControl>
-      </Stack>
-      <div>
-        <Button sx={{m: 1}} variant='contained' size="large" onClick={(e) => onSubmit(e)}>Luo haaste</Button>
-      </div>
-    </div>
+        <Tooltip enterDelay={0} open={openTooltip} onOpen={handleTooltip} onClose={handleTooltip} title={translation.tooltips.createGame}>
+          <Box display="flex" alignItems="center" justifyContent="center" sx={{width: 300}}>
+            <Button disabled={!formIsValid} id="create-game-btn" onClick={(e) => onSubmit(e)}>{translation.inputs.buttons.createGame}</Button>
+          </Box>
+        </Tooltip>
+    </Stack>
   );
 }
 

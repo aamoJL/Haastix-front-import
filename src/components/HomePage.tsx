@@ -1,27 +1,24 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/otsikko-v2.png';
-import Button from "@mui/material/Button";
+import {ReactComponent as Banner} from '../assets/banner.svg';
+import SettingsHomeButtons from './SettingsHomeButtons';
+import { Stack, Button, Palette, } from '@mui/material';
+import LanguageContext from './Context/LanguageContext';
+import { useContext } from 'react';
 
-function HomePage() {
+interface Props{
+  palette: Palette
+}
+
+function HomePage({palette} : Props) {
+  const translation = useContext(LanguageContext);
+
   return (
-    <div>
-      <div>
-        <Link to="about">
-          <button id="info-btn">Info</button>
-        </Link>
-        <Link to="settings">
-          <button id="settings-btn">Settings</button>
-        </Link>
-      </div>
-      <img src={logo} alt="Logo" />
-      <Link to="create">
-        <Button variant="contained" id="createChallenge-btn">Luo haaste</Button>
-      </Link>
-      <Link to="join">
-        <Button variant="contained" id="joinChallenge-btn">Liity haasteeseen</Button>
-      </Link>
-    </div>
+    <Stack justifyContent="flex-end" alignItems="center" spacing={3}>
+      <SettingsHomeButtons isHomePage={true}/>
+      <Banner style={{fill: palette.text.primary, color: palette.primary.main, maxWidth: "75%", maxHeight: "75%"}} />
+      <Button component={Link} to="/create" variant="contained" id="createChallenge-btn">{translation.inputs.buttons.createAChallenge}</Button>
+      <Button component={Link} to="/game" variant="contained" id="joinChallenge-btn">{translation.inputs.buttons.joinAChallenge}</Button>
+    </Stack>
   );
 }
 
