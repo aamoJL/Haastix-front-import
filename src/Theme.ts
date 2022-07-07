@@ -1,45 +1,45 @@
-import { createTheme, PaletteMode } from "@mui/material";
+import { createTheme, PaletteMode } from "@mui/material"
 
 const makeTheme = (mode: PaletteMode) => {
   let theme = createTheme({
     palette: {
       mode: mode,
       ...(mode === "dark"
-      ?{
-        //Colors for dark mode
-        background: {
-          default: '#292929',
-          paper: "#292929"
-        },
-        text: {
-          primary: '#e4e4e4',
-          secondary: "#e4e4e4",
-        },
-        primary: {
-          main: '#00cc92',
-        },
-        secondary:{
-          main: "#00cc92",
-        },
-      } 
-      :{
-        //Colors for light mode
-        background: {
-          default: '#f7f7f7',
-          paper: "#f7f7f7"
-        },
-        text: {
-          primary: '#1b1b1b',
-          secondary: "#1b1b1b",
-        },
-        primary: {
-          main: '#32b38e',
-        },
-        secondary:{
-          main: "#32b38e",
-        },   
-      })
-    }
+        ? {
+            //Colors for dark mode
+            background: {
+              default: "#292929",
+              paper: "#292929",
+            },
+            text: {
+              primary: "#e4e4e4",
+              secondary: "#e4e4e4",
+            },
+            primary: {
+              main: "#00cc92",
+            },
+            secondary: {
+              main: "#00cc92",
+            },
+          }
+        : {
+            //Colors for light mode
+            background: {
+              default: "#f7f7f7",
+              paper: "#f7f7f7",
+            },
+            text: {
+              primary: "#1b1b1b",
+              secondary: "#1b1b1b",
+            },
+            primary: {
+              main: "#32b38e",
+            },
+            secondary: {
+              main: "#32b38e",
+            },
+          }),
+    },
   })
 
   theme = createTheme(theme, {
@@ -47,35 +47,35 @@ const makeTheme = (mode: PaletteMode) => {
       MuiTypography: {
         styleOverrides: {
           h3: {
-            textAlign: "center"
+            textAlign: "center",
           },
           h2: {
-            textAlign: "center"
-          }
-        }
+            textAlign: "center",
+          },
+        },
       },
       MuiTextField: {
         defaultProps: {
           sx: {
             width: 200,
           },
-          autoComplete:"off"
+          autoComplete: "off",
         },
-        styleOverrides: {       
+        styleOverrides: {
           root: {
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
-                borderColor: theme.palette.primary.main
-              }
-            }
+                borderColor: theme.palette.primary.main,
+              },
+            },
           },
-        }
+        },
       },
       MuiIconButton: {
         defaultProps: {
-          color: 'primary',
-          size: 'large',
-        }
+          color: "primary",
+          size: "large",
+        },
       },
       MuiInput: {
         styleOverrides: {
@@ -83,49 +83,49 @@ const makeTheme = (mode: PaletteMode) => {
             maxWidth: 160,
           },
           underline: {
-            ":before":{
-              borderBottomColor: theme.palette.primary.main
+            ":before": {
+              borderBottomColor: theme.palette.primary.main,
             },
-          }
-        }
+          },
+        },
       },
       MuiButton: {
         defaultProps: {
           fullWidth: true,
-          variant: 'contained'
+          variant: "contained",
         },
         styleOverrides: {
           root: {
             maxWidth: 200,
-          }
-        }
+          },
+        },
       },
       MuiDialog: {
         styleOverrides: {
           scrollPaper: {
-            alignItems: 'flex-start',
-          }
-        }
+            alignItems: "flex-start",
+          },
+        },
       },
       MuiTooltip: {
         defaultProps: {
           arrow: true,
           enterDelay: 800,
-        }
+        },
       },
       MuiTableCell: {
         styleOverrides: {
           head: {
             backgroundColor: theme.palette.primary.main,
             color: theme.palette.primary.contrastText,
-            borderBottomColor: theme.palette.primary.contrastText    
-          }
-        }
-      }
-    }
+            borderBottomColor: theme.palette.primary.contrastText,
+          },
+        },
+      },
+    },
   })
 
-  return theme;
+  return theme
 }
 
-export default makeTheme ;
+export default makeTheme

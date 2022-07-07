@@ -1,80 +1,80 @@
- type fileStatus =  "Not reviewed" | "Approved" | "Rejected" | "Not submitted";
- 
- export interface Challenge{
-  description: string,
+type fileStatus = "Not reviewed" | "Approved" | "Rejected" | "Not submitted"
+
+export interface Challenge {
+  description: string
   // challengeNumber?: number,
 }
 
-export interface ChallengeTask{
-  taskNumber: number,
-  taskDescription: string,
-  taskId: string,
+export interface ChallengeTask {
+  taskNumber: number
+  taskDescription: string
+  taskId: string
 }
 
-export interface ChallengeRoomData{
-  roomName: string,
-  time: number,
-  delay: number,
-  challenges: Challenge[],
+export interface ChallengeRoomData {
+  roomName: string
+  time: number
+  delay: number
+  challenges: Challenge[]
 }
 
-export interface ChallengeRoomJoin{
-  userName: string,
-  roomCode: string,
+export interface ChallengeRoomJoin {
+  userName: string
+  roomCode: string
   userAvatar: number
 }
 
 /**
  * JSON response from successful challenge room creation API call
  */
-export interface NewChallengeRoomSuccessResponse{
-  statusCode: number,
-  message: string,
+export interface NewChallengeRoomSuccessResponse {
+  statusCode: number
+  message: string
   details: {
-    userid: string,
-    isGameMaster: boolean,
-    challengeRoomId: string, 
-    challengeRoomCode: string,
-    challengeRoomName: string,
-    challengeStartDate: string,
-    challengeEndDate: string,
-    challengeTasks: ChallengeTask[],
+    userid: string
+    isGameMaster: boolean
+    challengeRoomId: string
+    challengeRoomCode: string
+    challengeRoomName: string
+    challengeStartDate: string
+    challengeEndDate: string
+    challengeTasks: ChallengeTask[]
     token: string
   }
 }
 
-export interface JoinChallengeSuccessResponse{
-  statusCode: number,
-  message: string,
+export interface JoinChallengeSuccessResponse {
+  statusCode: number
+  message: string
   details: {
-    userid: string,
-    isGameMaster: boolean,
-    challengeRoomId: string, 
-    challengeRoomName: string,
-    challengeStartDate: string,
-    challengeEndDate: string,
-    challengeTasks: ChallengeTask[],
-    token: string,
-    userName: string,
-    userAvatar: number,
+    userid: string
+    isGameMaster: boolean
+    challengeRoomId: string
+    challengeRoomName: string
+    challengeStartDate: string
+    challengeEndDate: string
+    challengeTasks: ChallengeTask[]
+    token: string
+    userName: string
+    userAvatar: number
     challengeRoomCode: string
   }
 }
 
 export interface challengeModifyResponse {
-  challengeRoomName: string,
-  challengeStartDate: string,
-  challengeEndDate: string,
-  challengeTasks: ChallengeTask[],
+  challengeRoomName: string
+  challengeStartDate: string
+  challengeEndDate: string
+  challengeTasks: ChallengeTask[]
 }
 
-export interface WaitingRoomList{  
-    name: string,
-    avatar: number,
-    userId: string
+export interface WaitingRoomList {
+  name: string
+  avatar: number
+  userId: string
 }
 
-export interface WaitingRoomNewPlayer{  
+export interface WaitingRoomNewPlayer {
   players: WaitingRoomList[]
 }
 
@@ -82,54 +82,54 @@ export interface WaitingRoomNewPlayer{
  * Response from "fileStatusPlayer" socket
  */
 export interface FileStatusPlayerResponse {
-  status: fileStatus,
-  taskNumber: number,
+  status: fileStatus
+  taskNumber: number
 }
 
 /**
  * Response from "sendFile" socket
  */
-export interface SendFileResponse{
-  statusCode: number,
-  message: string,
-  error?: "unauthorized" | "Image in review/approved" | "File type invalid" | "Payload too large",
+export interface SendFileResponse {
+  statusCode: number
+  message: string
+  error?: "unauthorized" | "Image in review/approved" | "File type invalid" | "Payload too large"
   details?: {
-    fileId: string,
+    fileId: string
     challengeNumber: number
-  },
+  }
 }
 
 /**
  * Response from "newFile" socket
  */
 export interface NewFileResponse {
-  statusCode: number,
-  message: string,
-  challengeFiles: ChallengeFile[],
+  statusCode: number
+  message: string
+  challengeFiles: ChallengeFile[]
 }
 
 export interface ChallengeFile {
-  submissionId: string,
-  fileName: string,
-  fileStatus: fileStatus,
-  challengeNumber: number,
-  taskDescription: string,
+  submissionId: string
+  fileName: string
+  fileStatus: fileStatus
+  challengeNumber: number
+  taskDescription: string
 }
 
 /**
  * Response from "fetchfile" API call
  */
 export interface FetchFileResponse {
-  FILE: string,
-  statusCode: number,
-  error?: string,
+  FILE: string
+  statusCode: number
+  error?: string
   message: string
 }
 
 /**
  * Player data for "finalScore_update" socket response
  */
- export interface PlayerData {
+export interface PlayerData {
   playerName: string
   playerAvatar: string
   submissions: {
@@ -152,17 +152,16 @@ export interface FetchFileResponse {
   totalTime: number
 }
 
-
 export interface YouWereRemovedResponse {
-  statusCode: number,
+  statusCode: number
   message: string
 }
 
-export interface PlayerFileStatusesResponse{
-  statusCode: number,
+export interface PlayerFileStatusesResponse {
+  statusCode: number
   submissions: {
-    fileName: string,
-    status: fileStatus,
-    taskNumber: number,
+    fileName: string
+    status: fileStatus
+    taskNumber: number
   }[]
 }

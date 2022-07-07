@@ -1,17 +1,16 @@
-import socketIOClient from "socket.io-client";
+import socketIOClient from "socket.io-client"
 
-const websocketEndpoint = `${process.env.REACT_APP_WEBSOCKET_ENDPOINT}`;
+const websocketEndpoint = `${process.env.REACT_APP_WEBSOCKET_ENDPOINT}`
 
 export const setConnection = (token: string) => {
   try {
     var socket = socketIOClient(websocketEndpoint, {
       withCredentials: true,
       auth: {
-        token: token
-      }
+        token: token,
+      },
     })
     return socket
-
   } catch (error) {
     throw error
   }
