@@ -11,13 +11,15 @@ build_test:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - echo "REACT_APP_API_URL=http://128.214.255.104:8000" > .env
+    - echo "REACT_APP_API_URL=https://test.haastix.wimmalab.org/api" > .env
+    - echo "REACT_APP_WEBSOCKET_ENDPOINT=https://test.haastix.wimmalab.org" >> .env
+    - echo "DANGEROUSLY_DISABLE_HOST_CHECK=true" >> .env
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:test
+    - /kaniko/executor --snapshotMode=redo --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:test
   only:
     - test
   tags:
-  - general
+  - test
 
 build_production:
   stage: build
@@ -25,9 +27,10 @@ build_production:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - echo "REACT_APP_API_URL=http://86.50.169.110:8000" > .env
+    - echo "REACT_APP_API_URL=http://haastix.wimmalab.org:8000" > .env
+    - echo "REACT_APP_WEBSOCKET_ENDPOINT=http://haastix.wimmalab.org" >> .env
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:production
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.prod --destination $CI_REGISTRY_IMAGE:production
   only:
     - main
   tags:
@@ -51,4 +54,4 @@ deploy_production:
     project: wimma-lab-2022/iotitude/devops-pipeline
     branch: main
   only:
-    - main
+    - master
