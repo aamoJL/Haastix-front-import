@@ -86,11 +86,11 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
       // setPlayersDoneCount(res.length);
       let tasksDoneCounter = 0
 
-      if (res.length != 0) {
+      if (res.length !== 0) {
         res.map((value) => (tasksDoneCounter = +value.submissions.length + tasksDoneCounter))
 
         //Game end when everyone done all tasks
-        if (tasksDoneCounter == roomInfo.details.challengeTasks.length * playerArray.length) {
+        if (tasksDoneCounter === roomInfo.details.challengeTasks.length * playerArray.length) {
           setTimeIsUp(true)
         }
       }

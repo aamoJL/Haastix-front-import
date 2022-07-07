@@ -68,8 +68,8 @@ function WaitingRoom({roomInfo, socket} : Props) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const endDate = new Date(roomInfo.details.challengeStartDate as string);
-      const milliseconds = endDate.getTime() - new Date().getTime();
+      const startDate = new Date(roomInfo.details.challengeStartDate as string);
+      const milliseconds = startDate.getTime() - new Date().getTime();
       const segmentedTime = calculateTimeLeft(milliseconds);
       setTimeLeft(segmentedTime);
       if(milliseconds <= 0){
