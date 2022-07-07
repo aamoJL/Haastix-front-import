@@ -2,7 +2,13 @@
  
  export interface Challenge{
   description: string,
-  challengeNumber: number,
+  // challengeNumber?: number,
+}
+
+export interface ChallengeTask{
+  taskNumber: number,
+  taskDescription: string,
+  taskId: string,
 }
 
 export interface ChallengeRoomData{
@@ -26,12 +32,13 @@ export interface NewChallengeRoomSuccessResponse{
   message: string,
   details: {
     userid: string,
+    isGameMaster: boolean,
     challengeRoomId: string, 
     challengeRoomCode: string,
     challengeRoomName: string,
     challengeStartDate: string,
     challengeEndDate: string,
-    challengeTasks: Challenge[],
+    challengeTasks: ChallengeTask[],
     token: string
   }
 }
@@ -41,13 +48,14 @@ export interface JoinChallengeSuccessResponse{
   message: string,
   details: {
     userid: string,
+    isGameMaster: boolean,
     challengeRoomId: string, 
     challengeRoomName: string,
     challengeStartDate: string,
     challengeEndDate: string,
-    challengeTasks: Challenge[],
+    challengeTasks: ChallengeTask[],
     token: string,
-    username: string,
+    userName: string,
     userAvatar: number,
     challengeRoomCode: string
   }
@@ -57,7 +65,7 @@ export interface challengeModifyResponse {
   challengeRoomName: string,
   challengeStartDate: string,
   challengeEndDate: string,
-  challengeTasks: Challenge[],
+  challengeTasks: ChallengeTask[],
 }
 
 export interface startGameResponse {
@@ -79,8 +87,8 @@ export interface WaitingRoomNewPlayer{
  * Response from "fileStatusPlayer" socket
  */
 export interface FileStatusPlayerResponse {
-  fileStatus: fileStatus,
-  challengeNumber: number,
+  status: fileStatus,
+  taskNumber: number,
 }
 
 /**
@@ -106,11 +114,11 @@ export interface NewFileResponse {
 }
 
 export interface ChallengeFile {
-  fileId: string,
+  submissionId: string,
   fileName: string,
   fileStatus: fileStatus,
   challengeNumber: number,
-  description: string,
+  taskDescription: string,
 }
 
 /**
@@ -126,17 +134,29 @@ export interface FetchFileResponse {
 /**
  * Player data for "finalScore_update" socket response
  */
-export interface PlayerData{
-  playerAvatar: string,
-  playerFileIds: [{
-    CreatedAt: string,
-    challengeNumber: number,
-    fileId: string,
-  }],
-  playerName: string,
-  totalScore: number,
-  totalTime: number,
+ export interface PlayerData {
+  playerName: string
+  playerAvatar: string
+  submissions: {
+    submissionId: string
+    status: fileStatus
+    fileName: string
+    mimeType?: string
+    createdAt: string
+    updatedAt: string
+    taskTaskId: string
+    userUserId: string
+    taskDescription: string
+    taskNumber: number
+  }[]
+  playerResult: {
+    time: number
+    score?: number
+  }
+  totalScore: number
+  totalTime: number
 }
+
 
 export interface YouWereRemovedResponse {
   statusCode: number,
@@ -145,10 +165,9 @@ export interface YouWereRemovedResponse {
 
 export interface PlayerFileStatusesResponse{
   statusCode: number,
-  files: {
-    fileId: string,
+  submissions: {
     fileName: string,
-    fileStatus: fileStatus,
-    challengeNumber: number,
+    status: fileStatus,
+    taskNumber: number,
   }[]
 }

@@ -1,10 +1,10 @@
 import { Button, Dialog, Stack } from '@mui/material';
-import React, { useEffect, useRef, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { SendFileResponse } from '../interfaces';
 import LanguageContext from './Context/LanguageContext';
 
 interface Props{
-  taskNumber: number,
+  taskId: string,
   onSubmit: () => void,
   open: boolean,
   close: () => void
@@ -16,7 +16,7 @@ interface Props{
  * After user takes a photo the component will render the taken photo and
  * buttons to submit or decline the photo. 
  */
-function ChallengeRoomCamera({taskNumber, onSubmit, open, close}:Props) {
+function ChallengeRoomCamera({taskId, onSubmit, open, close}:Props) {
   let stream = useRef<MediaStream | null>(null);
   let context = useRef<CanvasRenderingContext2D | null>(null);
   let videoElement = useRef<HTMLVideoElement | null>(null);
@@ -113,7 +113,7 @@ function ChallengeRoomCamera({taskNumber, onSubmit, open, close}:Props) {
         },
         body: JSON.stringify({
           challengeFile: takenPhoto.split(';base64,')[1],
-          challengeNumber: taskNumber,
+          taskId: taskId,
         })
       })
       .then(res => res.json())

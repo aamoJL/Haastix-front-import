@@ -20,14 +20,15 @@ const defaultRoomInfo: JoinChallengeSuccessResponse = {
   message: "",
   details: {
     userid: "",
+    isGameMaster: false,
     challengeRoomId: "",
     challengeRoomCode: "",
     challengeRoomName: "",
     challengeStartDate: "",
     challengeEndDate: "",
-    challengeTasks: [{ description: "", challengeNumber: 0}],
+    challengeTasks: [{ taskDescription: "", taskId: "", taskNumber: 0}],
     token: "",
-    username: "",
+    userName: "",
     userAvatar: 0,
   }
 }
