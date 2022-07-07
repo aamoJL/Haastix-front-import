@@ -1,0 +1,23 @@
+# Builder stage for frontend
+FROM node:16.15.0 AS builder
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm install
+COPY . .
+
+RUN npm install && npm run build
+
+# nginx state for serving content
+FROM nginx:alpine
+
+WORKDIR /usr/share/nginx/html
+# Remove default nginx static assets
+RUN rm -rf ./*
+# Copy static assets from builder stage
+COPY --from=builder /usr/src/app/build .
+#COPY --from=builder /usr/src/app/conf /etc/nginx
+EXPOSE 80
+# Containers run nginx with global directives and daemon off
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
