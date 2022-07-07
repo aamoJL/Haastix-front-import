@@ -160,10 +160,9 @@ export interface YouWereRemovedResponse {
 
 export interface PlayerFileStatusesResponse{
   statusCode: number,
-  files: {
-    fileId: string,
+  submissions: {
     fileName: string,
-    fileStatus: fileStatus,
-    challengeNumber: number,
+    status: fileStatus,
+    taskNumber: number,
   }[]
 }
