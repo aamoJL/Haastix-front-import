@@ -4,7 +4,6 @@ stages:
   - build
   - deploy
 
-
 build_test:
   stage: build
   image:
@@ -19,7 +18,7 @@ build_test:
   only:
     - test
   tags:
-  - test
+    - test
 
 build_production:
   stage: build
@@ -33,12 +32,12 @@ build_production:
   only:
     - main
   tags:
-  - prod
+    - prod
 
 deploy_test:
   stage: deploy
   variables:
-    TRIGGER: 'true'
+    TRIGGER: "true"
   trigger:
     project: wimma-lab-2022/iotitude/devops-pipeline
     branch: test
@@ -48,7 +47,7 @@ deploy_test:
 deploy_production:
   stage: deploy
   variables:
-    TRIGGER: 'true'
+    TRIGGER: "true"
   trigger:
     project: wimma-lab-2022/iotitude/devops-pipeline
     branch: main
