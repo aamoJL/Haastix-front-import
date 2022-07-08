@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle, Dialog } from "@mui/material"
+import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle, Dialog, TextField } from "@mui/material"
 import { useEffect, useState, useRef, useContext } from "react"
 import { Socket } from "socket.io-client"
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, PlayerData, PlayerFileStatusesResponse, WaitingRoomList } from "../interfaces"
@@ -72,6 +72,8 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
   const [showApproveAlert, setShowApproveAlert] = useState(false)
   const [showCompletedAlert, setShowCompletedAlert] = useState(false)
   const [scores, setScores] = useState<PlayerData[]>([])
+  const [reviewResponse, setReviewResponse] = useState("") // GM's review message
+  const [reviewDescriptionInput, setReviewDescriptionInput] = useState("")
   const translation = useContext(LanguageContext)
 
   const initTasks = useRef(true) // Used to not show task alerts on page refresh
@@ -158,6 +160,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
       // Get file status response when currentTaskNumber changes or file status changes
       socket?.on("fileStatusPlayer", (dataResponse: FileStatusPlayerResponse) => {
         console.log(roomInfo.details.challengeTasks.length)
+        setReviewResponse(dataResponse.reviewDescription)
         switch (dataResponse.status) {
           case "Approved":
             if (dataResponse.taskNumber >= roomInfo.details.challengeTasks.length) {
@@ -244,11 +247,13 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
 
   const handleReview = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted: boolean) => {
     if (unReviewedSubmissions[0] !== undefined) {
+      setReviewDescriptionInput("")
       socket?.emit("approveFile", {
         token: roomInfo?.details.token,
         payload: {
           submissionId: unReviewedSubmissions[0].submissionId,
           fileStatus: isAccepted,
+          reviewDescription: reviewDescriptionInput,
         },
       })
     }
@@ -350,7 +355,11 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
                 <Typography variant="body1" component="p">
                   {translation.texts.challenge}: {unReviewedSubmissions[0].taskDescription}
                 </Typography>
+                <Typography variant="body1" component="p">
+                  {translation.texts.description}: {unReviewedSubmissions[0].submissionDescription}
+                </Typography>
                 <img src={currentSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
+                <TextField id="review-description" label={translation.inputs.texts.description} value={reviewDescriptionInput} onChange={(e) => setReviewDescriptionInput(e.target.value)}></TextField>
                 <Button id="accept-photo-btn-gm" color="success" onClick={(e) => handleReview(e, true)}>
                   {translation.inputs.buttons.accept}
                 </Button>
@@ -414,18 +423,21 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
           <Alert onClick={() => setShowRejectAlert(false)} severity="error">
             <AlertTitle>{translation.alerts.title.rejected}</AlertTitle>
             {translation.alerts.alert.submissionRejected}
+            {reviewResponse !== "" && <p>{`${translation.texts.message}: ${reviewResponse}`}</p>}
           </Alert>
         )}
         {showApproveAlert && (
           <Alert onClick={() => setShowApproveAlert(false)} severity="success">
             <AlertTitle>{translation.alerts.title.approved}</AlertTitle>
             {translation.alerts.success.submissionApproved}
+            {reviewResponse !== "" && <p>{`${translation.texts.message}: ${reviewResponse}`}</p>}
           </Alert>
         )}
         {showCompletedAlert && (
           <Alert onClick={() => setShowCompletedAlert(false)} severity="info">
             <AlertTitle>{translation.alerts.title.tasksCompleted}</AlertTitle>
             {translation.alerts.info.tasksCompleted}
+            {reviewResponse !== "" && <p>{`${translation.texts.message}: ${reviewResponse}`}</p>}
           </Alert>
         )}
       </Stack>

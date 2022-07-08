@@ -79,6 +79,7 @@ export interface Translation {
     allTasksCompleted: string
     submissionDeclined: string
     taskNumber: string
+    message: string
   }
   tables: {
     name: string
@@ -191,6 +192,7 @@ const finnish: Translation = {
     allTasksCompleted: "Kaikki haasteet suoritettu!",
     submissionDeclined: "Kuvasi on hylätty! Ota uusi kuva.",
     taskNumber: "Haasteen numero",
+    message: "Viesti",
   },
   tables: {
     name: "Nimi",
@@ -303,6 +305,7 @@ const english: Translation = {
     allTasksCompleted: "All tasks have been completed!",
     submissionDeclined: "Your submission has been rejected! Take a new photo.",
     taskNumber: "Task number",
+    message: "Message",
   },
   tables: {
     name: "Name",
