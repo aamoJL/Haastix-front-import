@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead } from '@mui/material';
-import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse} from '../interfaces';
-import { Socket } from 'socket.io-client';
-import {getEmojiImage} from './storage/Images'
-import ChallengeRoom from './ChallengeRoom';
-import RemovePlayer from './RemovePlayer';
-import AlertWindow from './AlertWindow';
-import CloseIcon from '@mui/icons-material/Close'
-import LanguageContext from './Context/LanguageContext';
+import React, { useContext, useEffect, useState } from "react"
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead } from "@mui/material"
+import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
+import { Socket } from "socket.io-client"
+import { getEmojiImage } from "./storage/Images"
+import ChallengeRoom from "./ChallengeRoom"
+import RemovePlayer from "./RemovePlayer"
+import AlertWindow from "./AlertWindow"
+import CloseIcon from "@mui/icons-material/Close"
+import LanguageContext from "./Context/LanguageContext"
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse
@@ -53,30 +53,30 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const isGameMaster = roomInfo.details.isGameMaster
   const millisecondsLeft = new Date(roomInfo.details.challengeStartDate as string).getTime() - new Date().getTime()
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft));
-  const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0);
-  const [playerArray, setPlayerArray]  = useState<WaitingRoomList[]>([]);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertWindow, setAlertWindow] = useState(false);
-  const [showPlayers, setShowPlayers] = useState(false);
-  const [showChallenges, setShowChallenges] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [challengeArray, setChallengeArray] = useState<ChallengeTask[]>(roomInfo.details.challengeTasks);
-  const [startGame, setStartGame] = useState(false);
-  const [timer, setTimer] = useState(10);
-  const translation = useContext(LanguageContext);
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft))
+  const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0)
+  const [playerArray, setPlayerArray] = useState<WaitingRoomList[]>([])
+  const [alertMessage, setAlertMessage] = useState("")
+  const [alertWindow, setAlertWindow] = useState(false)
+  const [showPlayers, setShowPlayers] = useState(false)
+  const [showChallenges, setShowChallenges] = useState(false)
+  const [edit, setEdit] = useState(false)
+  const [challengeArray, setChallengeArray] = useState<ChallengeTask[]>(roomInfo.details.challengeTasks)
+  const [startGame, setStartGame] = useState(false)
+  const [timer, setTimer] = useState(10)
+  const translation = useContext(LanguageContext)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const startDate = new Date(roomInfo.details.challengeStartDate as string);
-      const milliseconds = startDate.getTime() - new Date().getTime();
-      const segmentedTime = calculateTimeLeft(milliseconds);
-      setTimeLeft(segmentedTime);
-      if(milliseconds <= 0){
-        setTimeIsUp(true);
-        clearInterval(interval);
+      const startDate = new Date(roomInfo.details.challengeStartDate as string)
+      const milliseconds = startDate.getTime() - new Date().getTime()
+      const segmentedTime = calculateTimeLeft(milliseconds)
+      setTimeLeft(segmentedTime)
+      if (milliseconds <= 0) {
+        setTimeIsUp(true)
+        clearInterval(interval)
       }
-    }, 1000);
+    }, 1000)
     return () => {
       clearInterval(interval)
     }
@@ -174,26 +174,26 @@ function WaitingRoom({ roomInfo, socket }: Props) {
 
     setEdit(false)
   }
-  
+
   const handleStartGame = () => {
     setStartGame(!startGame)
     setTimer(10)
   }
 
   useEffect(() => {
-    if(startGame && timer > 0) {
+    if (startGame && timer > 0) {
       const interval = setInterval(() => {
-        setTimer(timer - 1);
-      }, 1000);
-      
-      return () => clearInterval(interval);
+        setTimer(timer - 1)
+      }, 1000)
+
+      return () => clearInterval(interval)
     }
-    if(timer === 0) {
+    if (timer === 0) {
       socket?.emit("startGame", {
         token: roomInfo.details.token,
-      });      
+      })
     }
-  }, [timer, startGame]);
+  }, [timer, startGame])
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
@@ -232,34 +232,30 @@ function WaitingRoom({ roomInfo, socket }: Props) {
               </>
             )}
           </Box>
-          {isGameMaster && <>
-          <Button id="start-game-btn" onClick={handleStartGame}>{startGame ? `${translation.inputs.buttons.cancel} (${timer})` : `${translation.inputs.buttons.start}`}</Button>
-            <ButtonGroup>
-              <Button id="show-players-btn" onClick={handleShowPlayers}>{translation.inputs.buttons.players} ({playerArray.length})</Button>
-              <Button id="show-challenges-btn" onClick={handleShowChallenges}>{translation.inputs.buttons.challenges} ({roomInfo.details.challengeTasks.length})</Button>
-            </ButtonGroup>
-            <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
-            <Collapse in={showChallenges} unmountOnExit>
-              {!edit && 
-                <Stack alignItems="center">
-                  {
-                    <TableContainer sx={{maxWidth: 300, overflow: 'hidden'}}>
-                      <Table size="small" stickyHeader>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell >#</TableCell>
-                            <TableCell>{translation.tables.description}</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {roomInfo.details.challengeTasks.map((value, i) => (
-                            <TableRow key={i}> 
-                              <TableCell align="left">
-                                <Typography variant="body1" component="p">{value.taskNumber}</Typography>
-                              </TableCell>  
-                              <TableCell align="left">
-                                {value.taskDescription}
-                              </TableCell>
+          {isGameMaster && (
+            <>
+              <Button id="start-game-btn" onClick={handleStartGame}>
+                {startGame ? `${translation.inputs.buttons.cancel} (${timer})` : `${translation.inputs.buttons.start}`}
+              </Button>
+              <ButtonGroup>
+                <Button id="show-players-btn" onClick={handleShowPlayers}>
+                  {translation.inputs.buttons.players} ({playerArray.length})
+                </Button>
+                <Button id="show-challenges-btn" onClick={handleShowChallenges}>
+                  {translation.inputs.buttons.challenges} ({roomInfo.details.challengeTasks.length})
+                </Button>
+              </ButtonGroup>
+              <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
+              <Collapse in={showChallenges} unmountOnExit>
+                {!edit && (
+                  <Stack alignItems="center">
+                    {
+                      <TableContainer sx={{ maxWidth: 300, overflow: "hidden" }}>
+                        <Table size="small" stickyHeader>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>#</TableCell>
+                              <TableCell>{translation.tables.description}</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>

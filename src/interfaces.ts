@@ -69,14 +69,14 @@ export interface challengeModifyResponse {
 }
 
 export interface startGameResponse {
-  challengeStartDate: string,
-  challengeEndDate: string,
+  challengeStartDate: string
+  challengeEndDate: string
 }
 
-export interface WaitingRoomList{  
-    name: string,
-    avatar: number,
-    userId: string
+export interface WaitingRoomList {
+  name: string
+  avatar: number
+  userId: string
 }
 
 export interface WaitingRoomNewPlayer {
