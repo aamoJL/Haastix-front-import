@@ -11,37 +11,54 @@ export interface Languages {
 /**
  * Interface for translated text values
  */
-export interface Translation {
-  titles: {
-    createGame: string
-    challenges: string
-    settings: string
-    theme: string
-    joinAGame: string
-    avatar: string
-    waitingRoom: string
-    gameRoom: string
-    scoreboard: string
-  }
-  inputs: {
-    buttons: {
-      createAChallenge: string
-      joinAChallenge: string
-      addNewChallenge: string
-      createGame: string
-      join: string
-      players: string
-      challenges: string
-      edit: string
-      openCamera: string
-      closeCamera: string
-      accept: string
-      decline: string
-      takePicture: string
-      send: string
-      retake: string
-      add: string
-      save: string
+export interface Translation{
+  titles:{
+    createGame: string,
+    challenges: string,
+    settings: string, 
+    theme: string,
+    joinAGame: string,
+    avatar: string,
+    waitingRoom: string,
+    gameRoom: string,
+    scoreboard: string,
+  },
+  inputs:{
+    buttons:{
+      createAChallenge: string,
+      joinAChallenge: string,
+      addNewChallenge: string,
+      createGame: string,
+      join: string,
+      players: string,
+      challenges: string,
+      edit: string,
+      openCamera: string,
+      closeCamera: string,
+      accept: string,
+      decline: string,
+      takePicture: string,
+      send: string,
+      retake: string,
+      add: string,
+      save: string,
+      start: string,
+      cancel: string,
+    },
+    texts:{
+      roomName: string,
+      description: string,
+      delayBeforeGameStarts: string,
+      gameDuration: string,
+      darkmode: string,
+      sound: string,
+      roomCode: string,
+      roomCodeDesc: string,
+      userName: string,
+      userNameDesc: string,
+      roomNameLengthHelper: string,
+      taskCountHelper: string,
+      taskDescriptionLengthHelper: string,
     }
     texts: {
       roomName: string
@@ -152,6 +169,8 @@ const finnish: Translation = {
       retake: "Ota uusi kuva",
       add: "Lisää",
       save: "Tallenna",
+      start: "Aloita peli",
+      cancel: "Peruuta"
     },
     texts: {
       roomName: "Huoneen nimi",
@@ -262,6 +281,8 @@ const english: Translation = {
       retake: "Retake",
       add: "Add",
       save: "Save",
+      start: "Start the game",
+      cancel: "Cancel",
     },
     texts: {
       roomName: "Room name",

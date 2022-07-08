@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useState } from "react"
-import { challengeModifyResponse, ChallengeRoomJoin, JoinChallengeSuccessResponse } from "../interfaces"
-import { Socket } from "socket.io-client"
-import SettingsHomeButtons from "./SettingsHomeButtons"
-import { setConnection } from "./socket"
-import { emojiArray, getEmojiImage } from "./storage/Images"
-import WaitingRoom from "./WaitingRoom"
-import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box, Tooltip } from "@mui/material"
-import CloseIcon from "@mui/icons-material/Close"
-import LanguageContext from "./Context/LanguageContext"
+import React, { useContext, useEffect, useState } from 'react';
+import { challengeModifyResponse, ChallengeRoomJoin, JoinChallengeSuccessResponse, startGameResponse } from '../interfaces';
+import { Socket } from 'socket.io-client';
+import SettingsHomeButtons from './SettingsHomeButtons';
+import { setConnection } from './socket';
+import {emojiArray, getEmojiImage} from './storage/Images'
+import WaitingRoom from './WaitingRoom';
+import { Button, TextField, Typography, Stack, Avatar, Alert, Collapse, IconButton, Box, Tooltip } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import LanguageContext from './Context/LanguageContext';
 
 const defaultFormData: ChallengeRoomJoin = {
   roomCode: "",
@@ -151,8 +151,20 @@ function JoinChallenge() {
       }))
     })
 
-    return () => {
-      currentSocket?.off("challengeModify")
+    currentSocket?.on("gameStarted", (data: startGameResponse) => {
+      setRoomInfo(prevState => ({
+        ...prevState,
+        details: {
+          ...prevState.details,
+          challengeStartDate: data.challengeStartDate,
+          challengeEndDate: data.challengeEndDate
+        }
+      }))
+    })
+
+    return()=> {
+      currentSocket?.off("challengeModify");
+      currentSocket?.off("gameStarted");
     }
   })
 
