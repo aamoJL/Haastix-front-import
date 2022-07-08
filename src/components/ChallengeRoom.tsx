@@ -85,7 +85,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
   const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime()
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft))
-  const [currentTaskNumber, setCurrentTaskNumber] = useState<number>(0)
+  const [currentTaskNumber, setCurrentTaskNumber] = useState<number>(1)
   const [randomTasks, setRandomTasks] = useState<number[]>(sessionStorage.getItem("taskOrder") !== null ? JSON.parse(sessionStorage.getItem("taskOrder")!) : getTaskOrder)
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0)
   const [showCamera, setShowCamera] = useState(false)
@@ -215,7 +215,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
       socket?.on("playerFileStatuses", (dataResponse: PlayerFileStatusesResponse) => {
         if (dataResponse.statusCode === 200) {
           if (dataResponse.submissions.length === 0) {
-            setCurrentTaskNumber(1)
+            setCurrentTaskNumber(randomTasks[0])
           } else {
             let lastFile = dataResponse.submissions[dataResponse.submissions.length - 1]
             switch (lastFile.status) {
@@ -322,13 +322,13 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
                   {translation.texts.challenge}
                 </Typography>
                 <Typography variant="body1" component="p">
-                  <span id="current-task-number-player">{randomTasks.findIndex(x => x === currentTaskNumber)} / {roomInfo.details.challengeTasks.length}</span>
+                  <span id="current-task-number-player">{randomTasks.findIndex(x => x === currentTaskNumber) + 1} / {roomInfo.details.challengeTasks.length}</span>
                 </Typography>
                 <Typography variant="body1" component="p">
                   {translation.texts.description}
                 </Typography>
                 <Typography id="current-task" variant="body1" component="p">
-                  {roomInfo.details.challengeTasks[currentTaskNumber].taskDescription}
+                  {roomInfo.details.challengeTasks![currentTaskNumber - 1].taskDescription}
                 </Typography>
               </>
             )}
