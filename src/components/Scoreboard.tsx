@@ -12,6 +12,13 @@ interface Props {
   scores: PlayerData[]
 }
 
+interface SegmentedTime {
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
+}
+
 const modalStyle: SxProps<Theme> = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -35,6 +42,16 @@ function Scoreboard({ socket, scores }: Props) {
   const [openModal, setOpenModal] = useState(false)
   const [modalLoading, setModalLoading] = useState(true)
   const translation = useContext(LanguageContext)
+
+  const calculateTimeLeft = (milliseconds: number) => {
+    let time: SegmentedTime = {
+      days: Math.floor(milliseconds / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((milliseconds / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((milliseconds / 1000 / 60) % 60),
+      seconds: Math.floor((milliseconds / 1000) % 60),
+    }
+    return time
+  }
 
   useEffect(() => {
     if (selectedPlayer) {
@@ -94,7 +111,7 @@ function Scoreboard({ socket, scores }: Props) {
           {player.playerName}
         </TableCell>
         <TableCell align="right" id={`scoreboard-time-${i}`}>
-          {player.totalTime}
+          {player.totalTime ? player.totalTime : 0}
         </TableCell>
         <TableCell align="right" id={`scoreboard-tasks-${i}`}>
           {player.submissions.length}
