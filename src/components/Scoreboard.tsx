@@ -10,6 +10,7 @@ import LanguageContext from "./Context/LanguageContext"
 interface Props {
   socket?: Socket
   scores: PlayerData[]
+  timeIsUp: boolean
 }
 
 interface SegmentedTime {
@@ -35,7 +36,7 @@ const modalStyle: SxProps<Theme> = {
  * Component that renders challenge room's scoreboard sorted by task completion time
  * @param socket Socket.io socket connection
  */
-function Scoreboard({ socket, scores }: Props) {
+function Scoreboard({ socket, scores, timeIsUp }: Props) {
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | undefined>(undefined)
   const [selectedPhoto, setSelectedPhoto] = useState<string | undefined>(undefined)
   const [selectedPhotoNumber, setSelectedPhotoNumber] = useState(0)
@@ -84,7 +85,7 @@ function Scoreboard({ socket, scores }: Props) {
   }, [selectedPhotoNumber, selectedPlayer])
 
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, player: PlayerData) => {
-    if (selectedPlayer !== player) {
+    if (selectedPlayer !== player && timeIsUp == true) {
       setModalLoading(true)
       setSelectedPhotoNumber(0)
       setSelectedPlayer(player)

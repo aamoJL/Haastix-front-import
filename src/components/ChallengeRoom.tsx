@@ -338,7 +338,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
             </Button>
           </ButtonGroup>
           <Collapse in={showScoreboard}>
-            <Scoreboard socket={socket} scores={scores} />
+            <Scoreboard socket={socket} scores={scores} timeIsUp={timeIsUp} />
           </Collapse>
           <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
           {unReviewedSubmissions.length > 0 && (
@@ -393,7 +393,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
               close={() => setShowCamera(false)}
             />
           )}
-          <Scoreboard socket={socket} scores={scores} />
+          <Scoreboard socket={socket} scores={scores} timeIsUp={timeIsUp} />
         </>
       )}
       {/* Time is up, scoreboard */}
@@ -405,7 +405,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
           <Typography id="room-title" variant="body1" component="p">
             {translation.texts.roomName}: {roomInfo?.details.challengeRoomName}
           </Typography>
-          <Scoreboard socket={socket} scores={scores} />
+          <Scoreboard socket={socket} scores={scores} timeIsUp={timeIsUp} />
         </>
       )}
       {/* Alerts */}
