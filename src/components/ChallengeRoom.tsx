@@ -183,7 +183,6 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
     if (!isGameMaster) {
       // Get file status response when currentTaskNumber changes or file status changes
       socket?.on("fileStatusPlayer", (dataResponse: FileStatusPlayerResponse) => {
-        console.log(roomInfo.details.challengeTasks.length)
         switch (dataResponse.status) {
           case "Approved":
             if (randomTasks.findIndex((x) => x === dataResponse.taskNumber) + 1 >= roomInfo.details.challengeTasks.length) {
@@ -323,13 +322,13 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
                   {translation.texts.challenge}
                 </Typography>
                 <Typography variant="body1" component="p">
-                  <span id="current-task-number-player">{currentTaskNumber as number}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span>
+                  <span id="current-task-number-player">{randomTasks.findIndex(x => x === currentTaskNumber)} / {roomInfo.details.challengeTasks.length}</span>
                 </Typography>
                 <Typography variant="body1" component="p">
                   {translation.texts.description}
                 </Typography>
-                <Typography variant="body1" component="p">
-                  {roomInfo.details.challengeTasks[currentTaskNumber - 1].taskDescription}
+                <Typography id="current-task" variant="body1" component="p">
+                  {roomInfo.details.challengeTasks[currentTaskNumber].taskDescription}
                 </Typography>
               </>
             )}
