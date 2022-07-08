@@ -1,131 +1,133 @@
-export type Language = "fi" | "en";
+export type Language = "fi" | "en"
 
 /**
  * Interface for translated languages
  */
-export interface Languages{
-  fi: Translation,
-  en: Translation,
+export interface Languages {
+  fi: Translation
+  en: Translation
 }
 
 /**
  * Interface for translated text values
  */
-export interface Translation{
-  titles:{
-    createGame: string,
-    challenges: string,
-    settings: string, 
-    theme: string,
-    joinAGame: string,
-    avatar: string,
-    waitingRoom: string,
-    gameRoom: string,
-    scoreboard: string,
-    feedbackForm: string,
-  },
-  inputs:{
-    buttons:{
-      createAChallenge: string,
-      joinAChallenge: string,
-      addNewChallenge: string,
-      createGame: string,
-      join: string,
-      players: string,
-      challenges: string,
-      edit: string,
-      openCamera: string,
-      closeCamera: string,
-      accept: string,
-      decline: string,
-      takePicture: string,
-      send: string,
-      retake: string,
-      add: string,
-      save: string,
-      feedback: string,
-    },
-    texts:{
-      roomName: string,
-      description: string,
-      delayBeforeGameStarts: string,
-      gameDuration: string,
-      darkmode: string,
-      sound: string,
-      roomCode: string,
-      roomCodeDesc: string,
-      userName: string,
-      userNameDesc: string,
-      roomNameLengthHelper: string,
-      taskCountHelper: string,
-      taskDescriptionLengthHelper: string,
+export interface Translation {
+  titles: {
+    createGame: string
+    challenges: string
+    settings: string
+    theme: string
+    joinAGame: string
+    avatar: string
+    waitingRoom: string
+    gameRoom: string
+    scoreboard: string
+    feedbackForm: string
+  }
+  inputs: {
+    buttons: {
+      createAChallenge: string
+      joinAChallenge: string
+      addNewChallenge: string
+      createGame: string
+      join: string
+      players: string
+      challenges: string
+      edit: string
+      openCamera: string
+      closeCamera: string
+      accept: string
+      decline: string
+      takePicture: string
+      send: string
+      retake: string
+      add: string
+      save: string
+      feedback: string
+      start: string
+      cancel: string
     }
-  },
-  texts:{
-    askCode: string,
-    roomName: string,
-    challengeBeginsIn: string,
-    roomCode: string,
-    firstChallenge: string,
-    noJoinedPlayers: string,
-    challenge: string,
-    description: string,
-    timeRemaining: string,
-    userName: string,
-    acceptSubmission: string,
-    waitingReview: string,
-    challengeIsOver: string,
-    allowCameraAccess: string,
-    allTasksCompleted: string,
-    submissionDeclined: string,
-    taskNumber: string,
-  },
-  tables:{
-    name: string,
-    description: string,
-    avatar: string,
-    time: string,
-    tasks: string,
-  },
+    texts: {
+      roomName: string
+      description: string
+      delayBeforeGameStarts: string
+      gameDuration: string
+      darkmode: string
+      sound: string
+      roomCode: string
+      roomCodeDesc: string
+      userName: string
+      userNameDesc: string
+      roomNameLengthHelper: string
+      taskCountHelper: string
+      taskDescriptionLengthHelper: string
+    }
+  }
+  texts: {
+    askCode: string
+    roomName: string
+    challengeBeginsIn: string
+    roomCode: string
+    firstChallenge: string
+    noJoinedPlayers: string
+    challenge: string
+    description: string
+    timeRemaining: string
+    userName: string
+    acceptSubmission: string
+    waitingReview: string
+    challengeIsOver: string
+    allowCameraAccess: string
+    allTasksCompleted: string
+    submissionDeclined: string
+    taskNumber: string
+  }
+  tables: {
+    name: string
+    description: string
+    avatar: string
+    time: string
+    tasks: string
+  }
   errors: {
-    nameLength: string,
-    delayAmount: string,
-    durationAmount: string,
-    taskCount: string,
-    taskDescriptionLength: string,
-    roomCodeInvalid: string,
-  },
-  alerts:{
-    title:{
-      approved: string,
-      rejected: string,
-      tasksCompleted: string,
+    nameLength: string
+    delayAmount: string
+    durationAmount: string
+    taskCount: string
+    taskDescriptionLength: string
+    roomCodeInvalid: string
+  }
+  alerts: {
+    title: {
+      approved: string
+      rejected: string
+      tasksCompleted: string
     }
-    alert:{
-      submissionRejected: string,
-      feedbackTooShort: string,
-    },
-    success:{
-      submissionApproved: string,
-    },
-    info:{
-      tasksCompleted: string,
+    alert: {
+      submissionRejected: string
+      feedbackTooShort: string
     }
-  },
-  imageAlts:{
-    reviewingPhoto: string,
-    cameraScreen: string,
-  },
-  tooltips:{
-    openCamera: string,
-    closeCamera: string,
-    joinGame: string,
-    createGame: string,
+    success: {
+      submissionApproved: string
+    }
+    info: {
+      tasksCompleted: string
+    }
+  }
+  imageAlts: {
+    reviewingPhoto: string
+    cameraScreen: string
+  }
+  tooltips: {
+    openCamera: string
+    closeCamera: string
+    joinGame: string
+    createGame: string
   }
 }
 
 const finnish: Translation = {
-  titles:{
+  titles: {
     createGame: "Luo peli",
     challenges: "Haasteet",
     settings: "Asetukset",
@@ -135,10 +137,10 @@ const finnish: Translation = {
     waitingRoom: "Odotushuone",
     gameRoom: "Pelihuone",
     scoreboard: "Tulokset",
-    feedbackForm: "Lähetä palautetta"
+    feedbackForm: "Lähetä palautetta",
   },
-  inputs:{
-    buttons:{
+  inputs: {
+    buttons: {
       createAChallenge: "Luo haaste",
       joinAChallenge: "Liity haasteeseen",
       addNewChallenge: "Lisää uusi haaste",
@@ -156,9 +158,11 @@ const finnish: Translation = {
       retake: "Ota uusi kuva",
       add: "Lisää",
       save: "Tallenna",
-      feedback: "Palaute"
+      feedback: "Palaute",
+      start: "Aloita peli",
+      cancel: "Peruuta",
     },
-    texts:{
+    texts: {
       roomName: "Huoneen nimi",
       description: "Kuvaus",
       delayBeforeGameStarts: "Odotusaika (0-60)",
@@ -172,9 +176,9 @@ const finnish: Translation = {
       roomNameLengthHelper: "Huoneen nimi on 3-30 merkkiä",
       taskCountHelper: "Huoneessa voi olla 1-20 haastetta",
       taskDescriptionLengthHelper: "Haasteen kuvaus on 3-256 merkkiä",
-    }
+    },
   },
-  texts:{
+  texts: {
     askCode: "Kysy huoneen koodia pelin luojalta",
     roomName: "Huoneen nimi",
     challengeBeginsIn: "Haasteen alkuun",
@@ -193,14 +197,14 @@ const finnish: Translation = {
     submissionDeclined: "Kuvasi on hylätty! Ota uusi kuva.",
     taskNumber: "Haasteen numero",
   },
-  tables:{
+  tables: {
     name: "Nimi",
     description: "Kuvaus",
     avatar: "Hahmo",
     time: "Aika",
     tasks: "Haasteet",
   },
-  errors:{
+  errors: {
     nameLength: "Huoneen nimi tulee olla 3-30 merkkiä pitkä.",
     delayAmount: "Odotusajan tulee olla 0-60 minuuttia.",
     durationAmount: "Pelin keston tulee olla 1-240 minuuttia.",
@@ -208,37 +212,37 @@ const finnish: Translation = {
     taskDescriptionLength: "Haasteen kuvauksen tulee olla 3-256 merkkiä pitkä.",
     roomCodeInvalid: "Huoneen koodi on väärin!",
   },
-  alerts:{
-    title:{
+  alerts: {
+    title: {
       approved: "Hyväksytty",
       rejected: "Hylätty",
-      tasksCompleted: "Kaikki haasteet suoritettu!"
+      tasksCompleted: "Kaikki haasteet suoritettu!",
     },
-    alert:{
+    alert: {
       submissionRejected: "Lähettämäsi kuva on hylätty. Ota uusi kuva.",
-      feedbackTooShort: "Palaute on liian lyhyt."
+      feedbackTooShort: "Palaute on liian lyhyt.",
     },
-    success:{
+    success: {
       submissionApproved: "Lähettämäsi kuva on hyväksytty.",
     },
-    info:{
-      tasksCompleted: "Olet suorittanut kaikki haasteet."
-    }
+    info: {
+      tasksCompleted: "Olet suorittanut kaikki haasteet.",
+    },
   },
-  imageAlts:{
+  imageAlts: {
     reviewingPhoto: "Arvioitava kuva",
-    cameraScreen: "Kameranäkymä"
+    cameraScreen: "Kameranäkymä",
   },
-  tooltips:{
+  tooltips: {
     openCamera: "Avaa kamera",
     closeCamera: "Sulje kamera",
     joinGame: "Huoneen koodi tai käyttäjänimi on väärin",
     createGame: "Osa tiedoista on väärin",
-  }
+  },
 }
 
 const english: Translation = {
-  titles:{
+  titles: {
     createGame: "Create game",
     challenges: "Challenges",
     settings: "Settings",
@@ -248,10 +252,10 @@ const english: Translation = {
     waitingRoom: "Waiting room",
     gameRoom: "Game room",
     scoreboard: "Scoreboard",
-    feedbackForm: "Send feedback"
+    feedbackForm: "Send feedback",
   },
-  inputs:{
-    buttons:{
+  inputs: {
+    buttons: {
       createAChallenge: "Create a Challenge",
       joinAChallenge: "Join a Challenge",
       addNewChallenge: "Add new challenge",
@@ -269,9 +273,11 @@ const english: Translation = {
       retake: "Retake",
       add: "Add",
       save: "Save",
-      feedback: "Feedback"
+      feedback: "Feedback",
+      start: "Start the game",
+      cancel: "Cancel",
     },
-    texts:{
+    texts: {
       roomName: "Room name",
       description: "Description",
       delayBeforeGameStarts: "Delay before game starts (0-60)",
@@ -285,9 +291,9 @@ const english: Translation = {
       roomNameLengthHelper: "Room name is 3-30 characters",
       taskCountHelper: "Room can have 1-20 tasks",
       taskDescriptionLengthHelper: "Task description is 3-256 characters",
-    }
+    },
   },
-  texts:{
+  texts: {
     askCode: "Ask the gamemaster for the code",
     roomName: "Room name",
     challengeBeginsIn: "Challenge begins in",
@@ -306,7 +312,7 @@ const english: Translation = {
     submissionDeclined: "Your submission has been rejected! Take a new photo.",
     taskNumber: "Task number",
   },
-  tables:{
+  tables: {
     name: "Name",
     description: "Description",
     avatar: "Avatar",
@@ -321,39 +327,39 @@ const english: Translation = {
     taskDescriptionLength: "Task description must be 3-256 characters long.",
     roomCodeInvalid: "Room code was invalid!",
   },
-  alerts:{
-    title:{
+  alerts: {
+    title: {
       approved: "Approved",
       rejected: "Declined",
-      tasksCompleted: "All tasks completed!"  
+      tasksCompleted: "All tasks completed!",
     },
-    alert:{
+    alert: {
       submissionRejected: "Your submission has been rejected. Take another photo.",
-      feedbackTooShort: "Feedback is too short."
+      feedbackTooShort: "Feedback is too short.",
     },
-    success:{
+    success: {
       submissionApproved: "Your submission has been approved.",
     },
-    info:{
-      tasksCompleted: "You have completed all tasks."
-    }
+    info: {
+      tasksCompleted: "You have completed all tasks.",
+    },
   },
-  imageAlts:{
+  imageAlts: {
     reviewingPhoto: "Photo to review",
     cameraScreen: "Camera screen",
   },
-  tooltips:{
+  tooltips: {
     openCamera: "Open camera",
     closeCamera: "Close camera",
     joinGame: "Room code or user name is invalid",
     createGame: "Some information is invalid",
-  }
+  },
 }
 
 /**
  * Object that contains all translations for all translated languages
  */
-export const translations : Languages = {
+export const translations: Languages = {
   fi: finnish,
   en: english,
 }
@@ -364,6 +370,5 @@ export const translations : Languages = {
  * @returns translation object
  */
 export const getTranslation = (lang: keyof Languages) => {
-  return translations[lang as keyof Languages];
+  return translations[lang as keyof Languages]
 }
-
