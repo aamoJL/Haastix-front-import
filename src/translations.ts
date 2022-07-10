@@ -46,6 +46,7 @@ export interface Translation {
       feedback: string
       start: string
       cancel: string
+      submissions: string
     }
     texts: {
       roomName: string
@@ -161,6 +162,7 @@ const finnish: Translation = {
       feedback: "Palaute",
       start: "Aloita peli",
       cancel: "Peruuta",
+      submissions: "Suoritukset",
     },
     texts: {
       roomName: "Huoneen nimi",
@@ -276,6 +278,7 @@ const english: Translation = {
       feedback: "Feedback",
       start: "Start the game",
       cancel: "Cancel",
+      submissions: "Submissions",
     },
     texts: {
       roomName: "Room name",
