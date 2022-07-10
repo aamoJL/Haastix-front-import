@@ -421,23 +421,23 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
       <Stack style={{ position: "absolute", top: "50px", left: "50%", transform: "translate(-50%, 0%)" }} sx={{ width: "auto", textAlign: "left" }} spacing={1}>
         {showRejectAlert && (
           <Alert onClick={() => setShowRejectAlert(false)} severity="error">
-            <AlertTitle>{translation.alerts.title.rejected}</AlertTitle>
+            <AlertTitle id="alert-title-rejected">{translation.alerts.title.rejected}</AlertTitle>
             {translation.alerts.alert.submissionRejected}
-            {reviewResponse !== "" && <p>{`${translation.texts.message}: ${reviewResponse}`}</p>}
+            {reviewResponse !== "" && <p>{`${translation.texts.message}: <span id="rejected-message">${reviewResponse}</span>`}</p>}
           </Alert>
         )}
         {showApproveAlert && (
           <Alert onClick={() => setShowApproveAlert(false)} severity="success">
-            <AlertTitle>{translation.alerts.title.approved}</AlertTitle>
+            <AlertTitle id="alert-title-approved">{translation.alerts.title.approved}</AlertTitle>
             {translation.alerts.success.submissionApproved}
-            {reviewResponse !== "" && <p>{`${translation.texts.message}: ${reviewResponse}`}</p>}
+            {reviewResponse !== "" && <p>{`${translation.texts.message}: <span id="approved-message">${reviewResponse}</span>`}</p>}
           </Alert>
         )}
         {showCompletedAlert && (
           <Alert onClick={() => setShowCompletedAlert(false)} severity="info">
-            <AlertTitle>{translation.alerts.title.tasksCompleted}</AlertTitle>
+            <AlertTitle id="alert-title-completed">{translation.alerts.title.tasksCompleted}</AlertTitle>
             {translation.alerts.info.tasksCompleted}
-            {reviewResponse !== "" && <p>{`${translation.texts.message}: ${reviewResponse}`}</p>}
+            {reviewResponse !== "" && <p>{`${translation.texts.message}: <span id="completed-message">${reviewResponse}</span>`}</p>}
           </Alert>
         )}
       </Stack>
