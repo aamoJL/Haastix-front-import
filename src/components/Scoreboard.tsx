@@ -85,7 +85,7 @@ function Scoreboard({ socket, scores, timeIsUp }: Props) {
   }, [selectedPhotoNumber, selectedPlayer])
 
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, player: PlayerData) => {
-    if (selectedPlayer !== player && timeIsUp == true) {
+    if (selectedPlayer !== player && timeIsUp === true) {
       setModalLoading(true)
       setSelectedPhotoNumber(0)
       setSelectedPlayer(player)

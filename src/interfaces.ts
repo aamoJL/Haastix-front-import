@@ -1,3 +1,5 @@
+import { PaletteMode } from "@mui/material"
+
 type fileStatus = "Not reviewed" | "Approved" | "Rejected" | "Not submitted"
 
 export interface Challenge {
@@ -172,4 +174,10 @@ export interface PlayerFileStatusesResponse {
     status: fileStatus
     taskNumber: number
   }[]
+}
+
+export interface ThemeVariables {
+  colors: number,
+  mode: PaletteMode,
+  style: number
 }
