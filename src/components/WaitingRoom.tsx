@@ -8,6 +8,7 @@ import RemovePlayer from "./RemovePlayer"
 import AlertWindow from "./AlertWindow"
 import CloseIcon from "@mui/icons-material/Close"
 import LanguageContext from "./Context/LanguageContext"
+import Bouncyfeeling from "./Bouncyfeeling"
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse
@@ -320,18 +321,21 @@ function WaitingRoom({ roomInfo, socket }: Props) {
             </>
           )}
           {!isGameMaster && playerArray.length > 0 && (
-            <Table sx={{ maxWidth: 200 }} size="small">
-              <TableBody>
-                {playerArray.map((value, i) => (
-                  <TableRow key={i}>
-                    <TableCell align="left">
-                      <Avatar src={getEmojiImage(value.avatar)} alt="avatar" />
-                    </TableCell>
-                    <TableCell align="left">{value.name}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <>
+              <Table sx={{ maxWidth: 200 }} size="small">
+                <TableBody>
+                  {playerArray.map((value, i) => (
+                    <TableRow key={i}>
+                      <TableCell align="left">
+                        <Avatar src={getEmojiImage(value.avatar)} alt="avatar" />
+                      </TableCell>
+                      <TableCell align="left">{value.name}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <Bouncyfeeling players={playerArray} />
+            </>
           )}
         </>
       )}
