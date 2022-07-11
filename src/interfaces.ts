@@ -16,6 +16,7 @@ export interface ChallengeRoomData {
   time: number
   delay: number
   challenges: Challenge[]
+  isRandom: boolean
 }
 
 export interface ChallengeRoomJoin {
@@ -55,6 +56,7 @@ export interface JoinChallengeSuccessResponse {
     challengeEndDate: string
     challengeTasks: ChallengeTask[]
     token: string
+    isRandom: boolean
     userName: string
     userAvatar: number
     challengeRoomCode: string
@@ -66,6 +68,7 @@ export interface challengeModifyResponse {
   challengeStartDate: string
   challengeEndDate: string
   challengeTasks: ChallengeTask[]
+  isRandom: boolean
 }
 
 export interface startGameResponse {

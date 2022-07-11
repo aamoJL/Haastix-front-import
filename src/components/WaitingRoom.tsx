@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead } from "@mui/material"
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch } from "@mui/material"
 import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
 import { getEmojiImage } from "./storage/Images"
@@ -64,6 +64,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const [challengeArray, setChallengeArray] = useState<ChallengeTask[]>(roomInfo.details.challengeTasks)
   const [startGame, setStartGame] = useState(false)
   const [timer, setTimer] = useState(10)
+  const [randomOrder, setRandomOrder] = useState(roomInfo.details.isRandom)
   const translation = useContext(LanguageContext)
 
   useEffect(() => {
@@ -93,6 +94,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
 
     socket?.on("youWereRemoved", (data: YouWereRemovedResponse) => {
       sessionStorage.removeItem("token")
+      sessionStorage.removeItem("taskOrder")
       setAlertMessage(data.message)
       setAlertWindow(true)
     })
@@ -169,6 +171,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       payload: {
         challengeName: roomInfo.details.challengeRoomName,
         challengeTasks: filteredArr,
+        isRandom: randomOrder,
       },
     })
 
@@ -280,6 +283,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                 )}
                 {edit && (
                   <Stack alignItems="center" spacing={1}>
+                    <FormControlLabel control={<Switch id="edit-randomOrder-switch" checked={randomOrder} onChange={() => setRandomOrder(!randomOrder)} />} labelPlacement="start" label={translation.texts.randomTasks}></FormControlLabel>
                     <Box sx={{ maxHeight: 255, overflow: "auto", maxWidth: 300 }}>
                       {challengeArray.map((value, i) => (
                         <TextField

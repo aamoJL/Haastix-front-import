@@ -5,7 +5,7 @@ const websocketEndpoint = `${process.env.REACT_APP_WEBSOCKET_ENDPOINT}`
 export const setConnection = (token: string) => {
   try {
     var socket = socketIOClient(websocketEndpoint, {
-      withCredentials: true,
+      withCredentials: false,
       auth: {
         token: token,
       },

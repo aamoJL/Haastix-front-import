@@ -56,11 +56,37 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
     return timeString
   }
 
-  const isGameMaster = roomInfo.details.isGameMaster
+  /**
+   * Shuffles given array of numbers using Durstenfeld shuffle
+   * @param array array you want to shuffle
+   */
+
+  const shuffle = (array: number[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1))
+      var temp = array[i]
+      array[i] = array[j]
+      array[j] = temp
+    }
+  }
+
+  const getTaskOrder = () => {
+    let taskNumbers = roomInfo.details.challengeTasks.map((task) => {
+      return task.taskNumber
+    })
+    if (roomInfo.details.isRandom) {
+      shuffle(taskNumbers)
+    }
+    sessionStorage.setItem("taskOrder", JSON.stringify(taskNumbers))
+    return taskNumbers
+  }
+
+  const isGameMaster = roomInfo?.details.userName === undefined
   const millisecondsLeft = new Date(roomInfo?.details.challengeEndDate as string).getTime() - new Date().getTime()
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft))
   const [currentTaskNumber, setCurrentTaskNumber] = useState<number>(1)
+  const [randomTasks, setRandomTasks] = useState<number[]>(sessionStorage.getItem("taskOrder") !== null ? JSON.parse(sessionStorage.getItem("taskOrder")!) : getTaskOrder)
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0)
   const [showCamera, setShowCamera] = useState(false)
   const [playerWaitingReview, setPlayerWaitingReview] = useState(false)
@@ -156,17 +182,16 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
     if (!isGameMaster) {
       // Get file status response when currentTaskNumber changes or file status changes
       socket?.on("fileStatusPlayer", (dataResponse: FileStatusPlayerResponse) => {
-        console.log(roomInfo.details.challengeTasks.length)
         switch (dataResponse.status) {
           case "Approved":
-            if (dataResponse.taskNumber >= roomInfo.details.challengeTasks.length) {
+            if (randomTasks.findIndex((x) => x === dataResponse.taskNumber) + 1 >= roomInfo.details.challengeTasks.length) {
               // No more tasks
               setShowCompletedAlert(true)
               setTimeIsUp(true)
             } else {
               // Go next
               setShowApproveAlert(true)
-              setCurrentTaskNumber(dataResponse.taskNumber + 1)
+              setCurrentTaskNumber(randomTasks[randomTasks.findIndex((x) => x === dataResponse.taskNumber) + 1])
             }
             setPlayerWaitingReview(false)
             break
@@ -189,16 +214,16 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
       socket?.on("playerFileStatuses", (dataResponse: PlayerFileStatusesResponse) => {
         if (dataResponse.statusCode === 200) {
           if (dataResponse.submissions.length === 0) {
-            setCurrentTaskNumber(1)
+            setCurrentTaskNumber(randomTasks[0])
           } else {
             let lastFile = dataResponse.submissions[dataResponse.submissions.length - 1]
             switch (lastFile.status) {
               case "Approved":
-                if (lastFile.taskNumber - 1 === roomInfo.details.challengeTasks.length) {
+                if (randomTasks.findIndex((x) => x === lastFile.taskNumber) === roomInfo.details.challengeTasks.length - 1) {
                   // No more tasks
                   setTimeIsUp(true)
                 } else {
-                  setCurrentTaskNumber(lastFile.taskNumber + 1)
+                  setCurrentTaskNumber(randomTasks[randomTasks.findIndex((x) => x === lastFile.taskNumber) + 1])
                 }
                 break
               case "Not reviewed":
@@ -207,7 +232,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
               case "Rejected":
               case "Not submitted":
               default:
-                setCurrentTaskNumber(lastFile.taskNumber)
+                setCurrentTaskNumber(randomTasks[randomTasks.findIndex((x) => x === lastFile.taskNumber)])
                 break
             }
           }
@@ -296,13 +321,13 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
                   {translation.texts.challenge}
                 </Typography>
                 <Typography variant="body1" component="p">
-                  <span id="current-task-number-player">{currentTaskNumber as number}</span> / <span id="challenge-count-number-player">{roomInfo?.details.challengeTasks.length}</span>
+                  <span id="current-task-number-player">{randomTasks.findIndex(x => x === currentTaskNumber) + 1} / {roomInfo.details.challengeTasks.length}</span>
                 </Typography>
                 <Typography variant="body1" component="p">
                   {translation.texts.description}
                 </Typography>
-                <Typography variant="body1" component="p">
-                  {roomInfo.details.challengeTasks[currentTaskNumber - 1].taskDescription}
+                <Typography id="current-task" variant="body1" component="p">
+                  {roomInfo.details.challengeTasks![currentTaskNumber - 1].taskDescription}
                 </Typography>
               </>
             )}

@@ -1,4 +1,4 @@
-import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box, IconButton, InputAdornment, Tooltip } from "@mui/material"
+import { Button, TextField, Typography, Stack, FormControl, InputLabel, Input, Box, IconButton, InputAdornment, Tooltip, Switch, FormControlLabel } from "@mui/material"
 import CloseIcon from "@mui/icons-material/Close"
 import React, { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -29,11 +29,12 @@ const defaultFormData: ChallengeRoomData = {
   challenges: [{ description: "" }],
   time: 0,
   delay: 0,
+  isRandom: true,
 }
 
 function CreateChallengeRoom() {
   const [formData, setFormData] = useState<ChallengeRoomData>(defaultFormData)
-  const { roomName, challenges, delay, time } = formData
+  const { roomName, challenges, delay, time, isRandom } = formData
   const navigate = useNavigate()
   const [roomNameError, setRoomNameError] = useState(false)
   const [delayAmountError, setDelayAmountError] = useState(false)
@@ -214,6 +215,7 @@ function CreateChallengeRoom() {
       challengeDuration: time,
       challengeStartDelay: delay,
       challengeTasks: challenges,
+      isRandom: isRandom,
     })
 
     // Send data to API
@@ -288,6 +290,13 @@ function CreateChallengeRoom() {
     else setOpenTooltip(false)
   }
 
+  const handleRandom = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      isRandom: checked ? true : false,
+    }))
+  }
+
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
       <SettingsHomeButtons />
@@ -298,6 +307,7 @@ function CreateChallengeRoom() {
       <Typography variant="h4" component="h4">
         {translation.titles.challenges}
       </Typography>
+      <FormControlLabel control={<Switch id="randomOrder-switch" checked={formData.isRandom} onChange={handleRandom} />} labelPlacement="start" label={translation.texts.randomTasks}></FormControlLabel>
       <Typography fontSize="small">{translation.inputs.texts.taskDescriptionLengthHelper}</Typography>
       <Typography fontSize="small">{translation.inputs.texts.taskCountHelper}</Typography>
       <Box sx={{ maxHeight: 205, overflow: "auto", maxWidth: 200 }}>
