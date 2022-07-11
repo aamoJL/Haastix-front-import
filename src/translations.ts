@@ -97,6 +97,7 @@ export interface Translation {
     taskCount: string
     taskDescriptionLength: string
     roomCodeInvalid: string
+    userNameUsed: string
   }
   alerts: {
     title: {
@@ -213,6 +214,7 @@ const finnish: Translation = {
     taskCount: "Pelissä tulee olla 1-20 haastetta.",
     taskDescriptionLength: "Haasteen kuvauksen tulee olla 3-256 merkkiä pitkä.",
     roomCodeInvalid: "Huoneen koodi on väärin!",
+    userNameUsed: "Käyttäjänimi on jo käytössä.",
   },
   alerts: {
     title: {
@@ -329,6 +331,7 @@ const english: Translation = {
     taskCount: "Room must have between 1-20 tasks.",
     taskDescriptionLength: "Task description must be 3-256 characters long.",
     roomCodeInvalid: "Room code was invalid!",
+    userNameUsed: "Username already in use",
   },
   alerts: {
     title: {
