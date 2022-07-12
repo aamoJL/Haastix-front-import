@@ -177,7 +177,7 @@ export interface PlayerFileStatusesResponse {
 }
 
 export interface ThemeVariables {
-  colors: number,
+  color: string,
   mode: PaletteMode,
-  style: number
+  style: string
 }

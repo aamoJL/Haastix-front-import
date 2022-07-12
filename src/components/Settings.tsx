@@ -21,14 +21,14 @@ interface Props {
 }
 
 const defaultTheme: ThemeVariables = {
-  colors: 1,
+  color: "green",
   mode: "dark",
-  style: 1
+  style: "1"
 }
 
 const Settings = (props: Props) => {
   const [theme, setTheme] = useState<ThemeVariables>(localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!) : defaultTheme)
-  const {colors, mode, style} = theme
+  const {color, mode, style} = theme
   const [sound, setSound] = useState(false) //toggle sound
   const [language, setLanguge] = useState<Language>(localStorage.getItem("language") === null ? "en" : (localStorage.getItem("language") as Language)) //toggle language
   const [translation, setTranslation] = useState<Translation>(getTranslation(language))
@@ -63,7 +63,7 @@ const Settings = (props: Props) => {
   const handleColorsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTheme((prevState) => ({
       ...prevState,
-      colors: (event.target as HTMLInputElement).valueAsNumber
+      color: (event.target as HTMLInputElement).value
     }))
   }
 
@@ -84,9 +84,9 @@ const Settings = (props: Props) => {
           </Stack>
           <FormControl>
             <FormLabel>{translation.titles.theme}</FormLabel>
-            <RadioGroup row value={colors} onChange={handleColorsChange}>
-              <FormControlLabel value={1} control={<Radio />} label={`${translation.titles.theme} 1`} />
-              <FormControlLabel value={2} control={<Radio />} label={`${translation.titles.theme} 2`} />
+            <RadioGroup row value={color} onChange={handleColorsChange}>
+              <FormControlLabel id="theme1" value={"green"} control={<Radio />} label={`${translation.titles.theme} 1`} />
+              <FormControlLabel id="theme2" value={"red"} control={<Radio />} label={`${translation.titles.theme} 2`} />
             </RadioGroup>
             {/* <FormLabel>{translation.titles.style}</FormLabel>
             <RadioGroup row value={theme} onChange={handleTheme}>

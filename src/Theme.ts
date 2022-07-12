@@ -1,11 +1,11 @@
 import { createTheme, PaletteMode } from "@mui/material"
 
-const makeTheme = (mode: PaletteMode, colors: number, style: number) => {
+const makeTheme = (mode: PaletteMode, color: string, style: string) => {
   let theme = createTheme()
   //Switch different colors
-  switch(colors) {
-    case 1:
-      //Colors for green and dark theme
+  switch(color) {
+    case "green":
+      //Colors for green theme
       theme = createTheme({
         palette: {
           mode: mode,
@@ -48,7 +48,7 @@ const makeTheme = (mode: PaletteMode, colors: number, style: number) => {
         }
       })
     break
-    case 2:
+    case "red":
       //Colors for theme2
       theme = createTheme({
         palette: {
@@ -97,7 +97,7 @@ const makeTheme = (mode: PaletteMode, colors: number, style: number) => {
   }
 
   switch(style) {
-    case 1:
+    case "1":
       //Create global styling for components
       theme = createTheme(theme, {
         components: {

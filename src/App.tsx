@@ -17,13 +17,13 @@ const App = () => {
   const prefersDark = useMediaQuery("(prefers-color-scheme: dark)")
   
   const defaultTheme: ThemeVariables = {
-    colors: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).colors : 1,
+    color: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).color : "green",
     mode: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).mode as PaletteMode : prefersDark ? "dark" : "light",
-    style: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).style : 1
+    style: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).style : "1"
   }
   const [translation, setTranslation] = useState<Translation>(getTranslation(localStorage.getItem("language") === null ? "en" : (localStorage.getItem("language") as Language)))
   const [themeOptions, setThemeOptions] = useState<ThemeVariables>(defaultTheme)
-  const {colors, mode, style} = themeOptions
+  const {color, mode, style} = themeOptions
   const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   if (localStorage.getItem("theme") === null && themeOptions !== null) localStorage.setItem("theme", JSON.stringify(themeOptions))
@@ -52,7 +52,7 @@ const App = () => {
     }
   })
 
-  const theme = useMemo(() => makeTheme(mode, colors, style), [themeOptions])
+  const theme = useMemo(() => makeTheme(mode, color, style), [themeOptions])
 
   return (
     <LanguageContext.Provider value={translation}>
