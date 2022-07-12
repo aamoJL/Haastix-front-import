@@ -28,6 +28,7 @@ const defaultRoomInfo: JoinChallengeSuccessResponse = {
     challengeEndDate: "",
     challengeTasks: [{ taskDescription: "", taskId: "", taskNumber: 0 }],
     token: "",
+    isRandom: true,
     userName: "",
     userAvatar: 0,
   },
@@ -147,6 +148,7 @@ function JoinChallenge() {
         details: {
           ...prevState.details,
           challengeTasks: data.challengeTasks,
+          isRandom: data.isRandom,
         },
       }))
     })

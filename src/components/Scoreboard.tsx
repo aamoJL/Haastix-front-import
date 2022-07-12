@@ -10,6 +10,14 @@ import LanguageContext from "./Context/LanguageContext"
 interface Props {
   socket?: Socket
   scores: PlayerData[]
+  timeIsUp: boolean
+}
+
+interface SegmentedTime {
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
 }
 
 const modalStyle: SxProps<Theme> = {
@@ -28,13 +36,30 @@ const modalStyle: SxProps<Theme> = {
  * Component that renders challenge room's scoreboard sorted by task completion time
  * @param socket Socket.io socket connection
  */
-function Scoreboard({ socket, scores }: Props) {
+function Scoreboard({ socket, scores, timeIsUp }: Props) {
   const [selectedPlayer, setSelectedPlayer] = useState<PlayerData | undefined>(undefined)
   const [selectedPhoto, setSelectedPhoto] = useState<string | undefined>(undefined)
   const [selectedPhotoNumber, setSelectedPhotoNumber] = useState(0)
   const [openModal, setOpenModal] = useState(false)
   const [modalLoading, setModalLoading] = useState(true)
   const translation = useContext(LanguageContext)
+
+  const calculateTimeLeft = (milliseconds: number) => {
+    if (milliseconds != null) {
+      let time: SegmentedTime = {
+        days: Math.floor(milliseconds / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((milliseconds / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((milliseconds / 1000 / 60) % 60),
+        seconds: Math.floor((milliseconds / 1000) % 60),
+      }
+      let timeString = time.days + time.hours + time.minutes + time.seconds < 0 ? "-" : ""
+      timeString = timeString + (Math.abs(time.hours) < 10 ? "0" : "") + Math.abs(time.hours) + ":"
+      timeString = timeString + (Math.abs(time.minutes) < 10 ? "0" : "") + Math.abs(time.minutes) + ":"
+      timeString = timeString + (Math.abs(time.seconds) < 10 ? "0" : "") + Math.abs(time.seconds)
+
+      return timeString
+    }
+  }
 
   useEffect(() => {
     if (selectedPlayer) {
@@ -60,7 +85,7 @@ function Scoreboard({ socket, scores }: Props) {
   }, [selectedPhotoNumber, selectedPlayer])
 
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, player: PlayerData) => {
-    if (selectedPlayer !== player) {
+    if (selectedPlayer !== player && timeIsUp == true) {
       setModalLoading(true)
       setSelectedPhotoNumber(0)
       setSelectedPlayer(player)
@@ -94,7 +119,7 @@ function Scoreboard({ socket, scores }: Props) {
           {player.playerName}
         </TableCell>
         <TableCell align="right" id={`scoreboard-time-${i}`}>
-          {player.totalTime}
+          {calculateTimeLeft(player.totalTime * 1000)}
         </TableCell>
         <TableCell align="right" id={`scoreboard-tasks-${i}`}>
           {player.submissions.length}
