@@ -156,7 +156,6 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
     if (!isGameMaster) {
       // Get file status response when currentTaskNumber changes or file status changes
       socket?.on("fileStatusPlayer", (dataResponse: FileStatusPlayerResponse) => {
-        console.log(roomInfo.details.challengeTasks.length)
         switch (dataResponse.status) {
           case "Approved":
             if (dataResponse.taskNumber >= roomInfo.details.challengeTasks.length) {
@@ -239,7 +238,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
       socket?.off("fileStatusPlayer")
       socket?.off("newFile")
     }
-  }, [])
+  }, [roomInfo])
 
   const handleReview = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted: boolean) => {
     if (unReviewedSubmissions[0] !== undefined) {
