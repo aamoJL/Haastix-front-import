@@ -318,7 +318,7 @@ function CreateChallengeRoom() {
             key={i}
             id={`challenge-input-${i}`}
             size="small"
-            sx={{ mb: 1 }}
+            sx={{ mb: 1, mt: 1}}
             multiline
             type="text"
             value={challenge.description}
@@ -327,9 +327,11 @@ function CreateChallengeRoom() {
             inputProps={{ maxLength: formValidation.maxTaskDescription }}
             InputProps={{
               endAdornment: (
-                <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>
-                  <CloseIcon />
-                </IconButton>
+                <InputAdornment position="end">
+                  <IconButton id={`remove-challenge-btn-${i}`} edge="end" size="small" color="error" onClick={(e) => handleRemoveChallenge(i)}>
+                    <CloseIcon />
+                  </IconButton>
+                </InputAdornment>
               ),
             }}
             placeholder={`${translation.inputs.texts.description}...`}

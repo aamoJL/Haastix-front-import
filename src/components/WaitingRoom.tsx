@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch } from "@mui/material"
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment } from "@mui/material"
 import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
 import { getEmojiImage } from "./storage/Images"
@@ -298,9 +298,11 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                           inputProps={{ maxLength: 256 }}
                           InputProps={{
                             endAdornment: (
-                              <IconButton color="error" onClick={() => handleRemoveChallenge(i)}>
-                                <CloseIcon />
-                              </IconButton>
+                              <InputAdornment position="end">
+                                <IconButton color="error" edge="end" onClick={() => handleRemoveChallenge(i)}>
+                                  <CloseIcon />
+                                </IconButton>
+                              </InputAdornment>
                             ),
                           }}
                         ></TextField>

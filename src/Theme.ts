@@ -57,12 +57,12 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
             {
               //Colors for dark mode
               background: {
-                default: "#e4e4e4",
-                paper: "#e4e4e4",
+                default: "#292929",
+                paper: "#292929",
               },
               text: {
-                primary: "#191919",
-                secondary: "#191919",
+                primary: "#e4e4e4",
+                secondary: "#e4e4e4",
               },
               primary: {
                 main: "#fc0303",
@@ -82,10 +82,10 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
                 secondary: "#1b1b1b",
               },
               primary: {
-                main: "#32b38e",
+                main: "#9e0001",
               },
               secondary: {
-                main: "#32b38e",
+                main: "#9e0001",
               },
             }
           )
@@ -135,6 +135,9 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
             },
           },
           MuiInput: {
+            defaultProps: {
+              autoComplete: "off"
+            },
             styleOverrides: {
               root: {
                 maxWidth: 160,
@@ -150,6 +153,95 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
             defaultProps: {
               fullWidth: true,
               variant: "contained",
+            },
+            styleOverrides: {
+              root: {
+                maxWidth: 200,
+              },
+            },
+          },
+          MuiDialog: {
+            styleOverrides: {
+              scrollPaper: {
+                alignItems: "flex-start",
+              },
+            },
+          },
+          MuiTooltip: {
+            defaultProps: {
+              arrow: true,
+              enterDelay: 800,
+            },
+          },
+          MuiTableCell: {
+            styleOverrides: {
+              head: {
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                borderBottomColor: theme.palette.primary.contrastText,
+              },
+            },
+          },
+        },
+      })
+    break
+    case "2":
+      //Create global styling for components
+      theme = createTheme(theme, {
+        components: {
+          MuiTypography: {
+            styleOverrides: {
+              h3: {
+                textAlign: "center",
+              },
+              h2: {
+                textAlign: "center",
+              },
+            },
+          },
+          MuiTextField: {
+            defaultProps: {
+              variant: "filled",
+              sx: {
+                width: 200,
+              },
+              autoComplete: "off",
+            },
+          },
+          MuiFilledInput: {
+            styleOverrides: {
+              underline: {
+                ":before": {
+                  borderColor: theme.palette.primary.main
+                }
+              }
+            }
+          },
+          MuiIconButton: {
+            defaultProps: {
+              color: "primary",
+              size: "large",
+            },
+          },
+          MuiInput: {
+            defaultProps: {
+              autoComplete: "off"
+            },
+            styleOverrides: {
+              root: {
+                maxWidth: 160,
+              },
+              underline: {
+                ":before": {
+                  borderBottomColor: theme.palette.primary.main,
+                },
+              },
+            },
+          },
+          MuiButton: {
+            defaultProps: {
+              fullWidth: true,
+              variant: "outlined",
             },
             styleOverrides: {
               root: {

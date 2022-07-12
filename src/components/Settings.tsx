@@ -1,4 +1,4 @@
-import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, Grid, Paper, PaletteMode, ThemeOptions } from "@mui/material"
+import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, Grid, Paper, PaletteMode } from "@mui/material"
 import CloseIcon from "@mui/icons-material/Close"
 import React, { useEffect, useState } from "react"
 import { getTranslation, Language, Translation } from "../translations"
@@ -60,10 +60,17 @@ const Settings = (props: Props) => {
     }))
   }
 
-  const handleColorsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTheme((prevState) => ({
       ...prevState,
       color: (event.target as HTMLInputElement).value
+    }))
+  }
+
+  const handleStyleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTheme((prevState) => ({
+      ...prevState,
+      style: (event.target as HTMLInputElement).value
     }))
   }
 
@@ -84,15 +91,15 @@ const Settings = (props: Props) => {
           </Stack>
           <FormControl>
             <FormLabel>{translation.titles.theme}</FormLabel>
-            <RadioGroup row value={color} onChange={handleColorsChange}>
+            <RadioGroup id="color" row value={color} onChange={handleColorChange}>
               <FormControlLabel id="theme1" value={"green"} control={<Radio />} label={`${translation.titles.theme} 1`} />
               <FormControlLabel id="theme2" value={"red"} control={<Radio />} label={`${translation.titles.theme} 2`} />
             </RadioGroup>
-            {/* <FormLabel>{translation.titles.style}</FormLabel>
-            <RadioGroup row value={theme} onChange={handleTheme}>
-              <FormControlLabel value="Style1" control={<Radio />} label={`${translation.titles.style} 1`} />
-              <FormControlLabel value="Style2" control={<Radio />} label={`${translation.titles.style} 2`} />
-            </RadioGroup> */}
+            <FormLabel>{translation.titles.style}</FormLabel>
+            <RadioGroup id="style" row value={style} onChange={handleStyleChange}>
+              <FormControlLabel id="style1" value="1" control={<Radio />} label={`${translation.titles.style} 1`} />
+              <FormControlLabel id="style2" value="2" control={<Radio />} label={`${translation.titles.style} 2`} />
+            </RadioGroup>
           </FormControl>
           <FormControlLabel control={<Switch id="darkmode-switch" checked={mode === "dark"} onChange={handleThemeMode} />} label={translation.inputs.texts.darkmode} />
           <FormControlLabel control={<Switch id="volume-switch" checked={sound} onChange={handleSound} />} label={translation.inputs.texts.sound} />
