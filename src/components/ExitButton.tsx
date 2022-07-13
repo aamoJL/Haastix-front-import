@@ -24,6 +24,7 @@ const ExitButton = ({ isGameEnded = false }: Props) => {
       console.log(error)
     })
     sessionStorage.removeItem("token")
+    sessionStorage.removeItem("taskOrder")
     navigate("/")
   }
 
