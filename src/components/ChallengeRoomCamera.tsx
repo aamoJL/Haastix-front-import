@@ -1,4 +1,4 @@
-import { Button, Dialog, Stack } from "@mui/material"
+import { Button, Dialog, Stack, TextField } from "@mui/material"
 import React, { useEffect, useState, useContext, useRef } from "react"
 import { SendFileResponse } from "../interfaces"
 import LanguageContext from "./Context/LanguageContext"
@@ -23,6 +23,7 @@ function ChallengeRoomCamera({ taskId, onSubmit, open, close }: Props) {
   const [allowed, setAllowed] = useState(true)
   const [loading, setLoading] = useState(true)
   const [takenPhoto, setTakenPhoto] = useState("") // photo as base64 string
+  const [submissionDesc, setSubmissionDesc] = useState("")
   const translation = useContext(LanguageContext)
 
   let canvasHeight = 500
@@ -112,6 +113,7 @@ function ChallengeRoomCamera({ taskId, onSubmit, open, close }: Props) {
         body: JSON.stringify({
           challengeFile: takenPhoto.split(";base64,")[1],
           taskId: taskId,
+          submissionDescription: submissionDesc,
         }),
       })
         .then((res) => res.json())
@@ -136,6 +138,7 @@ function ChallengeRoomCamera({ taskId, onSubmit, open, close }: Props) {
       </Stack>
       <Stack display={takenPhoto !== "" && allowed ? "flex" : "none"} alignItems="center" spacing={1} p={1}>
         <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt={translation.imageAlts.cameraScreen} />
+        <TextField id="submission-description" label={translation.inputs.texts.description} value={submissionDesc} onChange={(e) => setSubmissionDesc(e.target.value)}></TextField>
         <Button id="send-photo-btn" color="success" onClick={sendPhotoHandler}>
           {translation.inputs.buttons.send}
         </Button>

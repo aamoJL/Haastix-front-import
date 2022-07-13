@@ -17,6 +17,7 @@ export interface Translation {
     challenges: string
     settings: string
     theme: string
+    style: string
     joinAGame: string
     avatar: string
     waitingRoom: string
@@ -46,6 +47,7 @@ export interface Translation {
       feedback: string
       start: string
       cancel: string
+      submissions: string
     }
     texts: {
       roomName: string
@@ -81,6 +83,7 @@ export interface Translation {
     allTasksCompleted: string
     submissionDeclined: string
     taskNumber: string
+    message: string
     randomTasks: string
   }
   tables: {
@@ -97,6 +100,7 @@ export interface Translation {
     taskCount: string
     taskDescriptionLength: string
     roomCodeInvalid: string
+    userNameUsed: string
   }
   alerts: {
     title: {
@@ -133,6 +137,7 @@ const finnish: Translation = {
     challenges: "Haasteet",
     settings: "Asetukset",
     theme: "Teema",
+    style: "Tyyli",
     joinAGame: "Liity haasteeseen",
     avatar: "Hahmo",
     waitingRoom: "Odotushuone",
@@ -162,6 +167,7 @@ const finnish: Translation = {
       feedback: "Palaute",
       start: "Aloita peli",
       cancel: "Peruuta",
+      submissions: "Suoritukset",
     },
     texts: {
       roomName: "Huoneen nimi",
@@ -197,6 +203,7 @@ const finnish: Translation = {
     allTasksCompleted: "Kaikki haasteet suoritettu!",
     submissionDeclined: "Kuvasi on hylätty! Ota uusi kuva.",
     taskNumber: "Haasteen numero",
+    message: "Viesti",
     randomTasks: "Sekoita haasteiden järjestys",
   },
   tables: {
@@ -213,6 +220,7 @@ const finnish: Translation = {
     taskCount: "Pelissä tulee olla 1-20 haastetta.",
     taskDescriptionLength: "Haasteen kuvauksen tulee olla 3-256 merkkiä pitkä.",
     roomCodeInvalid: "Huoneen koodi on väärin!",
+    userNameUsed: "Käyttäjänimi on jo käytössä.",
   },
   alerts: {
     title: {
@@ -249,6 +257,7 @@ const english: Translation = {
     challenges: "Challenges",
     settings: "Settings",
     theme: "Theme",
+    style: "Style",
     joinAGame: "Join a Game",
     avatar: "Avatar",
     waitingRoom: "Waiting room",
@@ -278,6 +287,7 @@ const english: Translation = {
       feedback: "Feedback",
       start: "Start the game",
       cancel: "Cancel",
+      submissions: "Submissions",
     },
     texts: {
       roomName: "Room name",
@@ -313,6 +323,7 @@ const english: Translation = {
     allTasksCompleted: "All tasks have been completed!",
     submissionDeclined: "Your submission has been rejected! Take a new photo.",
     taskNumber: "Task number",
+    message: "Message",
     randomTasks: "Randomise task order",
   },
   tables: {
@@ -329,6 +340,7 @@ const english: Translation = {
     taskCount: "Room must have between 1-20 tasks.",
     taskDescriptionLength: "Task description must be 3-256 characters long.",
     roomCodeInvalid: "Room code was invalid!",
+    userNameUsed: "Username already in use",
   },
   alerts: {
     title: {
