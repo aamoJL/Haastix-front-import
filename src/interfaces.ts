@@ -62,6 +62,7 @@ export interface JoinChallengeSuccessResponse {
     userName: string
     userAvatar: number
     challengeRoomCode: string
+    isPaused: boolean
   }
 }
 
@@ -179,7 +180,13 @@ export interface PlayerFileStatusesResponse {
 }
 
 export interface ThemeVariables {
-  color: string,
-  mode: PaletteMode,
+  color: string
+  mode: PaletteMode
   style: string
+}
+
+export interface GamePausedChangedResponse {
+  statusCode: number
+  message: string
+  isPaused: boolean
 }

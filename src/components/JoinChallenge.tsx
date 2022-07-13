@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { challengeModifyResponse, ChallengeRoomJoin, JoinChallengeSuccessResponse, startGameResponse } from "../interfaces"
+import { challengeModifyResponse, ChallengeRoomJoin, GamePausedChangedResponse, JoinChallengeSuccessResponse, startGameResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
 import SettingsHomeButtons from "./SettingsHomeButtons"
 import { setConnection } from "./socket"
@@ -31,6 +31,7 @@ const defaultRoomInfo: JoinChallengeSuccessResponse = {
     isRandom: true,
     userName: "",
     userAvatar: 0,
+    isPaused: false,
   },
 }
 
@@ -169,9 +170,22 @@ function JoinChallenge() {
       }))
     })
 
+    currentSocket?.on("gamePauseChanged", (data: GamePausedChangedResponse) => {
+      if (data.statusCode === 200) {
+        setRoomInfo((prevState) => ({
+          ...prevState,
+          details: {
+            ...prevState.details,
+            isPaused: data.isPaused,
+          },
+        }))
+      }
+    })
+
     return () => {
       currentSocket?.off("challengeModify")
       currentSocket?.off("gameStarted")
+      currentSocket?.off("gamePauseChanged")
     }
   })
 

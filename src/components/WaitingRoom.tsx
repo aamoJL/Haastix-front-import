@@ -69,6 +69,9 @@ function WaitingRoom({ roomInfo, socket }: Props) {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      if (roomInfo.details.isPaused) {
+        return // Disable clock if the game is paused
+      }
       const startDate = new Date(roomInfo.details.challengeStartDate as string)
       const milliseconds = startDate.getTime() - new Date().getTime()
       const segmentedTime = calculateTimeLeft(milliseconds)
@@ -81,7 +84,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
     return () => {
       clearInterval(interval)
     }
-  }, [roomInfo.details.challengeStartDate])
+  }, [roomInfo.details.challengeStartDate, roomInfo.details.isPaused])
 
   useEffect(() => {
     // Set Socket.io Listeners | newPlayer listener
@@ -115,6 +118,32 @@ function WaitingRoom({ roomInfo, socket }: Props) {
     }
   })
 
+  useEffect(() => {
+    if (roomInfo.details.isPaused) {
+      // Game is paused
+      if (!edit || showPlayers || !showChallenges) {
+        // Unpause if edit was disabled or challenges were closed.
+        socket?.emit("pauseGame", {
+          token: roomInfo.details.token,
+          payload: {
+            isPaused: false,
+          },
+        })
+      }
+    } else {
+      // Game is not paused
+      if (edit && showChallenges) {
+        // Pause the game if edit form is visible
+        socket?.emit("pauseGame", {
+          token: roomInfo.details.token,
+          payload: {
+            isPaused: true,
+          },
+        })
+      }
+    }
+  }, [edit, showPlayers, showChallenges])
+
   const handleShowPlayers = () => {
     setShowChallenges(false)
     setShowPlayers(!showPlayers)
@@ -123,6 +152,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const handleShowChallenges = () => {
     setShowPlayers(false)
     setShowChallenges(!showChallenges)
+
     setEdit(false)
   }
 
@@ -216,7 +246,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
               {translation.texts.challengeBeginsIn}
             </Typography>
             <Typography id="timer-gm" variant="body1" component="p">
-              {getFormattedTime(timeLeft)}
+              {roomInfo.details.isPaused ? translation.texts.gameIsPaused : getFormattedTime(timeLeft)}
             </Typography>
             {isGameMaster && (
               <>
