@@ -1,8 +1,9 @@
-import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, Grid, Paper, PaletteMode } from "@mui/material"
+import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, Grid, Paper, PaletteMode, Icon } from "@mui/material"
 import CloseIcon from "@mui/icons-material/Close"
 import React, { useEffect, useState } from "react"
 import { getTranslation, Language, Translation } from "../translations"
 import { ThemeVariables } from "../interfaces"
+import Square from "@mui/icons-material/Square"
 
 const paperStyle = {
   position: "absolute" as "absolute",
@@ -92,8 +93,8 @@ const Settings = (props: Props) => {
           <FormControl>
             <FormLabel>{translation.titles.theme}</FormLabel>
             <RadioGroup id="color" row value={color} onChange={handleColorChange}>
-              <FormControlLabel id="theme1" value={"green"} control={<Radio />} label={`${translation.titles.theme} 1`} />
-              <FormControlLabel id="theme2" value={"red"} control={<Radio />} label={`${translation.titles.theme} 2`} />
+              <FormControlLabel id="theme1" value={"green"} control={<Radio />} label={<Icon sx={{color: mode === "dark" as PaletteMode ? "#00cc92" : "#32b38e"}}><Square/></Icon>} />
+              <FormControlLabel id="theme2" value={"red"} control={<Radio />} label={<Icon sx={{color: mode === "dark" as PaletteMode ? "#fc0303" : "#9e0001"}}><Square/></Icon>} />
             </RadioGroup>
             <FormLabel>{translation.titles.style}</FormLabel>
             <RadioGroup id="style" row value={style} onChange={handleStyleChange}>
