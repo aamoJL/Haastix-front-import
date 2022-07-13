@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment } from "@mui/material"
+import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment } from "@mui/material"
 import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
-import { getEmojiImage } from "./storage/Images"
 import ChallengeRoom from "./ChallengeRoom"
 import RemovePlayer from "./RemovePlayer"
 import AlertWindow from "./AlertWindow"
 import CloseIcon from "@mui/icons-material/Close"
 import LanguageContext from "./Context/LanguageContext"
+import Bouncyfeeling from "./Bouncyfeeling"
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse
@@ -321,20 +321,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
               </Collapse>
             </>
           )}
-          {!isGameMaster && playerArray.length > 0 && (
-            <Table sx={{ maxWidth: 200 }} size="small">
-              <TableBody>
-                {playerArray.map((value, i) => (
-                  <TableRow key={i}>
-                    <TableCell align="left">
-                      <Avatar src={getEmojiImage(value.avatar)} alt="avatar" />
-                    </TableCell>
-                    <TableCell align="left">{value.name}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+          {!isGameMaster && playerArray.length > 0 && <Bouncyfeeling players={playerArray} />}
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} />}
