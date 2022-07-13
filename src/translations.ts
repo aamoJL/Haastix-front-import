@@ -17,6 +17,7 @@ export interface Translation {
     challenges: string
     settings: string
     theme: string
+    style: string
     joinAGame: string
     avatar: string
     waitingRoom: string
@@ -136,6 +137,7 @@ const finnish: Translation = {
     challenges: "Haasteet",
     settings: "Asetukset",
     theme: "Teema",
+    style: "Tyyli",
     joinAGame: "Liity haasteeseen",
     avatar: "Hahmo",
     waitingRoom: "Odotushuone",
@@ -255,6 +257,7 @@ const english: Translation = {
     challenges: "Challenges",
     settings: "Settings",
     theme: "Theme",
+    style: "Style",
     joinAGame: "Join a Game",
     avatar: "Avatar",
     waitingRoom: "Waiting room",

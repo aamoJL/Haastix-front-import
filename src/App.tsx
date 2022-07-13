@@ -10,14 +10,23 @@ import makeTheme from "./Theme"
 import { getTranslation, Language, Translation } from "./translations"
 import LanguageContext from "./components/Context/LanguageContext"
 import FeedbackModal from "./components/FeedbackModal"
+import { ThemeVariables } from "./interfaces"
+
 
 const App = () => {
   const prefersDark = useMediaQuery("(prefers-color-scheme: dark)")
+  
+  const defaultTheme: ThemeVariables = {
+    color: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).color : "green",
+    mode: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).mode as PaletteMode : prefersDark ? "dark" : "light",
+    style: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).style : "1"
+  }
   const [translation, setTranslation] = useState<Translation>(getTranslation(localStorage.getItem("language") === null ? "en" : (localStorage.getItem("language") as Language)))
-  const [mode, setMode] = useState<PaletteMode>(localStorage.getItem("mode") !== null ? (localStorage.getItem("mode") as PaletteMode) : prefersDark ? "dark" : "light")
+  const [themeOptions, setThemeOptions] = useState<ThemeVariables>(defaultTheme)
+  const {color, mode, style} = themeOptions
   const [feedbackOpen, setFeedbackOpen] = useState(false)
 
-  if (localStorage.getItem("mode") === null && mode !== null) localStorage.setItem("mode", mode)
+  if (localStorage.getItem("theme") === null && themeOptions !== null) localStorage.setItem("theme", JSON.stringify(themeOptions))
 
   useEffect(() => {
     // Subscribe to language changed event
@@ -34,16 +43,16 @@ const App = () => {
 
   useEffect(() => {
     function event() {
-      setMode(localStorage.getItem("mode") as PaletteMode)
+      setThemeOptions(JSON.parse(localStorage.getItem("theme")!))
     }
-    document.addEventListener("mode-change", event)
+    document.addEventListener("theme-change", event)
 
     return () => {
-      document.removeEventListener("mode-change", event)
+      document.removeEventListener("theme-change", event)
     }
   })
 
-  const theme = useMemo(() => makeTheme(mode), [mode])
+  const theme = useMemo(() => makeTheme(mode, color, style), [themeOptions])
 
   return (
     <LanguageContext.Provider value={translation}>
