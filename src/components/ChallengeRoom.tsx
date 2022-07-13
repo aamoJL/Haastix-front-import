@@ -7,6 +7,7 @@ import Scoreboard from "./Scoreboard"
 import RemovePlayer from "./RemovePlayer"
 import CameraAltIcon from "@mui/icons-material/CameraAlt"
 import LanguageContext from "./Context/LanguageContext"
+import notificationSound from "../assets/notificationSound.mp3"
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse
@@ -103,9 +104,16 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
   const [reviewDescriptionInput, setReviewDescriptionInput] = useState("")
   const translation = useContext(LanguageContext)
 
+  const audioPlayer = useRef<HTMLAudioElement>(null)
   const initTasks = useRef(true) // Used to not show task alerts on page refresh
   const currentSubmissionFileName = useRef<ChallengeFile>()
   // const [gameOver, setGameOver] = useState(false);
+
+  const playNotification = () => {
+    if(audioPlayer.current !== null) {
+      audioPlayer.current.play()
+    }
+  }
 
   useEffect(() => {
     socket?.emit("fetchScoreBoard", {
@@ -288,8 +296,15 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
     })
   }
 
+  useEffect(() => {
+    if(unReviewedSubmissions.length > 0) {
+      playNotification()
+    }
+  }, [unReviewedSubmissions.length])
+
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
+      <audio ref={audioPlayer} src={notificationSound}></audio>
       {/* Room info */}
       {!timeIsUp && (
         <>
