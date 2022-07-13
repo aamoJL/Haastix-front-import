@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead } from "@mui/material"
+import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, Alert, AlertTitle } from "@mui/material"
 import { ChallengeTask, GameEndResponce, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
 import { getEmojiImage } from "./storage/Images"
@@ -64,6 +64,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const [challengeArray, setChallengeArray] = useState<ChallengeTask[]>(roomInfo.details.challengeTasks)
   const [startGame, setStartGame] = useState(false)
   const [timer, setTimer] = useState(10)
+  const [showGamemasterLeftAlert, setShowGamemasterLeftAlert] = useState(false)
   const translation = useContext(LanguageContext)
 
   useEffect(() => {
@@ -87,6 +88,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       setTimeIsUp(true)
     }
   })
+
   useEffect(() => {
     // Set Socket.io Listeners | newPlayer listener
     socket?.on("newPlayer", (data: WaitingRoomNewPlayer) => {
@@ -109,6 +111,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
     socket?.on("gmLeft", (data: GameEndResponce) => {
       roomInfo.details.isActive = data.isActive
       if (!data.isActive) {
+        setShowGamemasterLeftAlert(true)
         setTimeIsUp(true)
       }
     })
@@ -345,6 +348,11 @@ function WaitingRoom({ roomInfo, socket }: Props) {
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} />}
+      {showGamemasterLeftAlert && (
+        <Alert style={{ position: "absolute", top: "50px", left: "50%", transform: "translate(-50%, 0%)" }} onClick={() => setShowGamemasterLeftAlert(false)} severity="error" sx={{ width: "auto" }}>
+          {translation.errors.gameMasterLeft}
+        </Alert>
+      )}
       {alertWindow && <AlertWindow message={alertMessage} />}
     </Stack>
   )
