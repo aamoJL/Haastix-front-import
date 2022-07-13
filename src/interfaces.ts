@@ -92,6 +92,7 @@ export interface WaitingRoomNewPlayer {
 export interface FileStatusPlayerResponse {
   status: fileStatus
   taskNumber: number
+  reviewDescription: string
 }
 
 /**
@@ -122,6 +123,7 @@ export interface ChallengeFile {
   fileStatus: fileStatus
   challengeNumber: number
   taskDescription: string
+  submissionDescription: string
 }
 
 /**
