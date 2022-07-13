@@ -98,6 +98,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
   const [showApproveAlert, setShowApproveAlert] = useState(false)
   const [showCompletedAlert, setShowCompletedAlert] = useState(false)
   const [scores, setScores] = useState<PlayerData[]>([])
+  const [showSubmissions, setShowSubmissions] = useState(false)
   const [reviewResponse, setReviewResponse] = useState("") // GM's review message
   const [reviewDescriptionInput, setReviewDescriptionInput] = useState("")
   const translation = useContext(LanguageContext)
@@ -144,6 +145,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
   useEffect(() => {
     if (unReviewedSubmissions.length === 0) {
       setCurrentSubmissionPhoto("")
+      setShowSubmissions(false)
       currentSubmissionFileName.current = undefined
     } else if (unReviewedSubmissions[0].fileName !== currentSubmissionFileName.current?.fileName) {
       fetch(`${process.env.REACT_APP_API_URL}/challenge/fetchfile/${unReviewedSubmissions[0].submissionId}`, {
@@ -298,7 +300,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
             <Typography variant="body1" component="p">
               {translation.texts.roomName}
             </Typography>
-            <Typography variant="body1" component="p">
+            <Typography id="room-title" variant="body1" component="p">
               {roomInfo?.details.challengeRoomName}
             </Typography>
             <Typography variant="body1" component="p">
@@ -319,7 +321,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
             )}
             {!isGameMaster && (
               <>
-                <Typography variant="body1" component="p">
+                <Typography id="user-title-player" variant="body1" component="p">
                   {roomInfo.details.userName}
                 </Typography>
                 <Typography variant="body1" component="p">
@@ -333,15 +335,15 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
                 <Typography variant="body1" component="p">
                   {translation.texts.description}
                 </Typography>
-                <Typography id="current-task" variant="body1" component="p">
-                  {roomInfo.details.challengeTasks![currentTaskNumber - 1].taskDescription}
+                <Typography id="current-task-description" variant="body1" component="p">
+                  {roomInfo.details.challengeTasks[currentTaskNumber - 1].taskDescription}
                 </Typography>
               </>
             )}
             <Typography variant="body1" component="p">
               {translation.texts.timeRemaining}
             </Typography>
-            <Typography variant="body1" component="p">
+            <Typography id="current-time-left" variant="body1" component="p">
               {getFormattedTime(timeLeft)}
             </Typography>
           </Box>
@@ -352,6 +354,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
         <>
           <ButtonGroup>
             <Button
+              id="gm-playerlist-btn"
               onClick={() => {
                 setShowPlayers(!showPlayers)
                 setShowScoreboard(false)
@@ -360,6 +363,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
               {translation.inputs.buttons.players} ({playerArray.length})
             </Button>
             <Button
+              id="gm-scoreboard-btn"
               onClick={() => {
                 setShowPlayers(false)
                 setShowScoreboard(!showScoreboard)
@@ -367,24 +371,34 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
             >
               {translation.titles.scoreboard}
             </Button>
+            <Button
+              id="gm-submissions-btn"
+              disabled={unReviewedSubmissions.length === 0}
+              color="warning"
+              onClick={() => {
+                setShowSubmissions(true)
+              }}
+            >
+              {`${translation.inputs.buttons.submissions} (${unReviewedSubmissions.length})`}
+            </Button>
           </ButtonGroup>
           <Collapse in={showScoreboard}>
             <Scoreboard socket={socket} scores={scores} timeIsUp={timeIsUp} />
           </Collapse>
           <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
-          {unReviewedSubmissions.length > 0 && (
-            <Dialog open={unReviewedSubmissions.length > 0 ? true : false}>
+          {showSubmissions && unReviewedSubmissions.length > 0 && (
+            <Dialog open={showSubmissions} onClose={() => setShowSubmissions(false)}>
               <Stack alignItems="center" spacing={1} p={1}>
                 <Typography variant="h5" component="p">
                   {translation.texts.acceptSubmission}
                 </Typography>
-                <Typography variant="body1" component="p">
+                <Typography id="current-unreviewed-task-description" variant="body1" component="p">
                   {translation.texts.challenge}: {unReviewedSubmissions[0].taskDescription}
                 </Typography>
                 <Typography variant="body1" component="p">
                   {translation.texts.description}: {unReviewedSubmissions[0].submissionDescription}
                 </Typography>
-                <img src={currentSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
+                <img id="current-unreviewed-img" src={currentSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
                 <TextField id="review-description" label={translation.inputs.texts.description} value={reviewDescriptionInput} onChange={(e) => setReviewDescriptionInput(e.target.value)}></TextField>
                 <Button id="accept-photo-btn-gm" color="success" onClick={(e) => handleReview(e, true)}>
                   {translation.inputs.buttons.accept}
@@ -437,8 +451,8 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
           <Typography id="times-up-title" variant="h2" component="h2">
             {translation.texts.challengeIsOver}
           </Typography>
-          <Typography id="room-title" variant="body1" component="p">
-            {translation.texts.roomName}: {roomInfo?.details.challengeRoomName}
+          <Typography variant="body1" component="p">
+            {translation.texts.roomName}: <span id="end-room-title">{roomInfo?.details.challengeRoomName}</span>
           </Typography>
           <Scoreboard socket={socket} scores={scores} timeIsUp={timeIsUp} />
         </>
