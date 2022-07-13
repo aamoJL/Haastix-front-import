@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead } from "@mui/material"
-import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
+import { ChallengeTask, GameEndResponce, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
 import { getEmojiImage } from "./storage/Images"
 import ChallengeRoom from "./ChallengeRoom"
@@ -83,6 +83,11 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   }, [roomInfo.details.challengeStartDate])
 
   useEffect(() => {
+    if (!roomInfo.details.isActive) {
+      setTimeIsUp(true)
+    }
+  })
+  useEffect(() => {
     // Set Socket.io Listeners | newPlayer listener
     socket?.on("newPlayer", (data: WaitingRoomNewPlayer) => {
       // set players from data to players
@@ -101,6 +106,13 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       setPlayerArray(data.players)
     })
 
+    socket?.on("gmLeft", (data: GameEndResponce) => {
+      roomInfo.details.isActive = data.isActive
+      if (!data.isActive) {
+        setTimeIsUp(true)
+      }
+    })
+
     // get token
     // getToken();
     // toggle loadingscreen
@@ -110,6 +122,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       socket?.off("newPlayer")
       socket?.off("playerWasRemoved")
       socket?.off("youWereRemoved")
+      socket?.off("gmLeft")
     }
   })
 

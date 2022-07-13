@@ -114,6 +114,12 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
   }, [playerArray])
 
   useEffect(() => {
+    if (!roomInfo.details.isActive) {
+      setTimeIsUp(true)
+    }
+  })
+
+  useEffect(() => {
     if (unReviewedSubmissions.length === 0) {
       setCurrentSubmissionPhoto("")
       currentSubmissionFileName.current = undefined

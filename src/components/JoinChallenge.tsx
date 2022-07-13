@@ -163,22 +163,10 @@ function JoinChallenge() {
       }))
     })
 
-    currentSocket?.on("gmLeft", (data: GameEndResponce) => {
-      setRoomInfo((prevState) => ({
-        ...prevState,
-        details: {
-          ...prevState.details,
-          isActive: data.isActive,
-          challengeStartDate: data.newDate,
-          challengeEndDate: data.newDate,
-        },
-      }))
-    })
-
     return () => {
       currentSocket?.off("challengeModify")
       currentSocket?.off("gameStarted")
-      currentSocket?.off("gmLeft")
+      // currentSocket?.off("gmLeft")
     }
   })
 

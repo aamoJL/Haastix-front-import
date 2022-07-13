@@ -175,5 +175,4 @@ export interface PlayerFileStatusesResponse {
 export interface GameEndResponce {
   message: string
   isActive: boolean
-  newDate: string
 }
