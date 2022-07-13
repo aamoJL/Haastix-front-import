@@ -1,3 +1,4 @@
+import { Box, Theme, useTheme } from "@mui/material"
 import React from "react"
 import { useEffect, useRef } from "react"
 import { WaitingRoomList } from "../interfaces"
@@ -15,27 +16,6 @@ interface playerObject {
   userName: string
 }
 
-const containerStyle: React.CSSProperties = {
-  zIndex: -1,
-  position: "fixed",
-  width: "100%",
-  height: "100%",
-  maxWidth: "500px",
-  maxHeight: "500px",
-  top: 0,
-  left: "50%",
-  transform: "translateX(-50%)",
-}
-
-const gradientStyle: React.CSSProperties = {
-  position: "absolute",
-  background: "linear-gradient(#292929 1%, rgba(0, 0, 0, 0) 45.8%)",
-  width: "100%",
-  height: "100%",
-}
-
-const canvasStyle: React.CSSProperties = { width: "100%", height: "100%" }
-
 /**
  * Components that will render player avatars bouncing inside a square
  */
@@ -48,6 +28,27 @@ const Bouncyfeeling = React.memo(({ players }: Props) => {
   const playerObjects = useRef<playerObject[]>([])
   const canvasDimensions = useRef({ height: 500, width: 500 })
   const requestRef = useRef<number>()
+
+  const theme = useTheme()
+
+  const containerStyle: React.CSSProperties = {
+    zIndex: -1,
+    position: "fixed",
+    width: "100%",
+    height: "100%",
+    maxWidth: "500px",
+    maxHeight: "500px",
+    top: 0,
+    left: "50%",
+    transform: "translateX(-50%)",
+  }
+  const gradientStyle: React.CSSProperties = {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    background: `linear-gradient(${theme.palette.background.default} 1%, rgba(0, 0, 0, 0) 45.8%)`,
+  }
+  const canvasStyle: React.CSSProperties = { width: "100%", height: "100%" }
 
   const avatarSize = 48
   const avatarSpeed = 150
@@ -130,7 +131,7 @@ const Bouncyfeeling = React.memo(({ players }: Props) => {
     updatePlayerObjects()
   }, [canvasRef.current])
 
-  function update() {
+  const update = () => {
     let deltaTime = (Date.now() - lastUpdate.current) * 0.001 // same as divided by 1000
     lastUpdate.current = Date.now()
     if (context.current && document.hasFocus()) {
@@ -165,20 +166,23 @@ const Bouncyfeeling = React.memo(({ players }: Props) => {
         let yPos = Math.round(player.ballPos.y - avatarSize * 0.5)
         context.current.drawImage(player.userAvatar, xPos, yPos, avatarSize, avatarSize)
         // Render Text
-        context.current.font = "1em Arial"
-        context.current.fillStyle = "white"
+        context.current.font = "1em Sans-serif"
         context.current.textAlign = "center"
+        context.current.strokeStyle = "black"
+        context.current.lineWidth = 3
+        context.current.strokeText(player.userName, xPos + avatarSize * 0.5, yPos - avatarSize * 0.2)
+        context.current.fillStyle = "white"
         context.current.fillText(player.userName, xPos + avatarSize * 0.5, yPos - avatarSize * 0.2)
       }
     }
     requestRef.current = window.requestAnimationFrame(update)
   }
-  console.log("render")
+
   return (
-    <div style={containerStyle}>
-      <div style={gradientStyle}></div>
+    <Box style={containerStyle}>
+      <Box style={gradientStyle}></Box>
       <canvas style={canvasStyle} width={500} height={500} ref={canvasRef}></canvas>
-    </div>
+    </Box>
   )
 })
 
