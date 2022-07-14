@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment } from "@mui/material"
 import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
@@ -66,6 +66,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const [timer, setTimer] = useState(10)
   const [randomOrder, setRandomOrder] = useState(roomInfo.details.isRandom)
   const translation = useContext(LanguageContext)
+  const pauseDateRef = useRef<number>()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -123,10 +124,15 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       // Game is paused
       if (!edit || showPlayers || !showChallenges) {
         // Unpause if edit was disabled or challenges were closed.
+        let pauseTime = 0
+        if (pauseDateRef.current !== undefined) {
+          pauseTime = Date.now() - pauseDateRef.current
+        }
         socket?.emit("pauseGame", {
           token: roomInfo.details.token,
           payload: {
             isPaused: false,
+            pauseTime: pauseTime,
           },
         })
       }
@@ -134,6 +140,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       // Game is not paused
       if (edit && showChallenges) {
         // Pause the game if edit form is visible
+        pauseDateRef.current = Date.now()
         socket?.emit("pauseGame", {
           token: roomInfo.details.token,
           payload: {
@@ -152,7 +159,6 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const handleShowChallenges = () => {
     setShowPlayers(false)
     setShowChallenges(!showChallenges)
-
     setEdit(false)
   }
 
@@ -354,7 +360,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
           {!isGameMaster && playerArray.length > 0 && <Bouncyfeeling players={playerArray} />}
         </>
       )}
-      {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} />}
+      {timeIsUp && !roomInfo.details.isPaused && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} />}
       {alertWindow && <AlertWindow message={alertMessage} />}
     </Stack>
   )

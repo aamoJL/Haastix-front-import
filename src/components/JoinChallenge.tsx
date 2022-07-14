@@ -177,6 +177,8 @@ function JoinChallenge() {
           details: {
             ...prevState.details,
             isPaused: data.isPaused,
+            challengeStartDate: data.challengeStartDate,
+            challengeEndDate: data.challengeEndDate,
           },
         }))
       }

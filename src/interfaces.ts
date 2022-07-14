@@ -189,4 +189,6 @@ export interface GamePausedChangedResponse {
   statusCode: number
   message: string
   isPaused: boolean
+  challengeStartDate: string
+  challengeEndDate: string
 }
