@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment } from "@mui/material"
 import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
@@ -8,6 +8,7 @@ import AlertWindow from "./AlertWindow"
 import CloseIcon from "@mui/icons-material/Close"
 import LanguageContext from "./Context/LanguageContext"
 import Bouncyfeeling from "./Bouncyfeeling"
+import notificationSound from "../assets/notificationSound.mp3"
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse
@@ -66,6 +67,19 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const [timer, setTimer] = useState(10)
   const [randomOrder, setRandomOrder] = useState(roomInfo.details.isRandom)
   const translation = useContext(LanguageContext)
+  const audioPlayer = useRef<HTMLAudioElement>(null)
+
+  const playNotification = () => {
+    if(audioPlayer.current !== null && audioPlayer.current.muted === false) {
+      audioPlayer.current.play()
+    }
+  }
+
+  document.addEventListener("click", () => {
+    if(audioPlayer.current !== null) {
+      audioPlayer.current.muted = false
+    }
+  })
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -74,6 +88,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       const segmentedTime = calculateTimeLeft(milliseconds)
       setTimeLeft(segmentedTime)
       if (milliseconds <= 0) {
+        playNotification()
         setTimeIsUp(true)
         clearInterval(interval)
       }
@@ -200,6 +215,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
 
   return (
     <Stack alignItems="center" justifyContent="center" spacing={1}>
+      <audio autoPlay muted ref={audioPlayer} src={notificationSound}></audio>
       {!timeIsUp && !alertWindow && (
         <>
           <Typography variant="h3" component="h3">
@@ -324,7 +340,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
           {!isGameMaster && playerArray.length > 0 && <Bouncyfeeling players={playerArray} />}
         </>
       )}
-      {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} />}
+      {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} playNotification={playNotification} />}
       {alertWindow && <AlertWindow message={alertMessage} />}
     </Stack>
   )
