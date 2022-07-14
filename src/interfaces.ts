@@ -182,6 +182,7 @@ export interface PlayerFileStatusesResponse {
 export interface GameEndResponce {
   message: string
   isActive: boolean
+}
 
 export interface ThemeVariables {
   color: string,
