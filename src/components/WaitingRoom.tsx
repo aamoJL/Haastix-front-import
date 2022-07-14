@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Avatar, Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, Alert, AlertTitle } from "@mui/material"
+import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment, Alert } from "@mui/material"
 import { ChallengeTask, GameEndResponce, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
+
 import { Socket } from "socket.io-client"
-import { getEmojiImage } from "./storage/Images"
 import ChallengeRoom from "./ChallengeRoom"
 import RemovePlayer from "./RemovePlayer"
 import AlertWindow from "./AlertWindow"
 import CloseIcon from "@mui/icons-material/Close"
 import LanguageContext from "./Context/LanguageContext"
+import Bouncyfeeling from "./Bouncyfeeling"
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse
@@ -65,6 +66,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const [startGame, setStartGame] = useState(false)
   const [timer, setTimer] = useState(10)
   const [showGamemasterLeftAlert, setShowGamemasterLeftAlert] = useState(false)
+  const [randomOrder, setRandomOrder] = useState(roomInfo.details.isRandom)
   const translation = useContext(LanguageContext)
 
   useEffect(() => {
@@ -100,6 +102,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
 
     socket?.on("youWereRemoved", (data: YouWereRemovedResponse) => {
       sessionStorage.removeItem("token")
+      sessionStorage.removeItem("taskOrder")
       setAlertMessage(data.message)
       setAlertWindow(true)
     })
@@ -185,6 +188,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       payload: {
         challengeName: roomInfo.details.challengeRoomName,
         challengeTasks: filteredArr,
+        isRandom: randomOrder,
       },
     })
 
@@ -296,6 +300,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                 )}
                 {edit && (
                   <Stack alignItems="center" spacing={1}>
+                    <FormControlLabel control={<Switch id="edit-randomOrder-switch" checked={randomOrder} onChange={() => setRandomOrder(!randomOrder)} />} labelPlacement="start" label={translation.texts.randomTasks}></FormControlLabel>
                     <Box sx={{ maxHeight: 255, overflow: "auto", maxWidth: 300 }}>
                       {challengeArray.map((value, i) => (
                         <TextField
@@ -310,9 +315,11 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                           inputProps={{ maxLength: 256 }}
                           InputProps={{
                             endAdornment: (
-                              <IconButton color="error" onClick={() => handleRemoveChallenge(i)}>
-                                <CloseIcon />
-                              </IconButton>
+                              <InputAdornment position="end">
+                                <IconButton color="error" edge="end" onClick={() => handleRemoveChallenge(i)}>
+                                  <CloseIcon />
+                                </IconButton>
+                              </InputAdornment>
                             ),
                           }}
                         ></TextField>
@@ -331,20 +338,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
               </Collapse>
             </>
           )}
-          {!isGameMaster && playerArray.length > 0 && (
-            <Table sx={{ maxWidth: 200 }} size="small">
-              <TableBody>
-                {playerArray.map((value, i) => (
-                  <TableRow key={i}>
-                    <TableCell align="left">
-                      <Avatar src={getEmojiImage(value.avatar)} alt="avatar" />
-                    </TableCell>
-                    <TableCell align="left">{value.name}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+          {!isGameMaster && playerArray.length > 0 && <Bouncyfeeling players={playerArray} />}
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} />}

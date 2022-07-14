@@ -1,9 +1,11 @@
-import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, Grid, Paper, PaletteMode } from "@mui/material"
+import { Modal, Typography, Stack, IconButton, Switch, FormControlLabel, FormControl, FormLabel, RadioGroup, Radio, Grid, Paper, PaletteMode, Icon } from "@mui/material"
 import CloseIcon from "@mui/icons-material/Close"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { getTranslation, Language, Translation } from "../translations"
+import { ThemeVariables } from "../interfaces"
+import Square from "@mui/icons-material/Square"
 
-const style = {
+const paperStyle = {
   position: "absolute" as "absolute",
   top: "20%",
   left: "50%",
@@ -19,17 +21,23 @@ interface Props {
   handleClose: () => void
 }
 
+const defaultTheme: ThemeVariables = {
+  color: "green",
+  mode: "dark",
+  style: "1"
+}
+
 const Settings = (props: Props) => {
-  const [themeMode, setThemeMode] = useState<PaletteMode>(localStorage.getItem("mode") === null ? "light" : (localStorage.getItem("mode") as PaletteMode)) //switch between dark and light
+  const [theme, setTheme] = useState<ThemeVariables>(localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!) : defaultTheme)
+  const {color, mode, style} = theme
   const [sound, setSound] = useState(false) //toggle sound
   const [language, setLanguge] = useState<Language>(localStorage.getItem("language") === null ? "en" : (localStorage.getItem("language") as Language)) //toggle language
   const [translation, setTranslation] = useState<Translation>(getTranslation(language))
-  const [theme, setTheme] = useState("theme1") //set what theme to use
   const handleSound = () => setSound(!sound)
 
-  const handleTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTheme((event.target as HTMLInputElement).value)
-  }
+  // const handleTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setTheme((event.target as HTMLInputElement).value)
+  // }
 
   /**
    * Event handler for language switch, sets localstorage languge value to selected language
@@ -46,15 +54,35 @@ const Settings = (props: Props) => {
    * Event handler for switching to dark mode
    */
   const handleThemeMode = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    let mode: PaletteMode = checked ? "dark" : "light"
-    setThemeMode(mode)
-    localStorage.setItem("mode", mode)
-    document.dispatchEvent(new Event("mode-change"))
+    let themeMode: PaletteMode = checked ? "dark" : "light"
+    setTheme((prevMode) => ({
+      ...prevMode,
+      mode: themeMode
+    }))
   }
+
+  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTheme((prevState) => ({
+      ...prevState,
+      color: (event.target as HTMLInputElement).value
+    }))
+  }
+
+  const handleStyleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTheme((prevState) => ({
+      ...prevState,
+      style: (event.target as HTMLInputElement).value
+    }))
+  }
+
+  useEffect(() => {
+    localStorage.setItem("theme", JSON.stringify(theme))
+    document.dispatchEvent(new Event("theme-change"))
+  }, [theme])
 
   return (
     <Modal open={props.open} onClose={props.handleClose}>
-      <Paper sx={style}>
+      <Paper sx={paperStyle}>
         <Stack>
           <Stack direction="row-reverse" justifyContent="space-between">
             <IconButton onClick={props.handleClose}>
@@ -64,12 +92,17 @@ const Settings = (props: Props) => {
           </Stack>
           <FormControl>
             <FormLabel>{translation.titles.theme}</FormLabel>
-            <RadioGroup row value={theme} onChange={handleTheme}>
-              <FormControlLabel value="theme1" control={<Radio />} label={`${translation.titles.theme} 1`} />
-              <FormControlLabel value="theme2" control={<Radio />} label={`${translation.titles.theme} 2`} />
+            <RadioGroup id="color" row value={color} onChange={handleColorChange}>
+              <FormControlLabel id="theme1" value={"green"} control={<Radio />} label={<Icon sx={{color: mode === "dark" as PaletteMode ? "#00cc92" : "#32b38e"}}><Square/></Icon>} />
+              <FormControlLabel id="theme2" value={"red"} control={<Radio />} label={<Icon sx={{color: mode === "dark" as PaletteMode ? "#fc0303" : "#9e0001"}}><Square/></Icon>} />
+            </RadioGroup>
+            <FormLabel>{translation.titles.style}</FormLabel>
+            <RadioGroup id="style" row value={style} onChange={handleStyleChange}>
+              <FormControlLabel id="style1" value="1" control={<Radio />} label={`${translation.titles.style} 1`} />
+              <FormControlLabel id="style2" value="2" control={<Radio />} label={`${translation.titles.style} 2`} />
             </RadioGroup>
           </FormControl>
-          <FormControlLabel control={<Switch id="darkmode-switch" checked={themeMode === "dark"} onChange={handleThemeMode} />} label={translation.inputs.texts.darkmode} />
+          <FormControlLabel control={<Switch id="darkmode-switch" checked={mode === "dark"} onChange={handleThemeMode} />} label={translation.inputs.texts.darkmode} />
           <FormControlLabel control={<Switch id="volume-switch" checked={sound} onChange={handleSound} />} label={translation.inputs.texts.sound} />
           <Grid component="label" container alignItems="center" spacing={1}>
             <Grid item>Suomi</Grid>

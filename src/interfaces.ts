@@ -1,3 +1,5 @@
+import { PaletteMode } from "@mui/material"
+
 type fileStatus = "Not reviewed" | "Approved" | "Rejected" | "Not submitted"
 
 export interface Challenge {
@@ -16,6 +18,7 @@ export interface ChallengeRoomData {
   time: number
   delay: number
   challenges: Challenge[]
+  isRandom: boolean
 }
 
 export interface ChallengeRoomJoin {
@@ -55,6 +58,7 @@ export interface JoinChallengeSuccessResponse {
     challengeEndDate: string
     challengeTasks: ChallengeTask[]
     token: string
+    isRandom: boolean
     userName: string
     userAvatar: number
     challengeRoomCode: string
@@ -67,6 +71,7 @@ export interface challengeModifyResponse {
   challengeStartDate: string
   challengeEndDate: string
   challengeTasks: ChallengeTask[]
+  isRandom: boolean
 }
 
 export interface startGameResponse {
@@ -90,6 +95,7 @@ export interface WaitingRoomNewPlayer {
 export interface FileStatusPlayerResponse {
   status: fileStatus
   taskNumber: number
+  reviewDescription: string
 }
 
 /**
@@ -120,6 +126,7 @@ export interface ChallengeFile {
   fileStatus: fileStatus
   challengeNumber: number
   taskDescription: string
+  submissionDescription: string
 }
 
 /**
@@ -175,4 +182,9 @@ export interface PlayerFileStatusesResponse {
 export interface GameEndResponce {
   message: string
   isActive: boolean
+
+export interface ThemeVariables {
+  color: string,
+  mode: PaletteMode,
+  style: string
 }

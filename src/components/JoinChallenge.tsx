@@ -28,6 +28,7 @@ const defaultRoomInfo: JoinChallengeSuccessResponse = {
     challengeEndDate: "",
     challengeTasks: [{ taskDescription: "", taskId: "", taskNumber: 0 }],
     token: "",
+    isRandom: true,
     userName: "",
     userAvatar: 0,
     isActive: true,
@@ -43,7 +44,8 @@ function JoinChallenge() {
   const [loading, setLoading] = useState(true) //placeholder loading screen
   const [formIsNotValid, setFormIsNotValid] = useState(true) //if true form inputs are not valid and button is disabled
   const [codeWasNotValid, setCodeWasNotValid] = useState(false) //if true code was not valid and code field is red
-  const [openAlert, setOpenAlert] = useState(false) //if true show error alert
+  const [openAlertRoomCode, setOpenAlertRoomCode] = useState(false) //if true show error alert
+  const [openAlertUsername, setOpenAlertUsername] = useState(false) //Show username in use alert
   const [roomInfo, setRoomInfo] = useState<JoinChallengeSuccessResponse>(defaultRoomInfo)
   const [openTooltip, setOpenTooltip] = useState(false)
   const translation = useContext(LanguageContext)
@@ -103,7 +105,10 @@ function JoinChallenge() {
           setShowWaitingRoom(true)
         } else if (res.statusCode === 404) {
           setCodeWasNotValid(true)
-          setOpenAlert(true)
+          setOpenAlertRoomCode(true)
+        } else if (res.statusCode === 500 && res.message.includes("Username")) {
+          // Username already taken
+          setOpenAlertUsername(true)
         } else {
           alert(res.statusCode)
         }
@@ -133,10 +138,11 @@ function JoinChallenge() {
 
   useEffect(() => {
     setCodeWasNotValid(false)
-    setOpenAlert(false)
+    setOpenAlertRoomCode(false)
   }, [roomCode])
 
   useEffect(() => {
+    setOpenAlertUsername(false)
     if (roomCode.length === 4 && userName.length >= 3 && userName.length <= 30) setFormIsNotValid(false)
     else setFormIsNotValid(true)
   }, [roomCode, userName])
@@ -148,6 +154,7 @@ function JoinChallenge() {
         details: {
           ...prevState.details,
           challengeTasks: data.challengeTasks,
+          isRandom: data.isRandom,
         },
       }))
     })
@@ -184,7 +191,7 @@ function JoinChallenge() {
         <Stack justifyContent="center" spacing={2} alignItems="center">
           <Typography variant="h3">{translation.titles.joinAGame}</Typography>
           <Typography variant="body1">{translation.texts.askCode}</Typography>
-          <Collapse in={openAlert}>
+          <Collapse in={openAlertRoomCode}>
             <Alert
               severity="error"
               action={
@@ -193,7 +200,7 @@ function JoinChallenge() {
                   id="close-alert-btn"
                   aria-label="close-alert"
                   onClick={() => {
-                    setOpenAlert(false)
+                    setOpenAlertRoomCode(false)
                   }}
                 >
                   <CloseIcon fontSize="small" />
@@ -204,12 +211,31 @@ function JoinChallenge() {
             </Alert>
           </Collapse>
           <TextField helperText={translation.inputs.texts.roomCodeDesc} type="text" id="roomCode" label={translation.inputs.texts.roomCode} onChange={onChange} value={roomCode} error={codeWasNotValid} inputProps={{ maxLength: 4 }}></TextField>
+          <Collapse in={openAlertUsername}>
+            <Alert
+              severity="error"
+              action={
+                <IconButton
+                  size="small"
+                  id="close-alert-btn"
+                  aria-label="close-alert"
+                  onClick={() => {
+                    setOpenAlertUsername(false)
+                  }}
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              }
+            >
+              {translation.errors.userNameUsed}
+            </Alert>
+          </Collapse>
           <TextField helperText={translation.inputs.texts.userNameDesc} type="text" id="userName" label={translation.inputs.texts.userName} onChange={onChange} value={userName} inputProps={{ maxLength: 30 }}></TextField>
           <Typography variant="body1">{translation.titles.avatar}</Typography>
           <Avatar id="player_avatar" variant="rounded" sx={{ height: 150, width: 150 }} onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
           <Tooltip open={openTooltip} onOpen={handleTooltip} onClose={handleTooltip} enterDelay={0} title={translation.tooltips.joinGame}>
             <Box display="flex" alignItems="center" justifyContent="center" sx={{ width: 300 }}>
-              <Button disabled={formIsNotValid} variant="contained" id="joinChallenge-btn" onClick={joinChallengeRoom}>
+              <Button disabled={formIsNotValid} id="joinChallenge-btn" onClick={joinChallengeRoom}>
                 {translation.inputs.buttons.join}
               </Button>
             </Box>
