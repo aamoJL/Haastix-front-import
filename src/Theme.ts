@@ -3,100 +3,98 @@ import { createTheme, PaletteMode } from "@mui/material"
 const makeTheme = (mode: PaletteMode, color: string, style: string) => {
   let theme = createTheme()
   //Switch different colors
-  switch(color) {
+  switch (color) {
     case "green":
       //Colors for green theme
       theme = createTheme({
         palette: {
           mode: mode,
-          ...(mode === "dark" ? 
-            {
-              //Colors for dark mode
-              background: {
-                default: "#292929",
-                paper: "#292929",
-              },
-              text: {
-                primary: "#e4e4e4",
-                secondary: "#e4e4e4",
-              },
-              primary: {
-                main: "#00cc92",
-              },
-              secondary: {
-                main: "#00cc92",
-              },
-            } : 
-            {
-              //Colors for light mode
-              background: {
-                default: "#f7f7f7",
-                paper: "#f7f7f7",
-              },
-              text: {
-                primary: "#1b1b1b",
-                secondary: "#1b1b1b",
-              },
-              primary: {
-                main: "#32b38e",
-              },
-              secondary: {
-                main: "#32b38e",
-              },
-            }
-          )
-        }
+          ...(mode === "dark"
+            ? {
+                //Colors for dark mode
+                background: {
+                  default: "#292929",
+                  paper: "#292929",
+                },
+                text: {
+                  primary: "#e4e4e4",
+                  secondary: "#e4e4e4",
+                },
+                primary: {
+                  main: "#00cc92",
+                },
+                secondary: {
+                  main: "#00cc92",
+                },
+              }
+            : {
+                //Colors for light mode
+                background: {
+                  default: "#f7f7f7",
+                  paper: "#f7f7f7",
+                },
+                text: {
+                  primary: "#1b1b1b",
+                  secondary: "#1b1b1b",
+                },
+                primary: {
+                  main: "#32b38e",
+                },
+                secondary: {
+                  main: "#32b38e",
+                },
+              }),
+        },
       })
-    break
+      break
     case "red":
       //Colors for theme2
       theme = createTheme({
         palette: {
           mode: mode,
-          ...(mode === "dark" ? 
-            {
-              //Colors for dark mode
-              background: {
-                default: "#292929",
-                paper: "#292929",
-              },
-              text: {
-                primary: "#e4e4e4",
-                secondary: "#e4e4e4",
-              },
-              primary: {
-                main: "#fc0303",
-              },
-              secondary: {
-                main: "#fc0303",
-              },
-            } : 
-            {
-              //Colors for light mode
-              background: {
-                default: "#f7f7f7",
-                paper: "#f7f7f7",
-              },
-              text: {
-                primary: "#1b1b1b",
-                secondary: "#1b1b1b",
-              },
-              primary: {
-                main: "#9e0001",
-              },
-              secondary: {
-                main: "#9e0001",
-              },
-            }
-          )
-        }
+          ...(mode === "dark"
+            ? {
+                //Colors for dark mode
+                background: {
+                  default: "#292929",
+                  paper: "#292929",
+                },
+                text: {
+                  primary: "#e4e4e4",
+                  secondary: "#e4e4e4",
+                },
+                primary: {
+                  main: "#fc0303",
+                },
+                secondary: {
+                  main: "#fc0303",
+                },
+              }
+            : {
+                //Colors for light mode
+                background: {
+                  default: "#f7f7f7",
+                  paper: "#f7f7f7",
+                },
+                text: {
+                  primary: "#1b1b1b",
+                  secondary: "#1b1b1b",
+                },
+                primary: {
+                  main: "#9e0001",
+                },
+                secondary: {
+                  main: "#9e0001",
+                },
+              }),
+        },
       })
-    break
+      break
     default:
-    break
+      break
   }
 
-  switch(style) {
+  switch (style) {
     case "1":
       //Create global styling for components
       theme = createTheme(theme, {
@@ -114,7 +112,7 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
           MuiTextField: {
             defaultProps: {
               sx: {
-                width: 200,
+                width: "100%",
               },
               autoComplete: "off",
             },
@@ -136,12 +134,10 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
           },
           MuiInput: {
             defaultProps: {
-              autoComplete: "off"
+              autoComplete: "off",
             },
             styleOverrides: {
-              root: {
-                maxWidth: 160,
-              },
+              root: {},
               underline: {
                 ":before": {
                   borderBottomColor: theme.palette.primary.main,
@@ -184,7 +180,7 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
           },
         },
       })
-    break
+      break
     case "2":
       //Create global styling for components
       theme = createTheme(theme, {
@@ -212,10 +208,10 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
             styleOverrides: {
               underline: {
                 ":before": {
-                  borderColor: theme.palette.primary.main
-                }
-              }
-            }
+                  borderColor: theme.palette.primary.main,
+                },
+              },
+            },
           },
           MuiIconButton: {
             defaultProps: {
@@ -225,7 +221,7 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
           },
           MuiInput: {
             defaultProps: {
-              autoComplete: "off"
+              autoComplete: "off",
             },
             styleOverrides: {
               root: {
@@ -273,9 +269,9 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
           },
         },
       })
-    break
+      break
     default:
-    break
+      break
   }
 
   return theme

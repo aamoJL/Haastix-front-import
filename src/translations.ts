@@ -150,7 +150,7 @@ const finnish: Translation = {
     buttons: {
       createAChallenge: "Luo haaste",
       joinAChallenge: "Liity haasteeseen",
-      addNewChallenge: "Lisää uusi haaste",
+      addNewChallenge: "+ Lisää",
       createGame: "Luo peli",
       join: "Liity peliin",
       players: "Pelaajat",
@@ -271,7 +271,7 @@ const english: Translation = {
     buttons: {
       createAChallenge: "Create a Challenge",
       joinAChallenge: "Join a Challenge",
-      addNewChallenge: "Add new challenge",
+      addNewChallenge: "+ Add",
       createGame: "Create game",
       join: "Join",
       players: "Players",

@@ -298,19 +298,33 @@ function CreateChallengeRoom() {
   }
 
   return (
-    <Stack alignItems="center" justifyContent="center" spacing={1}>
+    <Stack style={{ width: "100%", margin: "0 auto", maxWidth: "480px", padding: "0 20px" }} alignItems="center" justifyContent="center" spacing={1}>
       <SettingsHomeButtons />
       <Typography variant="h3" component="h3">
         {translation.titles.createGame}
       </Typography>
-      <TextField autoFocus helperText={translation.inputs.texts.roomNameLengthHelper} error={roomNameError} type="text" name="roomName" id="roomName" value={roomName} onChange={handleRoomNameChange} onBlur={handleRoomNameBlur} label={translation.inputs.texts.roomName} inputProps={{ maxLength: formValidation.maxNameLength }} />
+      <TextField fullWidth autoFocus helperText={translation.inputs.texts.roomNameLengthHelper} error={roomNameError} type="text" name="roomName" id="roomName" value={roomName} onChange={handleRoomNameChange} onBlur={handleRoomNameBlur} label={translation.inputs.texts.roomName} inputProps={{ maxLength: formValidation.maxNameLength }} />
       <Typography variant="h4" component="h4">
         {translation.titles.challenges}
       </Typography>
       <FormControlLabel control={<Switch id="randomOrder-switch" checked={formData.isRandom} onChange={handleRandom} />} labelPlacement="start" label={translation.texts.randomTasks}></FormControlLabel>
-      <Typography fontSize="small">{translation.inputs.texts.taskDescriptionLengthHelper}</Typography>
-      <Typography fontSize="small">{translation.inputs.texts.taskCountHelper}</Typography>
-      <Box sx={{ maxHeight: 205, overflow: "auto", maxWidth: 200 }}>
+      <Box width="100%" display="flex" flexDirection="row" sx={{ justifyContent: "space-between" }}>
+        <Typography whiteSpace="pre-line" fontSize="small">
+          {`${translation.inputs.texts.taskDescriptionLengthHelper}\n${translation.inputs.texts.taskCountHelper}`}
+        </Typography>
+        <Button
+          sx={{ m: 0, width: "auto" }}
+          id="add-challenge-btn"
+          variant="text"
+          size="medium"
+          onClick={(e) => {
+            handleAddChallenge()
+          }}
+        >
+          {translation.inputs.buttons.addNewChallenge}
+        </Button>
+      </Box>
+      <Box sx={{ maxHeight: 205, overflow: "auto", width: "100%" }}>
         {challenges.map((challenge, i) => (
           <TextField
             autoFocus={i > 0}
@@ -318,8 +332,9 @@ function CreateChallengeRoom() {
             key={i}
             id={`challenge-input-${i}`}
             size="small"
-            sx={{ mb: 1, mt: 1}}
+            sx={{ mb: 1, mt: 1 }}
             multiline
+            fullWidth
             type="text"
             value={challenge.description}
             onChange={(e) => handleChallengeChange(e, i)}
@@ -338,18 +353,8 @@ function CreateChallengeRoom() {
           />
         ))}
       </Box>
-      <Button
-        sx={{ m: 1 }}
-        id="add-challenge-btn"
-        variant="text"
-        size="medium"
-        onClick={(e) => {
-          handleAddChallenge()
-        }}
-      >
-        {translation.inputs.buttons.addNewChallenge}
-      </Button>
-      <FormControl variant="standard">
+
+      <FormControl variant="standard" fullWidth>
         <InputLabel htmlFor="delay">{translation.inputs.texts.delayBeforeGameStarts}</InputLabel>
         <Input
           onClick={(e) => {
@@ -360,13 +365,14 @@ function CreateChallengeRoom() {
           inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
           name="delay"
           id="delay"
+          fullWidth
           value={delay}
           onChange={(e) => handleNumInputChange(e, formValidation.maxDelay)}
           onBlur={(e) => handleDelayBlur(e)}
           endAdornment={<InputAdornment position="end">Min</InputAdornment>}
         />
       </FormControl>
-      <FormControl variant="standard">
+      <FormControl variant="standard" fullWidth>
         <InputLabel htmlFor="time">{translation.inputs.texts.gameDuration}</InputLabel>
         <Input
           onClick={(e) => {
@@ -377,6 +383,7 @@ function CreateChallengeRoom() {
           inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
           name="time"
           id="time"
+          fullWidth
           value={time}
           onChange={(e) => handleNumInputChange(e, formValidation.maxDuration)}
           onBlur={(e) => handleDurationBlur(e)}
@@ -385,7 +392,7 @@ function CreateChallengeRoom() {
       </FormControl>
       <Tooltip enterDelay={0} open={openTooltip} onOpen={handleTooltip} onClose={handleTooltip} title={translation.tooltips.createGame}>
         <Box display="flex" alignItems="center" justifyContent="center" sx={{ width: 300 }}>
-          <Button disabled={!formIsValid} id="create-game-btn" onClick={(e) => onSubmit(e)}>
+          <Button sx={{ mt: 3, mb: 5 }} disabled={!formIsValid} id="create-game-btn" onClick={(e) => onSubmit(e)}>
             {translation.inputs.buttons.createGame}
           </Button>
         </Box>
