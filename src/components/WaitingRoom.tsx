@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment } from "@mui/material"
-import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
+import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment, Alert } from "@mui/material"
+import { ChallengeTask, GameEndResponce, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
+
 import { Socket } from "socket.io-client"
 import ChallengeRoom from "./ChallengeRoom"
 import RemovePlayer from "./RemovePlayer"
@@ -64,6 +65,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const [challengeArray, setChallengeArray] = useState<ChallengeTask[]>(roomInfo.details.challengeTasks)
   const [startGame, setStartGame] = useState(false)
   const [timer, setTimer] = useState(10)
+  const [showGamemasterLeftAlert, setShowGamemasterLeftAlert] = useState(false)
   const [randomOrder, setRandomOrder] = useState(roomInfo.details.isRandom)
   const translation = useContext(LanguageContext)
 
@@ -82,6 +84,12 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       clearInterval(interval)
     }
   }, [roomInfo.details.challengeStartDate])
+
+  useEffect(() => {
+    if (!roomInfo.details.isActive) {
+      setTimeIsUp(true)
+    }
+  })
 
   useEffect(() => {
     // Set Socket.io Listeners | newPlayer listener
@@ -103,6 +111,14 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       setPlayerArray(data.players)
     })
 
+    socket?.on("gmLeft", (data: GameEndResponce) => {
+      roomInfo.details.isActive = data.isActive
+      if (!data.isActive) {
+        setShowGamemasterLeftAlert(true)
+        setTimeIsUp(true)
+      }
+    })
+
     // get token
     // getToken();
     // toggle loadingscreen
@@ -112,6 +128,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       socket?.off("newPlayer")
       socket?.off("playerWasRemoved")
       socket?.off("youWereRemoved")
+      socket?.off("gmLeft")
     }
   })
 
@@ -325,6 +342,11 @@ function WaitingRoom({ roomInfo, socket }: Props) {
         </>
       )}
       {timeIsUp && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} />}
+      {showGamemasterLeftAlert && (
+        <Alert style={{ position: "absolute", top: "50px", left: "50%", transform: "translate(-50%, 0%)" }} onClick={() => setShowGamemasterLeftAlert(false)} severity="error" sx={{ width: "auto" }}>
+          {translation.errors.gameMasterLeft}
+        </Alert>
+      )}
       {alertWindow && <AlertWindow message={alertMessage} />}
     </Stack>
   )
