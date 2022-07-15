@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { challengeModifyResponse, ChallengeRoomJoin, GamePausedChangedResponse, JoinChallengeSuccessResponse, startGameResponse } from "../interfaces"
+import { challengeModifyResponse, ChallengeRoomJoin, GamePausedChangedResponse JoinChallengeSuccessResponse, startGameResponse, GameEndResponce } from "../interfaces"
 import { Socket } from "socket.io-client"
 import SettingsHomeButtons from "./SettingsHomeButtons"
 import { setConnection } from "./socket"
@@ -32,6 +32,7 @@ const defaultRoomInfo: JoinChallengeSuccessResponse = {
     userName: "",
     userAvatar: 0,
     isPaused: false,
+    isActive: true,
   },
 }
 
@@ -188,6 +189,7 @@ function JoinChallenge() {
       currentSocket?.off("challengeModify")
       currentSocket?.off("gameStarted")
       currentSocket?.off("gamePauseChanged")
+      // currentSocket?.off("gmLeft")
     }
   })
 

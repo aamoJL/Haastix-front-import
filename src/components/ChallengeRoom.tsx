@@ -143,6 +143,12 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
   }, [playerArray])
 
   useEffect(() => {
+    if (!roomInfo.details.isActive) {
+      setTimeIsUp(true)
+    }
+  })
+
+  useEffect(() => {
     if (unReviewedSubmissions.length === 0) {
       setCurrentSubmissionPhoto("")
       setShowSubmissions(false)
@@ -269,7 +275,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
       socket?.off("fileStatusPlayer")
       socket?.off("newFile")
     }
-  }, [])
+  }, [roomInfo])
 
   const handleReview = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted: boolean) => {
     if (unReviewedSubmissions[0] !== undefined) {

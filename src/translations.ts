@@ -101,6 +101,7 @@ export interface Translation {
     taskCount: string
     taskDescriptionLength: string
     roomCodeInvalid: string
+    gameMasterLeft: string
     userNameUsed: string
   }
   alerts: {
@@ -222,6 +223,7 @@ const finnish: Translation = {
     taskCount: "Pelissä tulee olla 1-20 haastetta.",
     taskDescriptionLength: "Haasteen kuvauksen tulee olla 3-256 merkkiä pitkä.",
     roomCodeInvalid: "Huoneen koodi on väärin!",
+    gameMasterLeft: "Pelin vetäjä on poistunut pelistä",
     userNameUsed: "Käyttäjänimi on jo käytössä.",
   },
   alerts: {
@@ -343,6 +345,7 @@ const english: Translation = {
     taskCount: "Room must have between 1-20 tasks.",
     taskDescriptionLength: "Task description must be 3-256 characters long.",
     roomCodeInvalid: "Room code was invalid!",
+    gameMasterLeft: "Gamemaster left the game",
     userNameUsed: "Username already in use",
   },
   alerts: {

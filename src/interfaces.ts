@@ -63,6 +63,7 @@ export interface JoinChallengeSuccessResponse {
     userAvatar: number
     challengeRoomCode: string
     isPaused: boolean
+    isActive: boolean
   }
 }
 
@@ -177,6 +178,11 @@ export interface PlayerFileStatusesResponse {
     status: fileStatus
     taskNumber: number
   }[]
+}
+
+export interface GameEndResponce {
+  message: string
+  isActive: boolean
 }
 
 export interface ThemeVariables {
