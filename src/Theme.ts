@@ -151,9 +151,7 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
               variant: "contained",
             },
             styleOverrides: {
-              root: {
-                maxWidth: 200,
-              },
+              root: {},
             },
           },
           MuiDialog: {
@@ -199,7 +197,7 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
             defaultProps: {
               variant: "filled",
               sx: {
-                width: 200,
+                minWidth: 200,
               },
               autoComplete: "off",
             },
@@ -225,7 +223,7 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
             },
             styleOverrides: {
               root: {
-                maxWidth: 160,
+                minWidth: 160,
               },
               underline: {
                 ":before": {
@@ -240,9 +238,7 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
               variant: "outlined",
             },
             styleOverrides: {
-              root: {
-                maxWidth: 200,
-              },
+              root: {},
             },
           },
           MuiDialog: {
