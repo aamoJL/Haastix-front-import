@@ -30,7 +30,7 @@ const defaultTheme: ThemeVariables = {
 const Settings = (props: Props) => {
   const [theme, setTheme] = useState<ThemeVariables>(localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!) : defaultTheme)
   const {color, mode, style} = theme
-  const [muted, setMuted] = useState(localStorage.getItem("muted")! !== null ? JSON.parse(localStorage.getItem("muted")!) : false) //toggle sound
+  const [muted, setMuted] = useState(localStorage.getItem("muted") !== null ? JSON.parse(localStorage.getItem("muted")!) : false) //toggle sound
   const [language, setLanguge] = useState<Language>(localStorage.getItem("language") === null ? "en" : (localStorage.getItem("language") as Language)) //toggle language
   const [translation, setTranslation] = useState<Translation>(getTranslation(language))
 

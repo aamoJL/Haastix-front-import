@@ -66,37 +66,40 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const [startGame, setStartGame] = useState(false)
   const [timer, setTimer] = useState(10)
   const [randomOrder, setRandomOrder] = useState(roomInfo.details.isRandom)
-  const [mute, setMute] = useState<boolean>(localStorage.getItem("muted") !== null ? JSON.parse(localStorage.getItem("muted")!) : false)
+  const [initClick, setInitClick] = useState(false)
   const translation = useContext(LanguageContext)
   const audioPlayer = useRef<HTMLAudioElement>(null)
-
-  if(localStorage.getItem("muted") === null) {
-    localStorage.setItem("muted", JSON.stringify(mute))
-  }
-
-  const playNotification = useCallback(() => {
-    if(audioPlayer.current !== null && audioPlayer.current.muted === false) {
-        audioPlayer.current.play()
+  
+  
+  const playNotification = () => {
+    if(audioPlayer.current !== null && JSON.parse(localStorage.getItem("muted")!) === false) {
+      console.log(audioPlayer.current.muted)
+      audioPlayer.current.play()
     }
-  }, [mute])
-
+  }
+  
   useEffect(() => {
     document.addEventListener("click", () => {
-      if(audioPlayer.current !== null) {
-        audioPlayer.current.muted = false
+      if(audioPlayer.current !== null && initClick === false) {
+        setInitClick(true)
+        audioPlayer.current.muted = JSON.parse(localStorage.getItem("muted")!)
+        if(localStorage.getItem("muted") === null) {
+          localStorage.setItem("muted", JSON.stringify(audioPlayer.current.muted))
+        }
       }
     })
 
     function event() {
-      setMute(JSON.parse(localStorage.getItem("muted")!))
+      if(audioPlayer.current !== null) {
+        audioPlayer.current.muted = JSON.parse(localStorage.getItem("muted")!)
+      }
     }
     document.addEventListener("sound-change", event)
 
     return () => {  
       document.removeEventListener("sound-change", event)
     }
-  }, [])
-
+  })
 
   useEffect(() => {
     const interval = setInterval(() => {
