@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment } from "@mui/material"
 import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
@@ -66,20 +66,37 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const [startGame, setStartGame] = useState(false)
   const [timer, setTimer] = useState(10)
   const [randomOrder, setRandomOrder] = useState(roomInfo.details.isRandom)
+  const [mute, setMute] = useState<boolean>(localStorage.getItem("muted") !== null ? JSON.parse(localStorage.getItem("muted")!) : false)
   const translation = useContext(LanguageContext)
   const audioPlayer = useRef<HTMLAudioElement>(null)
 
-  const playNotification = () => {
-    if(audioPlayer.current !== null && audioPlayer.current.muted === false) {
-      audioPlayer.current.play()
-    }
+  if(localStorage.getItem("muted") === null) {
+    localStorage.setItem("muted", JSON.stringify(mute))
   }
 
-  document.addEventListener("click", () => {
-    if(audioPlayer.current !== null) {
-      audioPlayer.current.muted = false
+  const playNotification = useCallback(() => {
+    if(audioPlayer.current !== null && audioPlayer.current.muted === false) {
+        audioPlayer.current.play()
     }
-  })
+  }, [mute])
+
+  useEffect(() => {
+    document.addEventListener("click", () => {
+      if(audioPlayer.current !== null) {
+        audioPlayer.current.muted = false
+      }
+    })
+
+    function event() {
+      setMute(JSON.parse(localStorage.getItem("muted")!))
+    }
+    document.addEventListener("sound-change", event)
+
+    return () => {  
+      document.removeEventListener("sound-change", event)
+    }
+  }, [])
+
 
   useEffect(() => {
     const interval = setInterval(() => {

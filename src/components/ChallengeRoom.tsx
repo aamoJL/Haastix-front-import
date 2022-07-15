@@ -264,10 +264,10 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
         }
       })
 
-      // Request submissions that have not been reviewed
-      // socket?.emit("listFiles", {
-      //   token: roomInfo?.details.token,
-      // })
+      //Request submissions that have not been reviewed
+      socket?.emit("listFiles", {
+        token: roomInfo?.details.token,
+      })
     }
 
     return () => {
