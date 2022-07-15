@@ -188,7 +188,7 @@ function JoinChallenge() {
       {loading && <></>}
       {showWaitingRoom && roomInfo && <WaitingRoom roomInfo={roomInfo} socket={currentSocket} />}
       {!loading && !showWaitingRoom && (
-        <Stack justifyContent="center" spacing={2} alignItems="center">
+        <Stack style={{ width: "100%", margin: "0 auto", maxWidth: "480px", padding: "0 20px" }} justifyContent="center" spacing={2} alignItems="center">
           <Typography variant="h3">{translation.titles.joinAGame}</Typography>
           <Typography variant="body1">{translation.texts.askCode}</Typography>
           <Collapse in={openAlertRoomCode}>
@@ -235,7 +235,7 @@ function JoinChallenge() {
           <Avatar id="player_avatar" variant="rounded" sx={{ height: 150, width: 150 }} onClick={avatarIndex} src={getEmojiImage(userAvatar)} alt="emoji" />
           <Tooltip open={openTooltip} onOpen={handleTooltip} onClose={handleTooltip} enterDelay={0} title={translation.tooltips.joinGame}>
             <Box display="flex" alignItems="center" justifyContent="center" sx={{ width: 300 }}>
-              <Button disabled={formIsNotValid} id="joinChallenge-btn" onClick={joinChallengeRoom}>
+              <Button sx={{ mt: 3, mb: 5 }} disabled={formIsNotValid} id="joinChallenge-btn" onClick={joinChallengeRoom}>
                 {translation.inputs.buttons.join}
               </Button>
             </Box>

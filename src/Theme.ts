@@ -114,6 +114,7 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
               sx: {
                 width: "100%",
               },
+              fullWidth: true,
               autoComplete: "off",
             },
             styleOverrides: {
@@ -200,6 +201,7 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
                 minWidth: 200,
               },
               autoComplete: "off",
+              fullWidth: true,
             },
           },
           MuiFilledInput: {
