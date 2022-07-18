@@ -281,11 +281,9 @@ function WaitingRoom({ roomInfo, socket }: Props) {
           <Typography id="room-status-label" textAlign="center" variant="h5" component="h5">
             {roomInfo.details.isPaused ? translation.texts.gameIsPaused : translation.texts.challengeBeginsIn}
           </Typography>
-          {!roomInfo.details.isPaused && (
-            <Typography id="timer-gm" variant="h3" component="h3">
-              {getFormattedTime(timeLeft)}
-            </Typography>
-          )}
+          <Typography visibility={roomInfo.details.isPaused ? "hidden" : "visible"} id="timer-gm" variant="h3" component="h3">
+            {getFormattedTime(timeLeft)}
+          </Typography>
 
           {isGameMaster && (
             <>
