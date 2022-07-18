@@ -66,6 +66,7 @@ export interface Translation {
     }
   }
   texts: {
+    youAreGamemaster: string
     askCode: string
     roomName: string
     challengeBeginsIn: string
@@ -188,6 +189,7 @@ const finnish: Translation = {
     },
   },
   texts: {
+    youAreGamemaster: "Pelimestari",
     askCode: "Kysy huoneen koodia pelin luojalta",
     roomName: "Huoneen nimi",
     challengeBeginsIn: "Haasteen alkuun",
@@ -207,7 +209,7 @@ const finnish: Translation = {
     taskNumber: "Haasteen numero",
     message: "Viesti",
     randomTasks: "Sekoita haasteiden järjestys",
-    gameIsPaused: "Peli on pysäytetty"
+    gameIsPaused: "Peli on pysäytetty",
   },
   tables: {
     name: "Nimi",
@@ -310,6 +312,7 @@ const english: Translation = {
     },
   },
   texts: {
+    youAreGamemaster: "Gamemaster",
     askCode: "Ask the gamemaster for the code",
     roomName: "Room name",
     challengeBeginsIn: "Challenge starts in",
@@ -329,7 +332,7 @@ const english: Translation = {
     taskNumber: "Task number",
     message: "Message",
     randomTasks: "Randomise task order",
-    gameIsPaused: "The game has been paused"
+    gameIsPaused: "The game has been paused",
   },
   tables: {
     name: "Name",

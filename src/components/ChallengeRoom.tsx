@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle, Dialog, TextField } from "@mui/material"
+import { Box, Button, ButtonGroup, Collapse, Stack, Tooltip, Typography, Alert, AlertTitle, Dialog, TextField, CollapseProps, StackProps } from "@mui/material"
 import { useEffect, useState, useRef, useContext } from "react"
 import { Socket } from "socket.io-client"
 import { ChallengeFile, FileStatusPlayerResponse, JoinChallengeSuccessResponse, NewFileResponse, PlayerData, PlayerFileStatusesResponse, WaitingRoomList } from "../interfaces"
@@ -7,6 +7,9 @@ import Scoreboard from "./Scoreboard"
 import RemovePlayer from "./RemovePlayer"
 import CameraAltIcon from "@mui/icons-material/CameraAlt"
 import LanguageContext from "./Context/LanguageContext"
+import KeyIcon from "@mui/icons-material/Key"
+import PersonIcon from "@mui/icons-material/Person"
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom"
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse
@@ -295,70 +298,85 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
   }
 
   return (
-    <Stack alignItems="center" justifyContent="center" spacing={1}>
+    <Stack style={{ width: "100%", margin: "0 auto", maxWidth: "480px" }} alignItems="center" justifyContent="center" spacing={1}>
       {/* Room info */}
       {!timeIsUp && (
         <>
-          <Typography variant="h3" component="h3">
-            {translation.titles.gameRoom}
-          </Typography>
-          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", maxWidth: 380 }} textAlign="left" columnGap={3} pl={8}>
-            <Typography variant="body1" component="p">
-              {translation.texts.roomName}
-            </Typography>
-            <Typography id="room-title" variant="body1" component="p">
-              {roomInfo?.details.challengeRoomName}
-            </Typography>
-            <Typography variant="body1" component="p">
-              {translation.texts.userName}
-            </Typography>
-            {isGameMaster && (
-              <>
-                <Typography id="user-title-gm" variant="body1" component="p">
-                  GameMaster
-                </Typography>
-                <Typography id="room-code-title-gm" variant="body1" component="p">
-                  {translation.texts.roomCode}
-                </Typography>
-                <Typography id="room-code-title-gm-value" variant="body1" component="p">
-                  {roomInfo?.details.challengeRoomCode}
-                </Typography>
-              </>
-            )}
-            {!isGameMaster && (
-              <>
-                <Typography id="user-title-player" variant="body1" component="p">
-                  {roomInfo.details.userName}
-                </Typography>
-                <Typography variant="body1" component="p">
-                  {translation.texts.challenge}
-                </Typography>
-                <Typography variant="body1" component="p">
-                  <span id="current-task-number-player">
-                    {randomTasks.findIndex((x) => x === currentTaskNumber) + 1} / {roomInfo.details.challengeTasks.length}
-                  </span>
-                </Typography>
-                <Typography variant="body1" component="p">
-                  {translation.texts.description}
-                </Typography>
-                <Typography id="current-task-description" variant="body1" component="p">
-                  {roomInfo.details.challengeTasks[currentTaskNumber - 1].taskDescription}
-                </Typography>
-              </>
-            )}
-            <Typography variant="body1" component="p">
-              {translation.texts.timeRemaining}
-            </Typography>
-            <Typography id="current-time-left" variant="body1" component="p">
-              {getFormattedTime(timeLeft)}
-            </Typography>
+          {/* Room and user name */}
+          <Box display="flex" flexDirection="row" width="100%" justifyContent="space-between" sx={{ mb: 2 }}>
+            <Box width="50%" display="flex">
+              <MeetingRoomIcon sx={{ mr: 1 }} />
+              <Typography variant="body1" component="p" id="room-title" textOverflow="ellipsis" overflow="auto">
+                {roomInfo.details.challengeRoomName}
+              </Typography>
+            </Box>
+            <Box width="50%" display="flex" justifyContent="end">
+              <Typography variant="body1" component="p" id="user-title" textOverflow="ellipsis" overflow="auto">
+                {roomInfo.details.isGameMaster ? translation.texts.youAreGamemaster : roomInfo.details.userName}
+              </Typography>
+              <PersonIcon sx={{ ml: 1 }} />
+            </Box>
           </Box>
+          {isGameMaster && (
+            // Room code
+            <Box display="flex" width="100%" alignItems="center">
+              <Box display="flex" flex="1 1 0px" justifyContent="end">
+                <KeyIcon fontSize="large" sx={{ mr: 2 }}></KeyIcon>
+              </Box>
+              <Box display="flex" justifyContent="center" flex="1 1 0px">
+                <Box display="flex" justifyContent="center" alignItems="center" borderRadius=".4em" sx={{ width: "8em", height: "4em" }} bgcolor="primary.main">
+                  <Typography color="primary.contrastText" id="room-code-title-gm-value" variant="h3" component="h3">
+                    <b>{roomInfo.details.challengeRoomCode}</b>
+                  </Typography>
+                </Box>
+              </Box>
+              <Box flex={"1 1 0px"}></Box>
+            </Box>
+          )}
+          {/* Game Time */}
+          <Typography id="room-status-label" textAlign="center" variant="h5" component="h5">
+            {roomInfo.details.isPaused ? translation.texts.gameIsPaused : translation.texts.timeRemaining}
+          </Typography>
+          <Typography visibility={roomInfo.details.isPaused ? "hidden" : "visible"} id="current-time-left" variant="h3" component="h3">
+            {getFormattedTime(timeLeft)}
+          </Typography>
+          {!isGameMaster && (
+            <>
+              {/* Task information */}
+              <Typography variant="body1" component="p">
+                {translation.texts.challenge}:{" "}
+                <span id="current-task-number-player">
+                  {randomTasks.findIndex((x) => x === currentTaskNumber) + 1} / {roomInfo.details.challengeTasks.length}
+                </span>
+              </Typography>
+              <Typography variant="body1" component="p"></Typography>
+              <Typography id="current-task-description" variant="body1" component="p" width="100%" textAlign="center" sx={{ wordBreak: "break-word" }}>
+                <>
+                  {translation.texts.description}:
+                  <br />
+                  {roomInfo.details.challengeTasks[currentTaskNumber - 1].taskDescription}
+                </>
+              </Typography>
+            </>
+          )}
         </>
       )}
-      {/* GameMaster */}
+      {/* GameMaster, Buttons */}
       {isGameMaster && !timeIsUp && (
         <>
-          <ButtonGroup>
+          <Button
+            id="gm-submissions-btn"
+            size="large"
+            sx={{ height: "4em" }}
+            disabled={unReviewedSubmissions.length === 0}
+            color="warning"
+            onClick={() => {
+              setShowSubmissions(true)
+            }}
+          >
+            {`${translation.inputs.buttons.submissions} (${unReviewedSubmissions.length})`}
+          </Button>
+          <ButtonGroup fullWidth>
             <Button
               id="gm-playerlist-btn"
               onClick={() => {
@@ -377,21 +395,12 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
             >
               {translation.titles.scoreboard}
             </Button>
-            <Button
-              id="gm-submissions-btn"
-              disabled={unReviewedSubmissions.length === 0}
-              color="warning"
-              onClick={() => {
-                setShowSubmissions(true)
-              }}
-            >
-              {`${translation.inputs.buttons.submissions} (${unReviewedSubmissions.length})`}
-            </Button>
           </ButtonGroup>
-          <Collapse in={showScoreboard}>
-            <Scoreboard socket={socket} scores={scores} timeIsUp={timeIsUp} />
+          <Collapse sx={{ width: "100%" }} in={showScoreboard}>
+            <Scoreboard {...({ sx: { width: "100%" } } as StackProps)} socket={socket} scores={scores} timeIsUp={timeIsUp} />
           </Collapse>
-          <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
+          <RemovePlayer {...({ sx: { width: "100%" } } as CollapseProps)} socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
+          {/* Submission modal */}
           {showSubmissions && unReviewedSubmissions.length > 0 && (
             <Dialog open={showSubmissions} onClose={() => setShowSubmissions(false)}>
               <Stack alignItems="center" spacing={1} p={1}>
@@ -448,7 +457,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
               close={() => setShowCamera(false)}
             />
           )}
-          <Scoreboard socket={socket} scores={scores} timeIsUp={timeIsUp} />
+          <Scoreboard {...({ sx: { width: "100%" } } as StackProps)} socket={socket} scores={scores} timeIsUp={timeIsUp} />
         </>
       )}
       {/* Time is up, scoreboard */}
