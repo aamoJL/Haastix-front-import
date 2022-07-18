@@ -310,7 +310,7 @@ const english: Translation = {
   texts: {
     askCode: "Ask the gamemaster for the code",
     roomName: "Room name",
-    challengeBeginsIn: "Challenge begins in",
+    challengeBeginsIn: "Challenge starts in",
     roomCode: "Room code",
     firstChallenge: "First challenge",
     noJoinedPlayers: "No joined players",

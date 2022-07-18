@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment, Alert } from "@mui/material"
+import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment, Alert, CollapseProps, useTheme, responsiveFontSizes, ThemeProvider } from "@mui/material"
 import { ChallengeTask, GameEndResponce, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
-
 import { Socket } from "socket.io-client"
 import ChallengeRoom from "./ChallengeRoom"
 import RemovePlayer from "./RemovePlayer"
@@ -9,6 +8,7 @@ import AlertWindow from "./AlertWindow"
 import CloseIcon from "@mui/icons-material/Close"
 import LanguageContext from "./Context/LanguageContext"
 import Bouncyfeeling from "./Bouncyfeeling"
+import KeyIcon from "@mui/icons-material/Key"
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse
@@ -69,6 +69,9 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const [randomOrder, setRandomOrder] = useState(roomInfo.details.isRandom)
   const translation = useContext(LanguageContext)
 
+  // let theme = useTheme()
+  // theme = responsiveFontSizes(theme)
+
   useEffect(() => {
     const interval = setInterval(() => {
       const startDate = new Date(roomInfo.details.challengeStartDate as string)
@@ -89,7 +92,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
     if (!roomInfo.details.isActive) {
       setTimeIsUp(true)
     }
-  })
+  }, [roomInfo.details.isActive])
 
   useEffect(() => {
     // Set Socket.io Listeners | newPlayer listener
@@ -216,45 +219,42 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   }, [timer, startGame])
 
   return (
-    <Stack alignItems="center" justifyContent="center" spacing={1}>
+    <Stack style={{ width: "100%", margin: "0 auto", maxWidth: "480px", padding: "0 20px" }} alignItems="center" justifyContent="center" spacing={1}>
       {!timeIsUp && !alertWindow && (
         <>
-          <Typography variant="h3" component="h3">
-            {translation.titles.waitingRoom}
+          <Typography textAlign="center" variant="body1" component="p">
+            {translation.texts.roomName}: {roomInfo.details.challengeRoomName}
           </Typography>
-          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", maxWidth: 380 }} textAlign="left" columnGap={3} pl={8}>
-            <Typography variant="body1" component="p">
-              {translation.texts.roomName}
-            </Typography>
-            <Typography id="room-name" variant="body1" component="p" sx={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-              {roomInfo.details.challengeRoomName}
-            </Typography>
-            <Typography variant="body1" component="p">
-              {translation.texts.challengeBeginsIn}
-            </Typography>
-            <Typography id="timer-gm" variant="body1" component="p">
-              {getFormattedTime(timeLeft)}
-            </Typography>
-            {isGameMaster && (
-              <>
-                <Typography id="room-code" variant="body1" component="p">
-                  {translation.texts.roomCode}
-                </Typography>
-                <Typography id="room-code-value" variant="body1" component="p">
-                  <b>{roomInfo.details.challengeRoomCode}</b>
-                </Typography>
-                <Typography id="task" variant="body1" component="p">
-                  {translation.texts.firstChallenge}
-                </Typography>
-                <Typography id="taskDescription" variant="body1" component="p" sx={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-                  {roomInfo.details.challengeTasks[0].taskDescription}
-                </Typography>
-              </>
-            )}
-          </Box>
           {isGameMaster && (
             <>
-              <Button id="start-game-btn" onClick={handleStartGame}>
+              <Typography hidden id="room-code" variant="h2" component="h2">
+                {translation.texts.roomCode}
+              </Typography>
+              <Box display="flex" width="100%" alignItems="center">
+                <Box display="flex" flex="1 1 0px" justifyContent="end">
+                  <KeyIcon fontSize="large" sx={{ mr: 2 }}></KeyIcon>
+                </Box>
+                <Box display="flex" justifyContent="center" flex="1 1 0px">
+                  <Box display="flex" justifyContent="center" alignItems="center" borderRadius=".4em" sx={{ width: "8em", height: "4em" }} bgcolor="primary.main">
+                    <Typography color="primary.contrastText" id="room-code-value" variant="h3" component="h3">
+                      <b>{roomInfo.details.challengeRoomCode}</b>
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box flex={"1 1 0px"}></Box>
+              </Box>
+            </>
+          )}
+          <Typography variant="h5" component="h3">
+            {translation.texts.challengeBeginsIn}
+          </Typography>
+          <Typography id="timer-gm" variant="h3" component="h3">
+            {getFormattedTime(timeLeft)}
+          </Typography>
+
+          {isGameMaster && (
+            <>
+              <Button color={startGame ? "warning" : "primary"} sx={{ width: "auto", minWidth: 200 }} id="start-game-btn" onClick={handleStartGame}>
                 {startGame ? `${translation.inputs.buttons.cancel} (${timer})` : `${translation.inputs.buttons.start}`}
               </Button>
               <ButtonGroup>
@@ -265,12 +265,12 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                   {translation.inputs.buttons.challenges} ({roomInfo.details.challengeTasks.length})
                 </Button>
               </ButtonGroup>
-              <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
-              <Collapse in={showChallenges} unmountOnExit>
+              <RemovePlayer {...({ sx: { width: "100%" } } as CollapseProps)} socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
+              <Collapse sx={{ width: "100%" }} in={showChallenges} unmountOnExit>
                 {!edit && (
-                  <Stack alignItems="center">
+                  <Stack alignItems="center" width="100%">
                     {
-                      <TableContainer sx={{ maxWidth: 300, overflow: "hidden" }}>
+                      <TableContainer sx={{ overflow: "hidden" }}>
                         <Table size="small" stickyHeader>
                           <TableHead>
                             <TableRow>
