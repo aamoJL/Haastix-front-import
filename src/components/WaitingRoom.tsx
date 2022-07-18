@@ -278,7 +278,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
               </Box>
             </>
           )}
-          <Typography textAlign="center" variant="h5" component="h5">
+          <Typography id="room-status-label" textAlign="center" variant="h5" component="h5">
             {roomInfo.details.isPaused ? translation.texts.gameIsPaused : translation.texts.challengeBeginsIn}
           </Typography>
           {!roomInfo.details.isPaused && (
@@ -305,8 +305,8 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                 {!edit && (
                   <Stack alignItems="center" width="100%">
                     {
-                      <TableContainer sx={{ overflow: "hidden" }}>
-                        <Table size="small" stickyHeader>
+                      <TableContainer sx={{ maxHeight: 300 }}>
+                        <Table size="small" stickyHeader sx={{ tableLayout: "auto", wordBreak: "break-all" }}>
                           <TableHead>
                             <TableRow>
                               <TableCell>#</TableCell>
@@ -321,7 +321,9 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                                     {value.taskNumber}
                                   </Typography>
                                 </TableCell>
-                                <TableCell align="left">{value.taskDescription}</TableCell>
+                                <TableCell sx={{ textOverflow: "ellipsis" }} align="left">
+                                  {value.taskDescription}
+                                </TableCell>
                               </TableRow>
                             ))}
                           </TableBody>

@@ -27,8 +27,8 @@ function RemovePlayer({ socket, roomInfo, playerArray, open, ...collapseProps }:
 
   return (
     <Collapse {...collapseProps} in={open} unmountOnExit>
-      <TableContainer sx={{ maxHeight: 300, overflow: "hidden" }}>
-        <Table size="small">
+      <TableContainer sx={{ maxHeight: 300 }}>
+        <Table size="small" sx={{ tableLayout: "auto", wordBreak: "break-all" }}>
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
