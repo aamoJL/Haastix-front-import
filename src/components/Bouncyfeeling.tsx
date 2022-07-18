@@ -58,7 +58,7 @@ const Bouncyfeeling = React.memo(({ players }: Props) => {
    * @param value current value
    * @param min min value
    * @param max max value
-   * @returns
+   * @returns clamped value
    */
   function clamp(value: number, min: number, max: number) {
     return Math.max(min, Math.min(value, max))
@@ -125,7 +125,7 @@ const Bouncyfeeling = React.memo(({ players }: Props) => {
 
   useEffect(() => {
     if (!context.current) {
-      context.current = canvasRef.current?.getContext("2d", { alpha: false })
+      context.current = canvasRef.current?.getContext("2d")
     }
     windowResize()
     updatePlayerObjects()

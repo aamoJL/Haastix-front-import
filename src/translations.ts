@@ -85,6 +85,7 @@ export interface Translation {
     taskNumber: string
     message: string
     randomTasks: string
+    gameIsPaused: string
   }
   tables: {
     name: string
@@ -206,6 +207,7 @@ const finnish: Translation = {
     taskNumber: "Haasteen numero",
     message: "Viesti",
     randomTasks: "Sekoita haasteiden järjestys",
+    gameIsPaused: "Peli on pysäytetty"
   },
   tables: {
     name: "Nimi",
@@ -327,6 +329,7 @@ const english: Translation = {
     taskNumber: "Task number",
     message: "Message",
     randomTasks: "Randomise task order",
+    gameIsPaused: "The game has been paused"
   },
   tables: {
     name: "Name",
