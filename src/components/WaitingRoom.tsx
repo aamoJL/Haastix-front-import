@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment } from "@mui/material"
 import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
@@ -72,8 +72,8 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   
   
   const playNotification = () => {
-    if(audioPlayer.current !== null && JSON.parse(localStorage.getItem("muted")!) === false) {
-      console.log(audioPlayer.current.muted)
+    if(audioPlayer.current !== null && audioPlayer.current.muted === false) {
+      console.log("player mute state: " + audioPlayer.current.muted)
       audioPlayer.current.play()
     }
   }
@@ -82,9 +82,11 @@ function WaitingRoom({ roomInfo, socket }: Props) {
     document.addEventListener("click", () => {
       if(audioPlayer.current !== null && initClick === false) {
         setInitClick(true)
-        audioPlayer.current.muted = JSON.parse(localStorage.getItem("muted")!)
         if(localStorage.getItem("muted") === null) {
-          localStorage.setItem("muted", JSON.stringify(audioPlayer.current.muted))
+          audioPlayer.current.muted = false
+          localStorage.setItem("muted", JSON.stringify(false))
+        } else {
+          audioPlayer.current.muted = JSON.parse(localStorage.getItem("muted")!)
         }
       }
     })

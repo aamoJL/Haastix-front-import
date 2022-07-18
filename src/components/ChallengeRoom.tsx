@@ -256,6 +256,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
     if (isGameMaster) {
       // Add new submissions to this component's state
       socket?.on("newFile", (dataResponse: NewFileResponse) => {
+        console.log(unReviewedSubmissions)
         if(dataResponse.challengeFiles.length > unReviewedSubmissions.length) {
           playNotification()
         }
@@ -276,6 +277,9 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
       socket?.off("newFile")
     }
   }, [])
+  useEffect(() => {
+    console.log(unReviewedSubmissions)
+  }, [unReviewedSubmissions])
 
   const handleReview = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted: boolean) => {
     if (unReviewedSubmissions[0] !== undefined) {
