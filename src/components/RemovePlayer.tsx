@@ -55,7 +55,7 @@ function RemovePlayer({ socket, roomInfo, playerArray, open, ...collapseProps }:
                 <TableRow key={i}>
                   <TableCell>{i + 1}</TableCell>
                   <TableCell>{value.name}</TableCell>
-                  <TableCell>
+                  <TableCell sx={{ display: "flex", justifyContent: "end" }}>
                     <IconButton id={`remove-challenge-btn-${i}`} size="small" color="error" onClick={(e) => handleRemovePlayer(value.name)}>
                       <CloseIcon />
                     </IconButton>
