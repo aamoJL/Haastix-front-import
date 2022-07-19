@@ -300,24 +300,24 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
 
   return (
     <Stack style={{ width: "100%", margin: "0 auto", maxWidth: "480px" }} alignItems="center" justifyContent="center" spacing={1}>
+      {/* Room and user name */}
+      <Box display="flex" flexDirection="row" width="100%" justifyContent="space-between" sx={{ mb: 2 }}>
+        <Box width="50%" display="flex">
+          <MeetingRoomIcon sx={{ mr: 1 }} />
+          <Typography variant="body1" component="p" id="room-title" textOverflow="ellipsis" overflow="auto">
+            {roomInfo.details.challengeRoomName}
+          </Typography>
+        </Box>
+        <Box width="50%" display="flex" justifyContent="end">
+          <Typography variant="body1" component="p" id="user-title" textOverflow="ellipsis" overflow="auto">
+            {roomInfo.details.isGameMaster ? translation.texts.youAreGamemaster : roomInfo.details.userName}
+          </Typography>
+          <PersonIcon sx={{ ml: 1 }} />
+        </Box>
+      </Box>
       {/* Room info */}
       {!timeIsUp && (
         <>
-          {/* Room and user name */}
-          <Box display="flex" flexDirection="row" width="100%" justifyContent="space-between" sx={{ mb: 2 }}>
-            <Box width="50%" display="flex">
-              <MeetingRoomIcon sx={{ mr: 1 }} />
-              <Typography variant="body1" component="p" id="room-title" textOverflow="ellipsis" overflow="auto">
-                {roomInfo.details.challengeRoomName}
-              </Typography>
-            </Box>
-            <Box width="50%" display="flex" justifyContent="end">
-              <Typography variant="body1" component="p" id="user-title" textOverflow="ellipsis" overflow="auto">
-                {roomInfo.details.isGameMaster ? translation.texts.youAreGamemaster : roomInfo.details.userName}
-              </Typography>
-              <PersonIcon sx={{ ml: 1 }} />
-            </Box>
-          </Box>
           {isGameMaster && (
             // Room code
             <Box display="flex" width="100%" alignItems="center">
@@ -482,7 +482,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
           <Typography variant="body1" component="p">
             {translation.texts.roomName}: <span id="end-room-title">{roomInfo?.details.challengeRoomName}</span>
           </Typography>
-          <Scoreboard socket={socket} scores={scores} timeIsUp={timeIsUp} />
+          <Scoreboard {...({ sx: { width: "100%" } } as StackProps)} socket={socket} scores={scores} timeIsUp={timeIsUp} />
         </>
       )}
       {/* Alerts */}
