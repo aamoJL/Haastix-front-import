@@ -10,6 +10,7 @@ import LanguageContext from "./Context/LanguageContext"
 import KeyIcon from "@mui/icons-material/Key"
 import PersonIcon from "@mui/icons-material/Person"
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom"
+import CloseIcon from "@mui/icons-material/Close"
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse
@@ -402,25 +403,37 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
           <RemovePlayer {...({ sx: { width: "100%" } } as CollapseProps)} socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
           {/* Submission modal */}
           {showSubmissions && unReviewedSubmissions.length > 0 && (
-            <Dialog open={showSubmissions} onClose={() => setShowSubmissions(false)}>
-              <Stack alignItems="center" spacing={1} p={1}>
-                <Typography variant="h5" component="p">
-                  {translation.texts.acceptSubmission}
-                </Typography>
-                <Typography id="current-unreviewed-task-description" variant="body1" component="p">
-                  {translation.texts.challenge}: {unReviewedSubmissions[0].taskDescription}
-                </Typography>
-                <Typography variant="body1" component="p">
-                  {translation.texts.description}: {unReviewedSubmissions[0].submissionDescription}
-                </Typography>
-                <img id="current-unreviewed-img" src={currentSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
-                <TextField id="review-description" label={translation.inputs.texts.description} value={reviewDescriptionInput} onChange={(e) => setReviewDescriptionInput(e.target.value)}></TextField>
-                <Button id="accept-photo-btn-gm" color="success" onClick={(e) => handleReview(e, true)}>
-                  {translation.inputs.buttons.accept}
+            <Dialog fullScreen open={showSubmissions} onClose={() => setShowSubmissions(false)} PaperProps={{ sx: { mr: 0, ml: 0 } }}>
+              {/* Close Button */}
+              <Box zIndex={2000} position="absolute" top={0} right={0}>
+                <Button sx={{ opacity: "70%" }} color="info" onClick={() => setShowSubmissions(false)} style={{ borderRadius: "50%", height: "5em", width: "5em", margin: "1em", padding: 0 }}>
+                  <CloseIcon />
                 </Button>
-                <Button id="reject-photo-btn-gm" color="error" onClick={(e) => handleReview(e, false)}>
-                  {translation.inputs.buttons.decline}
-                </Button>
+              </Box>
+              {/* Image */}
+              <Stack sx={{ width: "100%", height: "100%", maxWidth: 500 }} position="absolute" spacing={1} alignSelf="center">
+                <img style={{ objectFit: "contain", width: "100%", height: "100%" }} id="current-unreviewed-img" src={currentSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
+              </Stack>
+              {/* Bottom */}
+              <Stack position="absolute" bottom={0} direction="column" width="100%" px={3} py={2} bgcolor="rgba(0,0,0,0.5)" alignItems="center">
+                <Stack maxWidth={500} width="100%" direction="column" gap={2}>
+                  <Typography variant="body1" component="p" overflow="auto" textOverflow="ellipsis">
+                    <>
+                      {translation.texts.challenge}: <span id="current-unreviewed-task-description">{unReviewedSubmissions[0].taskDescription}</span>
+                      <br />
+                      {translation.texts.description}: <span id="current-unreviewed-submission-description">{unReviewedSubmissions[0].submissionDescription}</span>
+                    </>
+                  </Typography>
+                  <TextField size="small" id="review-description" label={translation.texts.message} value={reviewDescriptionInput} onChange={(e) => setReviewDescriptionInput(e.target.value)}></TextField>
+                  <Stack direction="row" width="100%" gap={2}>
+                    <Button id="accept-photo-btn-gm" color="success" onClick={(e) => handleReview(e, true)}>
+                      {translation.inputs.buttons.accept}
+                    </Button>
+                    <Button id="reject-photo-btn-gm" color="error" onClick={(e) => handleReview(e, false)}>
+                      {translation.inputs.buttons.decline}
+                    </Button>
+                  </Stack>
+                </Stack>
               </Stack>
             </Dialog>
           )}
@@ -473,7 +486,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
         </>
       )}
       {/* Alerts */}
-      <Stack style={{ position: "absolute", top: "50px", left: "50%", transform: "translate(-50%, 0%)" }} sx={{ width: "auto", textAlign: "left" }} spacing={1}>
+      <Stack style={{ position: "absolute", top: "50px", left: "50%", transform: "translate(-50%, 0%)" }} sx={{ width: "90%", textAlign: "left" }} spacing={1}>
         {showRejectAlert && (
           <Alert onClick={() => setShowRejectAlert(false)} severity="error">
             <AlertTitle id="alert-title-rejected">{translation.alerts.title.rejected}</AlertTitle>
