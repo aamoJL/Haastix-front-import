@@ -140,7 +140,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
       // Clear socket.io Listeners
       socket?.off("finalScore_update")
     }
-  }, [playerArray])
+  }, [playerArray, timeIsUp])
 
   useEffect(() => {
     if (!roomInfo.details.isActive) {
