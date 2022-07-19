@@ -106,7 +106,12 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
   const [randomTasks] = useState<number[]>(sessionStorage.getItem("taskOrder") !== null ? JSON.parse(sessionStorage.getItem("taskOrder")!) : getTaskOrder)
   const initTasks = useRef(true) // Used to not show task alerts on page refresh
   const currentSubmissionFileName = useRef<ChallengeFile>()
+  const prevUnReviewedFiledLength = useRef<number>(0)
   // const [gameOver, setGameOver] = useState(false);
+
+  useEffect(() => {
+    prevUnReviewedFiledLength.current = unReviewedSubmissions.length
+  }, [unReviewedSubmissions])
 
   useEffect(() => {
     socket?.emit("fetchScoreBoard", {
@@ -256,8 +261,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
     if (isGameMaster) {
       // Add new submissions to this component's state
       socket?.on("newFile", (dataResponse: NewFileResponse) => {
-        console.log(unReviewedSubmissions)
-        if(dataResponse.challengeFiles.length > unReviewedSubmissions.length) {
+        if(dataResponse.challengeFiles.length > prevUnReviewedFiledLength.current) {
           playNotification()
         }
         if (dataResponse.statusCode === 200) {
@@ -277,9 +281,6 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
       socket?.off("newFile")
     }
   }, [])
-  useEffect(() => {
-    console.log(unReviewedSubmissions)
-  }, [unReviewedSubmissions])
 
   const handleReview = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted: boolean) => {
     if (unReviewedSubmissions[0] !== undefined) {

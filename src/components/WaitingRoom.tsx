@@ -73,7 +73,6 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   
   const playNotification = () => {
     if(audioPlayer.current !== null && audioPlayer.current.muted === false) {
-      console.log("player mute state: " + audioPlayer.current.muted)
       audioPlayer.current.play()
     }
   }
