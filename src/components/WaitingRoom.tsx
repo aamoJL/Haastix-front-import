@@ -11,6 +11,7 @@ import Bouncyfeeling from "./Bouncyfeeling"
 import KeyIcon from "@mui/icons-material/Key"
 import PersonIcon from "@mui/icons-material/Person"
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom"
+import notificationSound from "../assets/notificationSound.mp3"
 
 interface Props {
   roomInfo: JoinChallengeSuccessResponse
@@ -69,8 +70,41 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const [timer, setTimer] = useState(10)
   const [showGamemasterLeftAlert, setShowGamemasterLeftAlert] = useState(false)
   const [randomOrder, setRandomOrder] = useState(roomInfo.details.isRandom)
+  const [initClick, setInitClick] = useState(false)
   const translation = useContext(LanguageContext)
   const pauseDateRef = useRef<number>()
+  const audioPlayer = useRef<HTMLAudioElement>(null)
+
+  const playNotification = () => {
+    if (audioPlayer.current !== null && audioPlayer.current.muted === false) {
+      audioPlayer.current.play()
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("click", () => {
+      if (audioPlayer.current !== null && initClick === false) {
+        setInitClick(true)
+        if (localStorage.getItem("muted") === null) {
+          audioPlayer.current.muted = false
+          localStorage.setItem("muted", JSON.stringify(false))
+        } else {
+          audioPlayer.current.muted = JSON.parse(localStorage.getItem("muted")!)
+        }
+      }
+    })
+
+    function event() {
+      if (audioPlayer.current !== null) {
+        audioPlayer.current.muted = JSON.parse(localStorage.getItem("muted")!)
+      }
+    }
+    document.addEventListener("sound-change", event)
+
+    return () => {
+      document.removeEventListener("sound-change", event)
+    }
+  })
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -82,6 +116,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       const segmentedTime = calculateTimeLeft(milliseconds)
       setTimeLeft(segmentedTime)
       if (milliseconds <= 0) {
+        playNotification()
         setTimeIsUp(true)
         clearInterval(interval)
       }
@@ -255,6 +290,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
 
   return (
     <Stack style={{ width: "100%", margin: "0 auto", maxWidth: "480px", padding: "0 20px" }} alignItems="center" justifyContent="center" spacing={1}>
+      <audio autoPlay muted ref={audioPlayer} src={notificationSound}></audio>
       {!timeIsUp && !alertWindow && (
         <>
           <Box display="flex" flexDirection="row" width="100%" justifyContent="space-between" sx={{ mb: 2 }}>
@@ -388,7 +424,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
           {!isGameMaster && playerArray.length > 0 && <Bouncyfeeling players={playerArray} />}
         </>
       )}
-      {timeIsUp && !roomInfo.details.isPaused && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} />}
+      {timeIsUp && !roomInfo.details.isPaused && <ChallengeRoom socket={socket} roomInfo={roomInfo} playerArray={playerArray} playNotification={playNotification} />}
       {showGamemasterLeftAlert && (
         <Alert style={{ position: "absolute", top: "50px", left: "50%", transform: "translate(-50%, 0%)" }} onClick={() => setShowGamemasterLeftAlert(false)} severity="error" sx={{ width: "auto" }}>
           {translation.errors.gameMasterLeft}

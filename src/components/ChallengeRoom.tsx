@@ -16,6 +16,7 @@ interface Props {
   roomInfo: JoinChallengeSuccessResponse
   socket?: Socket
   playerArray: WaitingRoomList[]
+  playNotification: () => void
 }
 
 interface SegmentedTime {
@@ -31,7 +32,7 @@ interface SegmentedTime {
  * Players and Game master will have different views.
  * @param roomInfo reJoin API response
  */
-function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
+function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Props) {
   /**
    * Returns object with segmented time between now and end date
    * @param delayTime end date
@@ -90,7 +91,6 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(millisecondsLeft))
   const [currentTaskNumber, setCurrentTaskNumber] = useState<number>(1)
-  const [randomTasks, setRandomTasks] = useState<number[]>(sessionStorage.getItem("taskOrder") !== null ? JSON.parse(sessionStorage.getItem("taskOrder")!) : getTaskOrder)
   const [timeIsUp, setTimeIsUp] = useState(millisecondsLeft <= 0)
   const [showCamera, setShowCamera] = useState(false)
   const [playerWaitingReview, setPlayerWaitingReview] = useState(false)
@@ -106,10 +106,16 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
   const [reviewResponse, setReviewResponse] = useState("") // GM's review message
   const [reviewDescriptionInput, setReviewDescriptionInput] = useState("")
   const translation = useContext(LanguageContext)
-
+  
+  const [randomTasks] = useState<number[]>(sessionStorage.getItem("taskOrder") !== null ? JSON.parse(sessionStorage.getItem("taskOrder")!) : getTaskOrder)
   const initTasks = useRef(true) // Used to not show task alerts on page refresh
   const currentSubmissionFileName = useRef<ChallengeFile>()
+  const prevUnReviewedFiledLength = useRef<number>(0)
   // const [gameOver, setGameOver] = useState(false);
+
+  useEffect(() => {
+    prevUnReviewedFiledLength.current = unReviewedSubmissions.length
+  }, [unReviewedSubmissions])
 
   useEffect(() => {
     socket?.emit("fetchScoreBoard", {
@@ -144,7 +150,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
       // Clear socket.io Listeners
       socket?.off("finalScore_update")
     }
-  }, [playerArray])
+  }, [playerArray, timeIsUp])
 
   useEffect(() => {
     if (!roomInfo.details.isActive) {
@@ -205,6 +211,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
               setTimeIsUp(true)
             } else {
               // Go next
+              playNotification()
               setShowApproveAlert(true)
               setCurrentTaskNumber(randomTasks[randomTasks.findIndex((x) => x === dataResponse.taskNumber) + 1])
             }
@@ -212,6 +219,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
             break
           case "Rejected":
             // Stay
+            playNotification()
             setShowRejectAlert(true)
             setPlayerWaitingReview(false)
             break
@@ -263,12 +271,15 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
     if (isGameMaster) {
       // Add new submissions to this component's state
       socket?.on("newFile", (dataResponse: NewFileResponse) => {
+        if(dataResponse.challengeFiles.length > prevUnReviewedFiledLength.current) {
+          playNotification()
+        }
         if (dataResponse.statusCode === 200) {
           setUnReviewedSubmissions([...dataResponse.challengeFiles])
         }
       })
 
-      // Request submissions that have not been reviewed
+      //Request submissions that have not been reviewed
       socket?.emit("listFiles", {
         token: roomInfo?.details.token,
       })
@@ -293,10 +304,16 @@ function ChallengeRoom({ roomInfo, socket, playerArray }: Props) {
         },
       })
     }
-    socket?.emit("listFiles", {
-      token: roomInfo?.details.token,
-    })
+    //  socket?.emit("listFiles", {
+    //   token: roomInfo?.details.token,
+    // })
   }
+
+  useEffect(() => {
+    if(timeIsUp === true) {
+      playNotification()
+    }
+  }, [timeIsUp, playNotification])
 
   return (
     <Stack style={{ width: "100%", margin: "0 auto", maxWidth: "480px" }} alignItems="center" justifyContent="center" spacing={1}>

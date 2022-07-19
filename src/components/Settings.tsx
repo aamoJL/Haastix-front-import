@@ -30,10 +30,9 @@ const defaultTheme: ThemeVariables = {
 const Settings = (props: Props) => {
   const [theme, setTheme] = useState<ThemeVariables>(localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!) : defaultTheme)
   const {color, mode, style} = theme
-  const [sound, setSound] = useState(false) //toggle sound
+  const [muted, setMuted] = useState(localStorage.getItem("muted") !== null ? JSON.parse(localStorage.getItem("muted")!) : false) //toggle sound
   const [language, setLanguge] = useState<Language>(localStorage.getItem("language") === null ? "en" : (localStorage.getItem("language") as Language)) //toggle language
   const [translation, setTranslation] = useState<Translation>(getTranslation(language))
-  const handleSound = () => setSound(!sound)
 
   // const handleTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setTheme((event.target as HTMLInputElement).value)
@@ -80,6 +79,13 @@ const Settings = (props: Props) => {
     document.dispatchEvent(new Event("theme-change"))
   }, [theme])
 
+  const handleSoundChange = ((event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    const muteSound = checked ? false : true
+    setMuted(muteSound)
+    localStorage.setItem("muted", JSON.stringify(muteSound))
+    document.dispatchEvent(new Event("sound-change"))
+  })
+
   return (
     <Modal open={props.open} onClose={props.handleClose}>
       <Paper sx={paperStyle}>
@@ -103,7 +109,7 @@ const Settings = (props: Props) => {
             </RadioGroup>
           </FormControl>
           <FormControlLabel control={<Switch id="darkmode-switch" checked={mode === "dark"} onChange={handleThemeMode} />} label={translation.inputs.texts.darkmode} />
-          <FormControlLabel control={<Switch id="volume-switch" checked={sound} onChange={handleSound} />} label={translation.inputs.texts.sound} />
+          <FormControlLabel control={<Switch id="volume-switch" checked={muted === false} onChange={handleSoundChange} />} label={translation.inputs.texts.sound} />
           <Grid component="label" container alignItems="center" spacing={1}>
             <Grid item>Suomi</Grid>
             <Grid item>
