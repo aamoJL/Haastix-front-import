@@ -1,11 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
-<<<<<<< src/components/WaitingRoom.tsx
-import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment } from "@mui/material"
-import { ChallengeTask, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
-=======
 import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment, Alert } from "@mui/material"
 import { ChallengeTask, GameEndResponce, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
->>>>>>> src/components/WaitingRoom.tsx
 import { Socket } from "socket.io-client"
 import ChallengeRoom from "./ChallengeRoom"
 import RemovePlayer from "./RemovePlayer"
