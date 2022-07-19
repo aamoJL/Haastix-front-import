@@ -50,9 +50,9 @@ const App = () => {
     return () => {
       document.removeEventListener("theme-change", event)
     }
-  })
+  }, [])
 
-  const theme = useMemo(() => makeTheme(mode, color, style), [themeOptions])
+  const theme = useMemo(() => makeTheme(mode, color, style), [mode, color, style])
 
   return (
     <LanguageContext.Provider value={translation}>
