@@ -146,7 +146,13 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
       // Clear socket.io Listeners
       socket?.off("finalScore_update")
     }
-  }, [playerArray])
+  }, [playerArray, timeIsUp])
+
+  useEffect(() => {
+    if (!roomInfo.details.isActive) {
+      setTimeIsUp(true)
+    }
+  })
 
   useEffect(() => {
     if (unReviewedSubmissions.length === 0) {
@@ -280,7 +286,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
       socket?.off("fileStatusPlayer")
       socket?.off("newFile")
     }
-  }, [])
+  }, [roomInfo])
 
   const handleReview = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted: boolean) => {
     if (unReviewedSubmissions[0] !== undefined) {
