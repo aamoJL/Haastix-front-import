@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
-import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment, Alert } from "@mui/material"
+import { Button, Collapse, Stack, Typography, TableBody, TableRow, Table, TableCell, TextField, ButtonGroup, IconButton, Box, TableContainer, TableHead, FormControlLabel, Switch, InputAdornment, Alert, CollapseProps } from "@mui/material"
 import { ChallengeTask, GameEndResponce, JoinChallengeSuccessResponse, WaitingRoomList, WaitingRoomNewPlayer, YouWereRemovedResponse } from "../interfaces"
 import { Socket } from "socket.io-client"
 import ChallengeRoom from "./ChallengeRoom"
@@ -8,6 +8,9 @@ import AlertWindow from "./AlertWindow"
 import CloseIcon from "@mui/icons-material/Close"
 import LanguageContext from "./Context/LanguageContext"
 import Bouncyfeeling from "./Bouncyfeeling"
+import KeyIcon from "@mui/icons-material/Key"
+import PersonIcon from "@mui/icons-material/Person"
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom"
 import notificationSound from "../assets/notificationSound.mp3"
 
 interface Props {
@@ -71,19 +74,18 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   const translation = useContext(LanguageContext)
   const pauseDateRef = useRef<number>()
   const audioPlayer = useRef<HTMLAudioElement>(null)
-  
-  
+
   const playNotification = () => {
-    if(audioPlayer.current !== null && audioPlayer.current.muted === false) {
+    if (audioPlayer.current !== null && audioPlayer.current.muted === false) {
       audioPlayer.current.play()
     }
   }
-  
+
   useEffect(() => {
     document.addEventListener("click", () => {
-      if(audioPlayer.current !== null && initClick === false) {
+      if (audioPlayer.current !== null && initClick === false) {
         setInitClick(true)
-        if(localStorage.getItem("muted") === null) {
+        if (localStorage.getItem("muted") === null) {
           audioPlayer.current.muted = false
           localStorage.setItem("muted", JSON.stringify(false))
         } else {
@@ -93,13 +95,13 @@ function WaitingRoom({ roomInfo, socket }: Props) {
     })
 
     function event() {
-      if(audioPlayer.current !== null) {
+      if (audioPlayer.current !== null) {
         audioPlayer.current.muted = JSON.parse(localStorage.getItem("muted")!)
       }
     }
     document.addEventListener("sound-change", event)
 
-    return () => {  
+    return () => {
       document.removeEventListener("sound-change", event)
     }
   })
@@ -128,7 +130,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
     if (!roomInfo.details.isActive) {
       setTimeIsUp(true)
     }
-  })
+  }, [roomInfo.details.isActive])
 
   useEffect(() => {
     // Set Socket.io Listeners | newPlayer listener
@@ -287,46 +289,49 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   }, [timer, startGame])
 
   return (
-    <Stack alignItems="center" justifyContent="center" spacing={1}>
+    <Stack style={{ width: "100%", margin: "0 auto", maxWidth: "480px", padding: "0 20px" }} alignItems="center" justifyContent="center" spacing={1}>
       <audio autoPlay muted ref={audioPlayer} src={notificationSound}></audio>
       {!timeIsUp && !alertWindow && (
         <>
-          <Typography variant="h3" component="h3">
-            {translation.titles.waitingRoom}
-          </Typography>
-          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", maxWidth: 380 }} textAlign="left" columnGap={3} pl={8}>
-            <Typography variant="body1" component="p">
-              {translation.texts.roomName}
-            </Typography>
-            <Typography id="room-name" variant="body1" component="p" sx={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-              {roomInfo.details.challengeRoomName}
-            </Typography>
-            <Typography variant="body1" component="p">
-              {translation.texts.challengeBeginsIn}
-            </Typography>
-            <Typography id="timer-gm" variant="body1" component="p">
-              {roomInfo.details.isPaused ? translation.texts.gameIsPaused : getFormattedTime(timeLeft)}
-            </Typography>
-            {isGameMaster && (
-              <>
-                <Typography id="room-code" variant="body1" component="p">
-                  {translation.texts.roomCode}
-                </Typography>
-                <Typography id="room-code-value" variant="body1" component="p">
-                  <b>{roomInfo.details.challengeRoomCode}</b>
-                </Typography>
-                <Typography id="task" variant="body1" component="p">
-                  {translation.texts.firstChallenge}
-                </Typography>
-                <Typography id="taskDescription" variant="body1" component="p" sx={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-                  {roomInfo.details.challengeTasks[0].taskDescription}
-                </Typography>
-              </>
-            )}
+          <Box display="flex" flexDirection="row" width="100%" justifyContent="space-between" sx={{ mb: 2 }}>
+            <Box width="50%" display="flex">
+              <MeetingRoomIcon sx={{ mr: 1 }} />
+              <Typography variant="body1" component="p" id="room-title" textOverflow="ellipsis" overflow="auto">
+                {roomInfo.details.challengeRoomName}
+              </Typography>
+            </Box>
+            <Box width="50%" display="flex" justifyContent="end">
+              <Typography variant="body1" component="p" id="user-title" textOverflow="ellipsis" overflow="auto">
+                {roomInfo.details.isGameMaster ? translation.texts.youAreGamemaster : roomInfo.details.userName}
+              </Typography>
+              <PersonIcon sx={{ ml: 1 }} />
+            </Box>
           </Box>
           {isGameMaster && (
+            <Box display="flex" width="100%" alignItems="center">
+              <Box display="flex" flex="1 1 0px" justifyContent="end">
+                <KeyIcon fontSize="large" sx={{ mr: 2 }}></KeyIcon>
+              </Box>
+              <Box display="flex" justifyContent="center" flex="1 1 0px">
+                <Box display="flex" justifyContent="center" alignItems="center" borderRadius=".4em" sx={{ width: "8em", height: "4em" }} bgcolor="primary.main">
+                  <Typography color="primary.contrastText" id="room-code-value" variant="h3" component="h3">
+                    <b>{roomInfo.details.challengeRoomCode}</b>
+                  </Typography>
+                </Box>
+              </Box>
+              <Box flex={"1 1 0px"}></Box>
+            </Box>
+          )}
+          <Typography id="room-status-label" textAlign="center" variant="h5" component="h5">
+            {roomInfo.details.isPaused ? translation.texts.gameIsPaused : translation.texts.challengeBeginsIn}
+          </Typography>
+          <Typography visibility={roomInfo.details.isPaused ? "hidden" : "visible"} id="timer-gm" variant="h3" component="h3">
+            {getFormattedTime(timeLeft)}
+          </Typography>
+
+          {isGameMaster && (
             <>
-              <Button id="start-game-btn" onClick={handleStartGame}>
+              <Button color={startGame ? "warning" : "primary"} sx={{ width: "auto", minWidth: 200 }} id="start-game-btn" onClick={handleStartGame}>
                 {startGame ? `${translation.inputs.buttons.cancel} (${timer})` : `${translation.inputs.buttons.start}`}
               </Button>
               <ButtonGroup>
@@ -337,13 +342,13 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                   {translation.inputs.buttons.challenges} ({roomInfo.details.challengeTasks.length})
                 </Button>
               </ButtonGroup>
-              <RemovePlayer socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
-              <Collapse in={showChallenges} unmountOnExit>
+              <RemovePlayer {...({ sx: { width: "100%" } } as CollapseProps)} socket={socket} roomInfo={roomInfo} playerArray={playerArray} open={showPlayers} />
+              <Collapse sx={{ width: "100%" }} in={showChallenges} unmountOnExit>
                 {!edit && (
-                  <Stack alignItems="center">
+                  <Stack alignItems="center" width="100%">
                     {
-                      <TableContainer sx={{ maxWidth: 300, overflow: "hidden" }}>
-                        <Table size="small" stickyHeader>
+                      <TableContainer sx={{ maxHeight: 300 }}>
+                        <Table size="small" stickyHeader sx={{ tableLayout: "auto", wordBreak: "break-all" }}>
                           <TableHead>
                             <TableRow>
                               <TableCell>#</TableCell>
@@ -358,7 +363,9 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                                     {value.taskNumber}
                                   </Typography>
                                 </TableCell>
-                                <TableCell align="left">{value.taskDescription}</TableCell>
+                                <TableCell sx={{ textOverflow: "ellipsis" }} align="left">
+                                  {value.taskDescription}
+                                </TableCell>
                               </TableRow>
                             ))}
                           </TableBody>
@@ -371,9 +378,9 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                   </Stack>
                 )}
                 {edit && (
-                  <Stack alignItems="center" spacing={1}>
-                    <FormControlLabel control={<Switch id="edit-randomOrder-switch" checked={randomOrder} onChange={() => setRandomOrder(!randomOrder)} />} labelPlacement="start" label={translation.texts.randomTasks}></FormControlLabel>
-                    <Box sx={{ maxHeight: 255, overflow: "auto", maxWidth: 300 }}>
+                  <Stack spacing={1} width="100%">
+                    <FormControlLabel sx={{ width: "100%", justifyContent: "center", m: 0 }} control={<Switch id="edit-randomOrder-switch" checked={randomOrder} onChange={() => setRandomOrder(!randomOrder)} />} labelPlacement="start" label={translation.texts.randomTasks}></FormControlLabel>
+                    <Box sx={{ maxHeight: 255, overflow: "auto" }}>
                       {challengeArray.map((value, i) => (
                         <TextField
                           key={i}
@@ -383,6 +390,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                           value={value.taskDescription}
                           size="small"
                           multiline
+                          fullWidth
                           onChange={(e) => handleEditChallenge(e, i)}
                           inputProps={{ maxLength: 256 }}
                           InputProps={{
@@ -397,12 +405,15 @@ function WaitingRoom({ roomInfo, socket }: Props) {
                         ></TextField>
                       ))}
                     </Box>
-                    <ButtonGroup variant="text">
+                    <ButtonGroup variant="text" sx={{ alignSelf: "center" }}>
                       <Button id="add-challenge-btn" onClick={handleAddChallenge}>
                         {translation.inputs.buttons.add}
                       </Button>
                       <Button id="save-challenges-btn" onClick={handleSaveChallenges}>
                         {translation.inputs.buttons.save}
+                      </Button>
+                      <Button id="cancel-edit-btn" onClick={() => setEdit(false)}>
+                        {translation.inputs.buttons.cancel}
                       </Button>
                     </ButtonGroup>
                   </Stack>

@@ -1,7 +1,9 @@
-import { Button, Dialog, Stack, TextField } from "@mui/material"
+import { Box, Button, Dialog, IconButton, Stack, TextField } from "@mui/material"
 import React, { useEffect, useState, useContext, useRef } from "react"
 import { SendFileResponse } from "../interfaces"
 import LanguageContext from "./Context/LanguageContext"
+import CameraAltIcon from "@mui/icons-material/CameraAlt"
+import CloseIcon from "@mui/icons-material/Close"
 
 interface Props {
   taskId: string
@@ -26,9 +28,10 @@ function ChallengeRoomCamera({ taskId, onSubmit, open, close }: Props) {
   const [submissionDesc, setSubmissionDesc] = useState("")
   const translation = useContext(LanguageContext)
 
-  let canvasHeight = 500
-  let canvasWidth = 0
-  window.innerWidth <= 768 ? (canvasWidth = window.innerWidth) : (canvasWidth = 500)
+  let canvasHeight = window.innerHeight
+  let canvasWidth = window.innerWidth
+  // window.innerWidth <= 768 ? (canvasWidth = window.innerWidth) : (canvasWidth = 500)
+  // window.innerHeight <= 768 ? (canvasHeight = window.innerHeight) : (canvasHeight = 500)
 
   /**
    * Updates camera image on video element
@@ -38,10 +41,12 @@ function ChallengeRoomCamera({ taskId, onSubmit, open, close }: Props) {
       // video's dimensions will be calculated so it will fit to the canvas
       if (videoElement.current.videoWidth > videoElement.current.videoHeight) {
         let ratio = (canvasHeight / videoElement.current.videoHeight) * videoElement.current.videoWidth
-        context.current?.drawImage(videoElement.current, 0, 0, ratio, canvasHeight)
+        let widthOffset = (canvasWidth - ratio) / 2
+        context.current?.drawImage(videoElement.current, widthOffset, 0, ratio, canvasHeight)
       } else {
         let ratio = (canvasWidth / videoElement.current.videoWidth) * videoElement.current.videoHeight
-        context.current?.drawImage(videoElement.current, videoElement.current.width / 2, videoElement.current.height / 2, canvasWidth, ratio)
+        let heightOffset = (canvasHeight - ratio) / 2
+        context.current?.drawImage(videoElement.current, 0, heightOffset, canvasWidth, ratio)
       }
       window.requestAnimationFrame(updateCamera)
     }
@@ -129,24 +134,39 @@ function ChallengeRoomCamera({ taskId, onSubmit, open, close }: Props) {
   }
 
   return (
-    <Dialog hidden={loading} open={open} onClose={close} PaperProps={{ sx: { width: canvasWidth, mr: 0, ml: 0 } }}>
-      <Stack display={takenPhoto === "" && allowed ? "flex" : "none"} alignItems="center" spacing={1} p={1}>
-        <canvas id="camera-canvas" />
-        <Button id="take-photo-btn" onClick={takePhotoHandler}>
-          {translation.inputs.buttons.takePicture}
+    <Dialog fullScreen hidden={loading} open={open} onClose={close} PaperProps={{ sx: { mr: 0, ml: 0 } }}>
+      <Box position="absolute" top={0} right={0}>
+        <Button sx={{ opacity: "70%" }} color="info" onClick={close} style={{ borderRadius: "50%", height: "5em", width: "5em", margin: "1em", padding: 0 }}>
+          <CloseIcon />
         </Button>
-      </Stack>
-      <Stack display={takenPhoto !== "" && allowed ? "flex" : "none"} alignItems="center" spacing={1} p={1}>
-        <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt={translation.imageAlts.cameraScreen} />
-        <TextField id="submission-description" label={translation.inputs.texts.description} value={submissionDesc} onChange={(e) => setSubmissionDesc(e.target.value)}></TextField>
-        <Button id="send-photo-btn" color="success" onClick={sendPhotoHandler}>
-          {translation.inputs.buttons.send}
-        </Button>
-        <Button id="decline-photo-btn" color="error" onClick={(e) => setTakenPhoto("")}>
-          {translation.inputs.buttons.retake}
-        </Button>
-      </Stack>
+      </Box>
       {!allowed && <div>{translation.texts.allowCameraAccess}</div>}
+      {allowed && (
+        <>
+          <Box display={takenPhoto !== "" ? "none" : "flex"} width="100%" height="100%">
+            <canvas width={canvasWidth} height={canvasHeight} id="camera-canvas" />
+            <Stack height={130} direction="row" position="absolute" bottom="0" width="100%" px={3} py={2} bgcolor="rgba(0,0,0,0.5)" justifyContent="space-around">
+              <Button variant="outlined" id="take-photo-btn" onClick={takePhotoHandler} style={{ borderRadius: "50%", height: "80px", width: "80px" }}>
+                <CameraAltIcon sx={{ width: 64, height: 64 }} />
+              </Button>
+            </Stack>
+          </Box>
+          <Box display={takenPhoto === "" ? "none" : "flex"}>
+            <img width={canvasWidth} height={canvasHeight} id="photo" src={takenPhoto} alt={translation.imageAlts.cameraScreen} />
+            <Stack height={130} direction="column" position="absolute" bottom="0" width="100%" px={3} py={2} bgcolor="rgba(0,0,0,0.5)" justifyContent="space-between" alignItems="center" gap={2}>
+              <TextField size="small" id="submission-description" label={translation.inputs.texts.description} value={submissionDesc} onChange={(e) => setSubmissionDesc(e.target.value)}></TextField>
+              <Stack direction="row" width="100%" gap={2}>
+                <Button id="send-photo-btn" color="success" onClick={sendPhotoHandler}>
+                  {translation.inputs.buttons.send}
+                </Button>
+                <Button id="decline-photo-btn" color="error" onClick={(e) => setTakenPhoto("")}>
+                  {translation.inputs.buttons.retake}
+                </Button>
+              </Stack>
+            </Stack>
+          </Box>
+        </>
+      )}
     </Dialog>
   )
 }
