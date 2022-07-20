@@ -2,6 +2,7 @@ import InfoIcon from "@mui/icons-material/Info"
 import SettingsIcon from "@mui/icons-material/Settings"
 import HomeIcon from "@mui/icons-material/Home"
 import ExpandIcon from "@mui/icons-material/ExpandMore"
+import CloseIcon from "@mui/icons-material/Close"
 import { Link } from "react-router-dom"
 import { Accordion, AccordionDetails, AccordionSummary, IconButton, Modal, Paper, Stack, Tooltip, Typography } from "@mui/material"
 import ExitButton from "./ExitButton"
@@ -10,14 +11,14 @@ import { useContext, useState } from "react"
 import LanguageContext from "./Context/LanguageContext"
 
 const paperStyle = {
-  position: "absolute",
-  top: "20%",
+  position: "fixed",
+  top: "5%",
   left: "50%",
-  transform: "translate(-50%, -50%)",
+  transform: "translate(-50%, 0)",
   width: 300,
   maxHeight: 500,
   overflow: "auto",
-  p: 1
+  p: 1,
 }
 
 interface Props {
@@ -28,8 +29,13 @@ interface Props {
 function SettingsHomeButtons({ isHomePage = false, isLoggedIn = false }: Props) {
   const [open, setOpen] = useState(false) // if true open settings page
   const [openTutorial, setOpenTutorial] = useState(false)
-  const handleChange = () => setOpen(!open)
+  const [tutorialPage, setTutorialPage] = useState<string>("")
+   const handleChange = () => setOpen(!open)
   const translation = useContext(LanguageContext)
+
+  const handleTutorial = (panel: string) => (event: React.SyntheticEvent, expanded: boolean) => {
+    setTutorialPage(expanded ? panel : "");
+  };
 
   return (
     <Stack direction="row" justifyContent="center" alignItems="center">
@@ -54,8 +60,13 @@ function SettingsHomeButtons({ isHomePage = false, isLoggedIn = false }: Props) 
       <Settings open={open} handleClose={handleChange} />
       <Modal open={openTutorial} onClose={() => setOpenTutorial(false)}>
         <Paper sx={paperStyle}>
-          <Typography variant="h4" component="h4">{translation.tutorial.title}</Typography>
-          <Accordion>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="h4" component="h4">{translation.tutorial.title}</Typography>
+            <IconButton id="close-tutorial" onClick={() => setOpenTutorial(false)}>
+              <CloseIcon/>
+            </IconButton>
+          </Stack>
+          <Accordion expanded={tutorialPage === "home"} onChange={handleTutorial("home")}>
             <AccordionSummary expandIcon={<ExpandIcon/>}>
               <Typography>{translation.tutorial.titles.home}</Typography>
             </AccordionSummary>
@@ -63,7 +74,7 @@ function SettingsHomeButtons({ isHomePage = false, isLoggedIn = false }: Props) 
               <Typography>{translation.tutorial.descriptions.home}</Typography>
             </AccordionDetails>
           </Accordion>
-          <Accordion>
+          <Accordion expanded={tutorialPage === "create"} onChange={handleTutorial("create")}>
             <AccordionSummary expandIcon={<ExpandIcon/>}>
               <Typography>{translation.tutorial.titles.createChallenge}</Typography>
             </AccordionSummary>
@@ -71,7 +82,7 @@ function SettingsHomeButtons({ isHomePage = false, isLoggedIn = false }: Props) 
               <Typography>{translation.tutorial.descriptions.createChallenge}</Typography>
             </AccordionDetails>
           </Accordion>
-          <Accordion>
+          <Accordion expanded={tutorialPage === "join"} onChange={handleTutorial("join")}>
             <AccordionSummary expandIcon={<ExpandIcon/>}>
               <Typography>{translation.tutorial.titles.joinChallenge}</Typography>
             </AccordionSummary>
@@ -79,7 +90,7 @@ function SettingsHomeButtons({ isHomePage = false, isLoggedIn = false }: Props) 
               <Typography>{translation.tutorial.descriptions.joinChallenge}</Typography>
             </AccordionDetails>
           </Accordion>
-          <Accordion>
+          <Accordion expanded={tutorialPage === "wait"} onChange={handleTutorial("wait")}>
             <AccordionSummary expandIcon={<ExpandIcon/>}>
               <Typography>{translation.tutorial.titles.waitingRoom}</Typography>
             </AccordionSummary>
@@ -87,7 +98,7 @@ function SettingsHomeButtons({ isHomePage = false, isLoggedIn = false }: Props) 
               <Typography>{translation.tutorial.descriptions.waitingRoom}</Typography>
             </AccordionDetails>
           </Accordion>
-          <Accordion>
+          <Accordion expanded={tutorialPage === "chlroom"} onChange={handleTutorial("chlroom")}>
             <AccordionSummary expandIcon={<ExpandIcon/>}>
               <Typography>{translation.tutorial.titles.challengeRoom}</Typography>
             </AccordionSummary>
