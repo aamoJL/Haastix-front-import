@@ -130,6 +130,23 @@ export interface Translation {
     closeCamera: string
     joinGame: string
     createGame: string
+  },
+  tutorial: {
+    title: string,
+    titles: {
+      home: string
+      createChallenge: string
+      joinChallenge: string
+      waitingRoom: string
+      challengeRoom: string
+    },
+    descriptions: {
+      home: string
+      createChallenge: string
+      joinChallenge: string
+      waitingRoom: string
+      challengeRoom: string
+    }
   }
 }
 
@@ -253,6 +270,23 @@ const finnish: Translation = {
     joinGame: "Huoneen koodi tai käyttäjänimi on väärin",
     createGame: "Osa tiedoista on väärin",
   },
+  tutorial: {
+    title: "Info",
+    titles: {
+      home: "Kotisivu",
+      createChallenge: "Luo haaste",
+      joinChallenge: "Liity haasteeseen",
+      waitingRoom: "Odotushuone",
+      challengeRoom: "Pelihuone",
+    },
+    descriptions: {
+      home: "Todo",
+      createChallenge: "Todo",
+      joinChallenge: "Todo",
+      waitingRoom: "Todo",
+      challengeRoom: "Todo",
+    }
+  }
 }
 
 const english: Translation = {
@@ -375,6 +409,23 @@ const english: Translation = {
     joinGame: "Room code or user name is invalid",
     createGame: "Some information is invalid",
   },
+  tutorial: {
+    title: "Info",
+    titles: {
+      home: "Home",
+      createChallenge: "Create game",
+      joinChallenge: "Join a game",
+      waitingRoom: "waiting room",
+      challengeRoom: "Challenge room",
+    },
+    descriptions: {
+      home: "Todo",
+      createChallenge: "Todo",
+      joinChallenge: "Todo",
+      waitingRoom: "Todo",
+      challengeRoom: "Todo",
+    }
+  }
 }
 
 /**
