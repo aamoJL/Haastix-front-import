@@ -36,6 +36,12 @@ const defaultRoomInfo: JoinChallengeSuccessResponse = {
   },
 }
 
+/**
+ * Component that renders form page to join an existing challenge room.
+ * This component will open websocket connection when the user joins a room,
+ * and all the other game views will be rendered inside this component,
+ * e.g. WaitingRoom
+ */
 function JoinChallenge() {
   const [currentSocket, setSocket] = useState<Socket | undefined>(undefined)
   const [info, setInfo] = useState<ChallengeRoomJoin>(defaultFormData) //form state
@@ -117,6 +123,9 @@ function JoinChallenge() {
       .catch((error) => alert(error))
   }
 
+  /**
+   * Sets avatar index to the next available index
+   */
   const avatarIndex = () => {
     if (emojiArray.length > userAvatar + 1) {
       setInfo((prevState) => ({
@@ -138,11 +147,13 @@ function JoinChallenge() {
   }
 
   useEffect(() => {
+    // Hide room code form errors when the code value changes
     setCodeWasNotValid(false)
     setOpenAlertRoomCode(false)
   }, [roomCode])
 
   useEffect(() => {
+    // Room code validation
     setOpenAlertUsername(false)
     if (roomCode.length === 4 && userName.length >= 3 && userName.length <= 30) setFormIsNotValid(false)
     else setFormIsNotValid(true)
@@ -189,7 +200,6 @@ function JoinChallenge() {
       currentSocket?.off("challengeModify")
       currentSocket?.off("gameStarted")
       currentSocket?.off("gamePauseChanged")
-      // currentSocket?.off("gmLeft")
     }
   })
 

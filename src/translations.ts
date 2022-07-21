@@ -1,7 +1,14 @@
+/**
+ * This file is used for all language translation and localization related functions.
+ */
+
+/**
+ * Type for different language selectors
+ */
 export type Language = "fi" | "en"
 
 /**
- * Interface for translated languages
+ * Interface for translated language objects
  */
 export interface Languages {
   fi: Translation
@@ -9,7 +16,7 @@ export interface Languages {
 }
 
 /**
- * Interface for translated text values
+ * Interface for translation object that contains all string values for texts
  */
 export interface Translation {
   titles: {
@@ -381,7 +388,7 @@ const english: Translation = {
 }
 
 /**
- * Object that contains all translations for all translated languages
+ * Object that contains translation objects for translation selectors
  */
 export const translations: Languages = {
   fi: finnish,
@@ -390,7 +397,7 @@ export const translations: Languages = {
 
 /**
  * Returns object with all translation strings
- * @param lang Language code
+ * @param lang Language selector
  * @returns translation object
  */
 export const getTranslation = (lang: keyof Languages) => {

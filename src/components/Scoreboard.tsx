@@ -34,7 +34,9 @@ const modalStyle: SxProps<Theme> = {
 }
 
 /**
- * Component that renders challenge room's scoreboard sorted by task completion time
+ * Component that renders challenge room's scoreboard sorted by task completion time.
+ * Clicking a player in the scoreboard table will pop up a modal
+ * that shows the player's submissions.
  * @param socket Socket.io socket connection
  */
 function Scoreboard({ socket, scores, timeIsUp, ...stackProps }: Props) {
@@ -87,6 +89,7 @@ function Scoreboard({ socket, scores, timeIsUp, ...stackProps }: Props) {
 
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, player: PlayerData) => {
     if (player.submissions.length > 0) {
+      // Open submissions modal only if the player has approved submissions
       if (selectedPlayer !== player && timeIsUp === true) {
         setModalLoading(true)
         setSelectedPhotoNumber(0)
@@ -110,7 +113,7 @@ function Scoreboard({ socket, scores, timeIsUp, ...stackProps }: Props) {
     setSelectedPhotoNumber(photoNumber)
   }
 
-  // Scoreboard item rows
+  // Scoreboard table row elements
   let scoreElements = scores.map((player, i) => {
     return (
       <TableRow id={`scoreboard-row-${i}`} hover key={player.playerName} onClick={(e) => handleRowClick(e, player)}>

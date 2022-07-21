@@ -7,11 +7,14 @@ interface Props {
   isGameEnded?: boolean
 }
 
+/**
+ * Component that renders Icon button to log the player out when pressed.
+ * Dialog will pop up when the player presses the button to confirm the action.
+ */
 const ExitButton = ({ isGameEnded = false }: Props) => {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
-
   const navigate = useNavigate()
 
   const exitChallengeRoom = () => {

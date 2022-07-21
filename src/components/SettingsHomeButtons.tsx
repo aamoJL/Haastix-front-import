@@ -12,6 +12,9 @@ interface Props {
   isLoggedIn?: boolean
 }
 
+/**
+ * Component that renders header buttons (e.g. home, disconnect, settings)
+ */
 function SettingsHomeButtons({ isHomePage = false, isLoggedIn = false }: Props) {
   const [open, setOpen] = useState(false) // if true open settings page
   const handleChange = () => setOpen(!open)

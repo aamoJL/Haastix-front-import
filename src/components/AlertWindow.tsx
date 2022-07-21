@@ -5,6 +5,11 @@ interface Props {
   message: String
 }
 
+/**
+ * Returns MUI Alert that will navigate to root when closed
+ * @param message message text
+ * @returns MUI alert
+ */
 function AlertWindow({ message }: Props) {
   const navigation = useNavigate()
 

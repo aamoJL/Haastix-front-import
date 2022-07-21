@@ -30,8 +30,6 @@ function ChallengeRoomCamera({ taskId, onSubmit, open, close }: Props) {
 
   let canvasHeight = window.innerHeight
   let canvasWidth = window.innerWidth
-  // window.innerWidth <= 768 ? (canvasWidth = window.innerWidth) : (canvasWidth = 500)
-  // window.innerHeight <= 768 ? (canvasHeight = window.innerHeight) : (canvasHeight = 500)
 
   /**
    * Updates camera image on video element
@@ -108,7 +106,6 @@ function ChallengeRoomCamera({ taskId, onSubmit, open, close }: Props) {
 
   const sendPhotoHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (takenPhoto !== "") {
-      // Convert current frame from the video canvas to png
       fetch(`${process.env.REACT_APP_API_URL}/challenge/sendfile`, {
         method: "POST",
         headers: {

@@ -1,10 +1,12 @@
 import { PaletteMode } from "@mui/material"
 
+/**
+ * Type for different status strings for file submissions.
+ */
 type fileStatus = "Not reviewed" | "Approved" | "Rejected" | "Not submitted"
 
 export interface Challenge {
   description: string
-  // challengeNumber?: number,
 }
 
 export interface ChallengeTask {
@@ -21,6 +23,9 @@ export interface ChallengeRoomData {
   isRandom: boolean
 }
 
+/**
+ * Interface for information used to joining rooms
+ */
 export interface ChallengeRoomJoin {
   userName: string
   roomCode: string
@@ -46,6 +51,9 @@ export interface NewChallengeRoomSuccessResponse {
   }
 }
 
+/**
+ * Interface for successfull response for joining room
+ */
 export interface JoinChallengeSuccessResponse {
   statusCode: number
   message: string
@@ -67,6 +75,9 @@ export interface JoinChallengeSuccessResponse {
   }
 }
 
+/**
+ * Interface for response when challenge has been modified
+ */
 export interface challengeModifyResponse {
   challengeRoomName: string
   challengeStartDate: string
@@ -75,17 +86,26 @@ export interface challengeModifyResponse {
   isRandom: boolean
 }
 
+/**
+ * Interface for response when game has been started manually by gamemaster
+ */
 export interface startGameResponse {
   challengeStartDate: string
   challengeEndDate: string
 }
 
+/**
+ * Interface for waiting room player
+ */
 export interface WaitingRoomList {
   name: string
   avatar: number
   userId: string
 }
 
+/**
+ * Interface for waiting room playerlist
+ */
 export interface WaitingRoomNewPlayer {
   players: WaitingRoomList[]
 }
@@ -121,6 +141,9 @@ export interface NewFileResponse {
   challengeFiles: ChallengeFile[]
 }
 
+/**
+ * Interface for {@link NewFileResponse}'s challengeFiles object
+ */
 export interface ChallengeFile {
   submissionId: string
   fileName: string
@@ -128,16 +151,6 @@ export interface ChallengeFile {
   challengeNumber: number
   taskDescription: string
   submissionDescription: string
-}
-
-/**
- * Response from "fetchfile" API call
- */
-export interface FetchFileResponse {
-  FILE: string
-  statusCode: number
-  error?: string
-  message: string
 }
 
 /**
@@ -166,11 +179,17 @@ export interface PlayerData {
   totalTime: number
 }
 
+/**
+ * Response from "youWereRemoved" socket
+ */
 export interface YouWereRemovedResponse {
   statusCode: number
   message: string
 }
 
+/**
+ * Response from "playerFileStatuses" socket
+ */
 export interface PlayerFileStatusesResponse {
   statusCode: number
   submissions: {
@@ -180,17 +199,26 @@ export interface PlayerFileStatusesResponse {
   }[]
 }
 
+/**
+ * Response from "gmLeft" socket
+ */
 export interface GameEndResponce {
   message: string
   isActive: boolean
 }
 
+/**
+ * Interface for MaterialUI theme variables
+ */
 export interface ThemeVariables {
   color: string
   mode: PaletteMode
   style: string
 }
 
+/**
+ * Response from "gamePauseChanged" socket
+ */
 export interface GamePausedChangedResponse {
   statusCode: number
   message: string
