@@ -3,8 +3,9 @@ import SettingsIcon from "@mui/icons-material/Settings"
 import HomeIcon from "@mui/icons-material/Home"
 import ExpandIcon from "@mui/icons-material/ExpandMore"
 import CloseIcon from "@mui/icons-material/Close"
+import Next from "@mui/icons-material/NavigateNext"
 import { Link } from "react-router-dom"
-import { Accordion, AccordionDetails, AccordionSummary, IconButton, Modal, Paper, Stack, Tooltip, Typography } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, List, ListItem, ListItemIcon, ListItemText, Modal, Paper, Stack, Tooltip, Typography } from "@mui/material"
 import ExitButton from "./ExitButton"
 import Settings from "./Settings"
 import { useContext, useState } from "react"
@@ -15,8 +16,8 @@ const paperStyle = {
   top: "5%",
   left: "50%",
   transform: "translate(-50%, 0)",
-  width: 300,
-  maxHeight: 500,
+  width: window.innerWidth <= 768 ? window.innerWidth : 500,
+  maxHeight: window.innerHeight <= 900 ? "70%" : 600,
   overflow: "auto",
   p: 1,
 }
@@ -30,12 +31,12 @@ function SettingsHomeButtons({ isHomePage = false, isLoggedIn = false }: Props) 
   const [open, setOpen] = useState(false) // if true open settings page
   const [openTutorial, setOpenTutorial] = useState(false)
   const [tutorialPage, setTutorialPage] = useState<string>("")
-   const handleChange = () => setOpen(!open)
+  const handleChange = () => setOpen(!open)
   const translation = useContext(LanguageContext)
 
   const handleTutorial = (panel: string) => (event: React.SyntheticEvent, expanded: boolean) => {
-    setTutorialPage(expanded ? panel : "");
-  };
+    setTutorialPage(expanded ? panel : "")
+  }
 
   return (
     <Stack direction="row" justifyContent="center" alignItems="center">
@@ -61,49 +62,45 @@ function SettingsHomeButtons({ isHomePage = false, isLoggedIn = false }: Props) 
       <Modal open={openTutorial} onClose={() => setOpenTutorial(false)}>
         <Paper sx={paperStyle}>
           <Stack direction="row" justifyContent="space-between">
-            <Typography variant="h4" component="h4">{translation.tutorial.title}</Typography>
+            <Typography variant="h4" component="h4">
+              {translation.tutorial.title}
+            </Typography>
             <IconButton id="close-tutorial" onClick={() => setOpenTutorial(false)}>
-              <CloseIcon/>
+              <CloseIcon />
             </IconButton>
           </Stack>
-          <Accordion expanded={tutorialPage === "home"} onChange={handleTutorial("home")}>
-            <AccordionSummary expandIcon={<ExpandIcon/>}>
-              <Typography>{translation.tutorial.titles.home}</Typography>
+          <Accordion expanded={tutorialPage === "gm"} onChange={handleTutorial("gm")}>
+            <AccordionSummary expandIcon={<ExpandIcon />}>
+              <Typography>{translation.tutorial.titles.gameMaster}</Typography>
             </AccordionSummary>
-            <AccordionDetails>            
-              <Typography>{translation.tutorial.descriptions.home}</Typography>
+            <AccordionDetails>
+              <List>
+                {translation.tutorial.descriptions.gameMaster.map((value, i) => (
+                  <ListItem key={i}>
+                    <ListItemIcon>
+                      <Next />
+                    </ListItemIcon>
+                    <ListItemText>{value}</ListItemText>
+                  </ListItem>
+                ))}
+              </List>
             </AccordionDetails>
           </Accordion>
-          <Accordion expanded={tutorialPage === "create"} onChange={handleTutorial("create")}>
-            <AccordionSummary expandIcon={<ExpandIcon/>}>
-              <Typography>{translation.tutorial.titles.createChallenge}</Typography>
+          <Accordion expanded={tutorialPage === "player"} onChange={handleTutorial("player")}>
+            <AccordionSummary expandIcon={<ExpandIcon />}>
+              <Typography>{translation.tutorial.titles.player}</Typography>
             </AccordionSummary>
-            <AccordionDetails>            
-              <Typography>{translation.tutorial.descriptions.createChallenge}</Typography>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion expanded={tutorialPage === "join"} onChange={handleTutorial("join")}>
-            <AccordionSummary expandIcon={<ExpandIcon/>}>
-              <Typography>{translation.tutorial.titles.joinChallenge}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>            
-              <Typography>{translation.tutorial.descriptions.joinChallenge}</Typography>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion expanded={tutorialPage === "wait"} onChange={handleTutorial("wait")}>
-            <AccordionSummary expandIcon={<ExpandIcon/>}>
-              <Typography>{translation.tutorial.titles.waitingRoom}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>            
-              <Typography>{translation.tutorial.descriptions.waitingRoom}</Typography>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion expanded={tutorialPage === "chlroom"} onChange={handleTutorial("chlroom")}>
-            <AccordionSummary expandIcon={<ExpandIcon/>}>
-              <Typography>{translation.tutorial.titles.challengeRoom}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>            
-              <Typography>{translation.tutorial.descriptions.challengeRoom}</Typography>
+            <AccordionDetails>
+              <List>
+                {translation.tutorial.descriptions.player.map((value, i) => (
+                  <ListItem key={i}>
+                    <ListItemIcon>
+                      <Next />
+                    </ListItemIcon>
+                    <ListItemText>{value}</ListItemText>
+                  </ListItem>
+                ))}
+              </List>
             </AccordionDetails>
           </Accordion>
         </Paper>

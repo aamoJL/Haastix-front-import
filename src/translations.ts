@@ -130,22 +130,16 @@ export interface Translation {
     closeCamera: string
     joinGame: string
     createGame: string
-  },
+  }
   tutorial: {
-    title: string,
+    title: string
     titles: {
-      home: string
-      createChallenge: string
-      joinChallenge: string
-      waitingRoom: string
-      challengeRoom: string
-    },
+      gameMaster: string
+      player: string
+    }
     descriptions: {
-      home: string
-      createChallenge: string
-      joinChallenge: string
-      waitingRoom: string
-      challengeRoom: string
+      gameMaster: string[]
+      player: string[]
     }
   }
 }
@@ -224,7 +218,7 @@ const finnish: Translation = {
     taskNumber: "Haasteen numero",
     message: "Viesti",
     randomTasks: "Sekoita haasteiden järjestys",
-    gameIsPaused: "Peli on pysäytetty"
+    gameIsPaused: "Peli on pysäytetty",
   },
   tables: {
     name: "Nimi",
@@ -271,22 +265,36 @@ const finnish: Translation = {
     createGame: "Osa tiedoista on väärin",
   },
   tutorial: {
-    title: "Info",
+    title: "Peli ohjeet",
     titles: {
-      home: "Kotisivu",
-      createChallenge: "Luo haaste",
-      joinChallenge: "Liity haasteeseen",
-      waitingRoom: "Odotushuone",
-      challengeRoom: "Pelihuone",
+      gameMaster: "Pelimestari",
+      player: "Pelaaja",
     },
     descriptions: {
-      home: "Todo",
-      createChallenge: "Todo",
-      joinChallenge: "Todo",
-      waitingRoom: "Todo",
-      challengeRoom: "Todo",
-    }
-  }
+      gameMaster: [
+        "Paina luo peli painiketta kotisivulla.",
+        "Täytä Luo peli sivun tiedot ja luo peli.",
+        "Anna odotushuoneessa oleva avain iconin vieressä oleva koodi pelaajille.",
+        "Odota, että pelaajat liittyvät peliin",
+        "Odotellessa haasteet painiketta painamalla pääset näkemään ja muokkaamaan haasteita.",
+        "Peli alkaa kun aika loppuu tai aloita peli painiketta painamalla",
+        "Pelihuoneessa odota, että pelaajat alkavat lähettää kuvia hyväksyttäväksi",
+        "Hyväksy tai hylkää pelaajien kuvat. Halutessasi voit antaa kommentin miksi hylkäsit kuvan",
+        "Arvostele pelaajien kuvia kunnes kaikki ovat suorittaneet haasteet tai kunnes aika loppuu",
+      ],
+      player: [
+        "Paina liity peliin painiketta kotisivulla",
+        "Pyydä pelimestarilta huoneen koodi",
+        "Odota, että pelimestari aloittaa pelin tai odotus aika loppuu",
+        "Ota kuva haasteen mukaisesta asiasta. Halutessasi voit antaa pelimestarille pelostuksen, mitä kuvassa on",
+        "Odota, että pelimestari hyväksyy tai hylkää kuvan",
+        "Jos kuva hylättiin ota uusi parempi kuva",
+        "Jos kuva hyväksyttiin jatka seuraavaan haasteeseen",
+        "Suorita haasteita kunnes kaikki haasteet on suoritettu tai aika loppuu",
+        "Katso taulukosta tulokset pelin lopuksi",
+      ],
+    },
+  },
 }
 
 const english: Translation = {
@@ -363,7 +371,7 @@ const english: Translation = {
     taskNumber: "Task number",
     message: "Message",
     randomTasks: "Randomise task order",
-    gameIsPaused: "The game has been paused"
+    gameIsPaused: "The game has been paused",
   },
   tables: {
     name: "Name",
@@ -410,22 +418,36 @@ const english: Translation = {
     createGame: "Some information is invalid",
   },
   tutorial: {
-    title: "Info",
+    title: "How to play",
     titles: {
-      home: "Home",
-      createChallenge: "Create game",
-      joinChallenge: "Join a game",
-      waitingRoom: "waiting room",
-      challengeRoom: "Challenge room",
+      gameMaster: "Gamemaster",
+      player: "Player",
     },
     descriptions: {
-      home: "Todo",
-      createChallenge: "Todo",
-      joinChallenge: "Todo",
-      waitingRoom: "Todo",
-      challengeRoom: "Todo",
-    }
-  }
+      gameMaster: [
+        "Press create a challenge button on the homepage",
+        "Fill the form in the create game page",
+        "Give the code located next to a key icon to the players",
+        "Wait that all the players join the room",
+        "While waiting you can view and edit the challenges by pressing the challenges button",
+        "Game starts when time runs out or you can start the game by pressing the start the game button",
+        "In the challenge room wait that the players start sending in submissions",
+        "Accept or decline the submission. You can comment why you declined a photo if you like",
+        "Review the submissions until all players have done the challenges or until the time runs out",
+      ],
+      player: [
+        "Press join a challenge button on the homepage",
+        "Ask the gamemaster for the room code",
+        "Wait that the gamemaster starts the game or the waiting time ends",
+        "Take a photo of a thing that the challenge describes",
+        "Wait that the gamemaster accepts or declines your submission",
+        "If your photo was declined take a new better photo",
+        "If your photo was accepted continue to the next challenge",
+        "Complete challenges until all of them are done or the time runs out",
+        "Checkout the scores from the scoreboard",
+      ],
+    },
+  },
 }
 
 /**
