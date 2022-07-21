@@ -106,7 +106,6 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
   const [reviewResponse, setReviewResponse] = useState("") // GM's review message
   const [reviewDescriptionInput, setReviewDescriptionInput] = useState("")
   const translation = useContext(LanguageContext)
-  
   const [randomTasks] = useState<number[]>(sessionStorage.getItem("taskOrder") !== null ? JSON.parse(sessionStorage.getItem("taskOrder")!) : getTaskOrder)
   const initTasks = useRef(true) // Used to not show task alerts on page refresh
   const currentSubmissionFileName = useRef<ChallengeFile>()
@@ -271,7 +270,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
     if (isGameMaster) {
       // Add new submissions to this component's state
       socket?.on("newFile", (dataResponse: NewFileResponse) => {
-        if(dataResponse.challengeFiles.length > prevUnReviewedFiledLength.current) {
+        if (dataResponse.challengeFiles.length > prevUnReviewedFiledLength.current) {
           playNotification()
         }
         if (dataResponse.statusCode === 200) {
@@ -310,7 +309,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
   }
 
   useEffect(() => {
-    if(timeIsUp === true) {
+    if (timeIsUp === true) {
       playNotification()
     }
   }, [timeIsUp, playNotification])
@@ -429,7 +428,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
               </Box>
               {/* Image */}
               <Stack sx={{ width: "100%", height: "100%", maxWidth: 500 }} position="absolute" spacing={1} alignSelf="center">
-                <img style={{ objectFit: "contain", width: "100%", height: "100%" }} id="current-unreviewed-img" src={currentSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
+                <img style={{ objectPosition: "top center", objectFit: "contain", width: "100%", height: "100%" }} id="current-unreviewed-img" src={currentSubmissionPhoto} alt={translation.imageAlts.reviewingPhoto} />
               </Stack>
               {/* Bottom */}
               <Stack position="absolute" bottom={0} direction="column" width="100%" px={3} py={2} bgcolor="rgba(0,0,0,0.5)" alignItems="center">
