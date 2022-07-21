@@ -194,6 +194,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       // Game is not paused
       if (edit && showChallenges) {
         // Pause the game if edit form is visible
+        setStartGame(false)
         pauseDateRef.current = Date.now()
         socket?.emit("pauseGame", {
           token: roomInfo.details.token,
@@ -331,7 +332,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
 
           {isGameMaster && (
             <>
-              <Button color={startGame ? "warning" : "primary"} sx={{ width: "auto", minWidth: 200 }} id="start-game-btn" onClick={handleStartGame}>
+              <Button disabled={roomInfo.details.isPaused} color={startGame ? "warning" : "primary"} sx={{ width: "auto", minWidth: 200 }} id="start-game-btn" onClick={handleStartGame}>
                 {startGame ? `${translation.inputs.buttons.cancel} (${timer})` : `${translation.inputs.buttons.start}`}
               </Button>
               <ButtonGroup>
