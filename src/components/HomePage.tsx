@@ -9,6 +9,10 @@ interface Props {
   palette: Palette
 }
 
+/**
+ * Component that will be rendered when the route has been set to "/"
+ * Renders buttons to join or create a challenge room.
+ */
 function HomePage({ palette }: Props) {
   const translation = useContext(LanguageContext)
 

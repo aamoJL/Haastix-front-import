@@ -1,19 +1,7 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Collapse,
-  IconButton,
-  Modal,
-  Stack,
-  SxProps,
-  TextField,
-  Theme,
-  Typography,
-} from "@mui/material";
-import React, { useContext, useState } from "react";
-import LanguageContext from "./Context/LanguageContext";
-import CloseIcon from "@mui/icons-material/Close";
+import { Alert, Box, Button, Collapse, IconButton, Modal, Stack, SxProps, TextField, Theme, Typography } from "@mui/material"
+import React, { useContext, useState } from "react"
+import LanguageContext from "./Context/LanguageContext"
+import CloseIcon from "@mui/icons-material/Close"
 
 const modalStyle: SxProps<Theme> = {
   position: "absolute" as "absolute",
@@ -25,24 +13,24 @@ const modalStyle: SxProps<Theme> = {
   boxShadow: 24,
   borderRadius: 1,
   p: 4,
-};
+}
 
 interface Props {
-  open: boolean;
-  onClose?: () => void;
+  open: boolean
+  onClose?: () => void
 }
 
 /**
  * Modal that shows feedback form to send feedback.
  */
 function FeedbackModal({ open, onClose }: Props) {
-  const [feedbackText, setFeedbackText] = useState("");
-  const [showLengthAlert, setShowLengthAlert] = useState(false);
-  const translation = useContext(LanguageContext);
+  const [feedbackText, setFeedbackText] = useState("")
+  const [showLengthAlert, setShowLengthAlert] = useState(false)
+  const translation = useContext(LanguageContext)
 
   const sendEmail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (feedbackText.length < 10) {
-      setShowLengthAlert(true);
+      setShowLengthAlert(true)
     } else {
       fetch(`${process.env.REACT_APP_API_URL}/feedback/send`, {
         method: "POST",
@@ -56,15 +44,15 @@ function FeedbackModal({ open, onClose }: Props) {
         .then((res) => res.json())
         .then((res) => {
           if (res.statusCode === 200) {
-            setFeedbackText("");
-            onClose && onClose();
+            setFeedbackText("")
+            onClose && onClose()
           } else {
-            throw Error(res.message);
+            throw Error(res.message)
           }
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error))
     }
-  };
+  }
 
   return (
     <Modal open={open} disableAutoFocus onClose={onClose}>
@@ -79,7 +67,7 @@ function FeedbackModal({ open, onClose }: Props) {
                 id="close-alert-btn"
                 aria-label="close-alert"
                 onClick={() => {
-                  setShowLengthAlert(false);
+                  setShowLengthAlert(false)
                 }}
               >
                 <CloseIcon fontSize="small" />
@@ -96,8 +84,8 @@ function FeedbackModal({ open, onClose }: Props) {
             multiline
             rows={4}
             onChange={(e) => {
-              setFeedbackText(e.target.value);
-              setShowLengthAlert(false);
+              setFeedbackText(e.target.value)
+              setShowLengthAlert(false)
             }}
             value={feedbackText}
           />
@@ -110,7 +98,7 @@ function FeedbackModal({ open, onClose }: Props) {
         </Button>
       </Stack>
     </Modal>
-  );
+  )
 }
 
-export default FeedbackModal;
+export default FeedbackModal

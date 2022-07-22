@@ -25,6 +25,10 @@ interface SegmentedTime {
   seconds: number
 }
 
+/**
+ * Component that will render game room's information before the game starts.
+ * The game view after the game starts will be rendered inside this component
+ */
 function WaitingRoom({ roomInfo, socket }: Props) {
   /**
    * Returns object with segmented time between now and end date
@@ -82,6 +86,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   }
 
   useEffect(() => {
+    // Some sound initialization things...
     document.addEventListener("click", () => {
       if (audioPlayer.current !== null && initClick === false) {
         setInitClick(true)
@@ -107,6 +112,7 @@ function WaitingRoom({ roomInfo, socket }: Props) {
   })
 
   useEffect(() => {
+    // Game left counter
     const interval = setInterval(() => {
       if (roomInfo.details.isPaused) {
         return // Disable clock if the game is paused
@@ -137,8 +143,6 @@ function WaitingRoom({ roomInfo, socket }: Props) {
     socket?.on("newPlayer", (data: WaitingRoomNewPlayer) => {
       // set players from data to players
       setPlayerArray(data.players)
-      // set loading false
-      // setLoading(false);
     })
 
     socket?.on("youWereRemoved", (data: YouWereRemovedResponse) => {
@@ -160,10 +164,6 @@ function WaitingRoom({ roomInfo, socket }: Props) {
       }
     })
 
-    // get token
-    // getToken();
-    // toggle loadingscreen
-    // setLoading(false);
     return () => {
       // Clear socket.io Listeners , newPlayer
       socket?.off("newPlayer")

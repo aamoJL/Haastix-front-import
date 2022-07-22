@@ -1,3 +1,6 @@
+/**
+ * List of player avatar image paths
+ */
 export var emojiArray = [
   require("../../assets/player_emojies/002-cool-5.png"),
   require("../../assets/player_emojies/003-happy-17.png"),
@@ -10,6 +13,11 @@ export var emojiArray = [
   require("../../assets/player_emojies/098-nerd-9.png"),
 ]
 
+/**
+ * Returns given player avatar's image path
+ * @param playerAvatar avatar index
+ * @returns path string to avatar image
+ */
 export const getEmojiImage = (playerAvatar: number) => {
   try {
     return emojiArray[playerAvatar]

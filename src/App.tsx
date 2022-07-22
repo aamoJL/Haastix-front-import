@@ -11,18 +11,16 @@ import LanguageContext from "./components/Context/LanguageContext"
 import FeedbackModal from "./components/FeedbackModal"
 import { ThemeVariables } from "./interfaces"
 
-
 const App = () => {
   const prefersDark = useMediaQuery("(prefers-color-scheme: dark)")
-  
   const defaultTheme: ThemeVariables = {
     color: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).color : "green",
-    mode: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).mode as PaletteMode : prefersDark ? "dark" : "light",
-    style: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).style : "1"
+    mode: localStorage.getItem("theme") !== null ? (JSON.parse(localStorage.getItem("theme")!).mode as PaletteMode) : prefersDark ? "dark" : "light",
+    style: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).style : "1",
   }
   const [translation, setTranslation] = useState<Translation>(getTranslation(localStorage.getItem("language") === null ? "en" : (localStorage.getItem("language") as Language)))
   const [themeOptions, setThemeOptions] = useState<ThemeVariables>(defaultTheme)
-  const {color, mode, style} = themeOptions
+  const { color, mode, style } = themeOptions
   const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   if (localStorage.getItem("theme") === null && themeOptions !== null) localStorage.setItem("theme", JSON.stringify(themeOptions))
@@ -41,6 +39,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
+    // Subscribe to theme change event
     function event() {
       setThemeOptions(JSON.parse(localStorage.getItem("theme")!))
     }

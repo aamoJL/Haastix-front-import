@@ -24,19 +24,18 @@ interface Props {
 const defaultTheme: ThemeVariables = {
   color: "green",
   mode: "dark",
-  style: "1"
+  style: "1",
 }
 
+/**
+ * Component that will render application settings (e.g. language, theme) inside a modal.
+ */
 const Settings = (props: Props) => {
   const [theme, setTheme] = useState<ThemeVariables>(localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!) : defaultTheme)
-  const {color, mode, style} = theme
+  const { color, mode, style } = theme
   const [muted, setMuted] = useState(localStorage.getItem("muted") !== null ? JSON.parse(localStorage.getItem("muted")!) : false) //toggle sound
   const [language, setLanguge] = useState<Language>(localStorage.getItem("language") === null ? "en" : (localStorage.getItem("language") as Language)) //toggle language
   const [translation, setTranslation] = useState<Translation>(getTranslation(language))
-
-  // const handleTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setTheme((event.target as HTMLInputElement).value)
-  // }
 
   /**
    * Event handler for language switch, sets localstorage languge value to selected language
@@ -56,21 +55,21 @@ const Settings = (props: Props) => {
     let themeMode: PaletteMode = checked ? "dark" : "light"
     setTheme((prevMode) => ({
       ...prevMode,
-      mode: themeMode
+      mode: themeMode,
     }))
   }
 
   const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTheme((prevState) => ({
       ...prevState,
-      color: (event.target as HTMLInputElement).value
+      color: (event.target as HTMLInputElement).value,
     }))
   }
 
   const handleStyleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTheme((prevState) => ({
       ...prevState,
-      style: (event.target as HTMLInputElement).value
+      style: (event.target as HTMLInputElement).value,
     }))
   }
 
@@ -79,12 +78,12 @@ const Settings = (props: Props) => {
     document.dispatchEvent(new Event("theme-change"))
   }, [theme])
 
-  const handleSoundChange = ((event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+  const handleSoundChange = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     const muteSound = checked ? false : true
     setMuted(muteSound)
     localStorage.setItem("muted", JSON.stringify(muteSound))
     document.dispatchEvent(new Event("sound-change"))
-  })
+  }
 
   return (
     <Modal open={props.open} onClose={props.handleClose}>
@@ -99,8 +98,26 @@ const Settings = (props: Props) => {
           <FormControl>
             <FormLabel>{translation.titles.theme}</FormLabel>
             <RadioGroup id="color" row value={color} onChange={handleColorChange}>
-              <FormControlLabel id="theme1" value={"green"} control={<Radio />} label={<Icon sx={{color: mode === "dark" as PaletteMode ? "#00cc92" : "#32b38e"}}><Square/></Icon>} />
-              <FormControlLabel id="theme2" value={"red"} control={<Radio />} label={<Icon sx={{color: mode === "dark" as PaletteMode ? "#fc0303" : "#9e0001"}}><Square/></Icon>} />
+              <FormControlLabel
+                id="theme1"
+                value={"green"}
+                control={<Radio />}
+                label={
+                  <Icon sx={{ color: mode === ("dark" as PaletteMode) ? "#00cc92" : "#32b38e" }}>
+                    <Square />
+                  </Icon>
+                }
+              />
+              <FormControlLabel
+                id="theme2"
+                value={"red"}
+                control={<Radio />}
+                label={
+                  <Icon sx={{ color: mode === ("dark" as PaletteMode) ? "#fc0303" : "#9e0001" }}>
+                    <Square />
+                  </Icon>
+                }
+              />
             </RadioGroup>
             <FormLabel>{translation.titles.style}</FormLabel>
             <RadioGroup id="style" row value={style} onChange={handleStyleChange}>

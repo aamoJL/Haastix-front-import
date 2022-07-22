@@ -13,6 +13,10 @@ interface Props {
   collapseProps?: CollapseProps
 }
 
+/**
+ * Component that renders table of challenge room players for gamemaster's view
+ * Table items will have Remove button to remove the item's player from the game.
+ */
 function RemovePlayer({ socket, roomInfo, playerArray, open, ...collapseProps }: Props) {
   const translation = useContext(LanguageContext)
 

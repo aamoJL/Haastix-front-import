@@ -65,7 +65,6 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
    * Shuffles given array of numbers using Durstenfeld shuffle
    * @param array array you want to shuffle
    */
-
   const shuffle = (array: number[]) => {
     for (let i = array.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1))
@@ -75,6 +74,11 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
     }
   }
 
+  /**
+   * Returns player's tark order,
+   * The order is randomized if the room is set to have random task order.
+   * @returns Array of task numbers
+   */
   const getTaskOrder = () => {
     let taskNumbers = roomInfo.details.challengeTasks.map((task) => {
       return task.taskNumber
@@ -107,10 +111,8 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
   const [reviewDescriptionInput, setReviewDescriptionInput] = useState("")
   const translation = useContext(LanguageContext)
   const [randomTasks] = useState<number[]>(sessionStorage.getItem("taskOrder") !== null ? JSON.parse(sessionStorage.getItem("taskOrder")!) : getTaskOrder)
-  const initTasks = useRef(true) // Used to not show task alerts on page refresh
   const currentSubmissionFileName = useRef<ChallengeFile>()
   const prevUnReviewedFiledLength = useRef<number>(0)
-  // const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     prevUnReviewedFiledLength.current = unReviewedSubmissions.length
@@ -121,18 +123,15 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
       token: sessionStorage.getItem("token"),
     })
     socket?.on("finalScore_update", (res: PlayerData[]) => {
-      // setPlayersDoneCount(res.length);
       if (res != null) {
         let tasksDoneCounter = 0
         if (res.length !== 0) {
           res.map((value) => (tasksDoneCounter = +value.submissions.length + tasksDoneCounter))
-
           //Game end when everyone done all tasks
           if (tasksDoneCounter === roomInfo.details.challengeTasks.length * res.length) {
             setTimeIsUp(true)
           }
         }
-
         let players = res
         // Sort players by time
         players.sort((a, b) => {
@@ -160,6 +159,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
   })
 
   useEffect(() => {
+    // Get image file for submission that is currently in review.
     if (unReviewedSubmissions.length === 0) {
       setCurrentSubmissionPhoto("")
       setShowSubmissions(false)
@@ -185,7 +185,6 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
     }
   }, [unReviewedSubmissions])
 
-  // Game time timer
   useEffect(() => {
     // Game time timer
     const interval = setInterval(() => {
@@ -199,7 +198,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
       }
     }, 1000)
 
-    // Player
+    // Player sockets
     if (!isGameMaster) {
       // Get file status response when currentTaskNumber changes or file status changes
       socket?.on("fileStatusPlayer", (dataResponse: FileStatusPlayerResponse) => {
@@ -235,6 +234,8 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
         }
       })
 
+      // Find what is the last task that the player has submitted photo to
+      // and set current task to be the next task if the last task was accepted
       socket?.on("playerFileStatuses", (dataResponse: PlayerFileStatusesResponse) => {
         if (dataResponse.statusCode === 200) {
           if (dataResponse.submissions.length === 0) {
@@ -263,12 +264,13 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
         }
       })
 
+      // Request player task submission statuses
       socket?.emit("fetchPlayerFileStatuses", {
         token: roomInfo?.details.token,
       })
     }
 
-    // Gamemaster
+    // Gamemaster sockets
     if (isGameMaster) {
       // Add new submissions to this component's state
       socket?.on("newFile", (dataResponse: NewFileResponse) => {
@@ -294,6 +296,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
   }, [roomInfo])
 
   const handleReview = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, isAccepted: boolean) => {
+    // Send submission review socket
     if (unReviewedSubmissions[0] !== undefined) {
       setReviewDescriptionInput("")
       socket?.emit("approveFile", {
@@ -305,9 +308,6 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
         },
       })
     }
-    //  socket?.emit("listFiles", {
-    //   token: roomInfo?.details.token,
-    // })
   }
 
   useEffect(() => {

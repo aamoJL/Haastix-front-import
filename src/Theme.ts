@@ -1,5 +1,12 @@
 import { createTheme, PaletteMode } from "@mui/material"
 
+/**
+ * MaterialUI user interface theme templates.
+ * @param mode Light or dark color palette
+ * @param color Color palette
+ * @param style Index number for user interface element styles, e.g. outlined or contained buttons
+ * @returns theme
+ */
 const makeTheme = (mode: PaletteMode, color: string, style: string) => {
   let theme = createTheme()
   //Switch different colors

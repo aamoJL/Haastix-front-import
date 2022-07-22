@@ -16,8 +16,10 @@ const paperStyle = {
   top: "5%",
   left: "50%",
   transform: "translate(-50%, 0)",
-  width: window.innerWidth <= 768 ? window.innerWidth : 500,
-  maxHeight: window.innerHeight <= 900 ? "70%" : 600,
+  width: "100%",
+  maxWidth: 500,
+  height: "70%",
+  maxHeight: 900,
   overflow: "auto",
   p: 1,
 }
@@ -27,6 +29,9 @@ interface Props {
   isLoggedIn?: boolean
 }
 
+/**
+ * Component that renders header buttons (e.g. home, disconnect, settings)
+ */
 function SettingsHomeButtons({ isHomePage = false, isLoggedIn = false }: Props) {
   const [open, setOpen] = useState(false) // if true open settings page
   const [openTutorial, setOpenTutorial] = useState(false)

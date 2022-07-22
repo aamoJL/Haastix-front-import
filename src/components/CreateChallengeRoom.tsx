@@ -7,7 +7,6 @@ import SettingsHomeButtons from "./SettingsHomeButtons"
 import LanguageContext from "./Context/LanguageContext"
 
 // Form validation variables
-// required values from: https://gitlab.labranet.jamk.fi/wimmalab2021/iotitude/source-backend/-/blob/master/documents/restApiRoutesDocuments/newChallenge.md
 const formValidation = {
   minTaskCount: 1,
   maxTaskCount: 20,
@@ -32,6 +31,9 @@ const defaultFormData: ChallengeRoomData = {
   isRandom: false,
 }
 
+/**
+ * Components that renders form page to create new challenge rooms
+ */
 function CreateChallengeRoom() {
   const [formData, setFormData] = useState<ChallengeRoomData>(defaultFormData)
   const { roomName, challenges, delay, time, isRandom } = formData
@@ -128,7 +130,6 @@ function CreateChallengeRoom() {
   /**
    * Generic numeral input change handler with value clamping
    * @param e event
-   * @param min input's min value
    * @param max input's max value
    */
   const handleNumInputChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, max?: number) => {
@@ -196,8 +197,6 @@ function CreateChallengeRoom() {
       if (error) {
         return false
       }
-      // Set challenge numbers
-      // challenge.challengeNumber = i;
       return true
     })
 
@@ -262,7 +261,6 @@ function CreateChallengeRoom() {
     if (roomNameError && e.target.value.length >= formValidation.minNameLength && e.target.value.length <= formValidation.maxNameLength) {
       setRoomNameError(false)
     }
-
     onChange(e)
   }
 
@@ -271,7 +269,6 @@ function CreateChallengeRoom() {
     let task = challenges[i]
     let newErrorArray = taskErrors
     newErrorArray[i] = task.description.length > formValidation.maxTaskDescription || task.description.length < formValidation.minTaskDescription
-
     setTaskErrors([...newErrorArray])
   }
 

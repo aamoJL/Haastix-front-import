@@ -1,3 +1,7 @@
+/**
+ * This file is used to initialize socket.io connection settings.
+ */
+
 import socketIOClient from "socket.io-client"
 
 const websocketEndpoint = `${process.env.REACT_APP_WEBSOCKET_ENDPOINT}`
