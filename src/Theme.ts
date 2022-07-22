@@ -184,6 +184,21 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
               },
             },
           },
+          MuiAccordion: {
+            defaultProps: {
+              disableGutters: true,
+              sx: {
+                border: `1px solid ${theme.palette.divider}`,
+              },
+            },
+          },
+          MuiAccordionDetails: {
+            defaultProps: {
+              sx: {
+                backgroundColor: theme.palette.mode === "dark" ? "#191919" : "#e4e4e4",
+              },
+            },
+          },
         },
       })
       break
@@ -270,6 +285,11 @@ const makeTheme = (mode: PaletteMode, color: string, style: string) => {
                 color: theme.palette.primary.contrastText,
                 borderBottomColor: theme.palette.primary.contrastText,
               },
+            },
+          },
+          MuiAccordion: {
+            defaultProps: {
+              disableGutters: true,
             },
           },
         },
