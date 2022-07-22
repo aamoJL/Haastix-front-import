@@ -5,7 +5,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import CreateChallengeRoom from "./components/CreateChallengeRoom"
 import HomePage from "./components/HomePage"
 import JoinChallenge from "./components/JoinChallenge"
-import NotFound from "./components/NotFound"
 import makeTheme from "./Theme"
 import { getTranslation, Language, Translation } from "./translations"
 import LanguageContext from "./components/Context/LanguageContext"
@@ -64,7 +63,6 @@ const App = () => {
               <Route path="/" element={<HomePage palette={theme.palette} />} />
               <Route path="game" element={<JoinChallenge />} />
               <Route path="create" element={<CreateChallengeRoom />} />
-              <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
           <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />

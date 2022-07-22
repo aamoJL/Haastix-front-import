@@ -132,6 +132,17 @@ export interface Translation {
     joinGame: string
     createGame: string
   }
+  tutorial: {
+    title: string
+    titles: {
+      gameMaster: string
+      player: string
+    }
+    descriptions: {
+      gameMaster: string[]
+      player: string[]
+    }
+  }
 }
 
 const finnish: Translation = {
@@ -255,6 +266,37 @@ const finnish: Translation = {
     joinGame: "Huoneen koodi tai käyttäjänimi on väärin",
     createGame: "Osa tiedoista on väärin",
   },
+  tutorial: {
+    title: "Peli ohjeet",
+    titles: {
+      gameMaster: "Pelimestari",
+      player: "Pelaaja",
+    },
+    descriptions: {
+      gameMaster: [
+        "Paina luo peli painiketta kotisivulla.",
+        "Täytä Luo peli sivun tiedot ja luo peli.",
+        "Anna odotushuoneessa oleva avain iconin vieressä oleva koodi pelaajille.",
+        "Odota, että pelaajat liittyvät peliin",
+        "Odotellessa haasteet painiketta painamalla pääset näkemään ja muokkaamaan haasteita.",
+        "Peli alkaa kun aika loppuu tai aloita peli painiketta painamalla",
+        "Pelihuoneessa odota, että pelaajat alkavat lähettää kuvia hyväksyttäväksi",
+        "Hyväksy tai hylkää pelaajien kuvat. Halutessasi voit antaa kommentin miksi hylkäsit kuvan",
+        "Arvostele pelaajien kuvia kunnes kaikki ovat suorittaneet haasteet tai kunnes aika loppuu",
+      ],
+      player: [
+        "Paina liity peliin painiketta kotisivulla",
+        "Pyydä pelimestarilta huoneen koodi",
+        "Odota, että pelimestari aloittaa pelin tai odotus aika loppuu",
+        "Ota kuva haasteen mukaisesta asiasta. Halutessasi voit antaa pelimestarille pelostuksen, mitä kuvassa on",
+        "Odota, että pelimestari hyväksyy tai hylkää kuvan",
+        "Jos kuva hylättiin ota uusi parempi kuva",
+        "Jos kuva hyväksyttiin jatka seuraavaan haasteeseen",
+        "Suorita haasteita kunnes kaikki haasteet on suoritettu tai aika loppuu",
+        "Katso taulukosta tulokset pelin lopuksi",
+      ],
+    },
+  },
 }
 
 const english: Translation = {
@@ -377,6 +419,37 @@ const english: Translation = {
     closeCamera: "Close camera",
     joinGame: "Room code or user name is invalid",
     createGame: "Some information is invalid",
+  },
+  tutorial: {
+    title: "How to play",
+    titles: {
+      gameMaster: "Gamemaster",
+      player: "Player",
+    },
+    descriptions: {
+      gameMaster: [
+        "Press create a challenge button on the homepage",
+        "Fill the form in the create game page",
+        "Give the code located next to a key icon to the players",
+        "Wait that all the players join the room",
+        "While waiting you can view and edit the challenges by pressing the challenges button",
+        "Game starts when time runs out or you can start the game by pressing the start the game button",
+        "In the challenge room wait that the players start sending in submissions",
+        "Accept or decline the submission. You can comment why you declined a photo if you like",
+        "Review the submissions until all players have done the challenges or until the time runs out",
+      ],
+      player: [
+        "Press join a challenge button on the homepage",
+        "Ask the gamemaster for the room code",
+        "Wait that the gamemaster starts the game or the waiting time ends",
+        "Take a photo of a thing that the challenge describes",
+        "Wait that the gamemaster accepts or declines your submission",
+        "If your photo was declined take a new better photo",
+        "If your photo was accepted continue to the next challenge",
+        "Complete challenges until all of them are done or the time runs out",
+        "Checkout the scores from the scoreboard",
+      ],
+    },
   },
 }
 
