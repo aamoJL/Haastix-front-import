@@ -29,7 +29,7 @@ const defaultFormData: ChallengeRoomData = {
   challenges: [{ description: "" }],
   time: 0,
   delay: 0,
-  isRandom: true,
+  isRandom: false,
 }
 
 function CreateChallengeRoom() {
