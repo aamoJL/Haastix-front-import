@@ -242,7 +242,7 @@ function ChallengeRoom({ roomInfo, socket, playerArray, playNotification }: Prop
             setCurrentTaskNumber(randomTasks[0])
           } else {
             let lastFile = dataResponse.submissions[dataResponse.submissions.length - 1]
-            switch (lastFile.status) {
+            switch (lastFile.submissions[0].status) {
               case "Approved":
                 if (randomTasks.findIndex((x) => x === lastFile.taskNumber) === roomInfo.details.challengeTasks.length - 1) {
                   // No more tasks
