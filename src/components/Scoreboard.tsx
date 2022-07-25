@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Modal, Stack, StackProps, SxProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, Typography } from "@mui/material"
+import { Avatar, Box, IconButton, Modal, Stack, StackProps, SxProps, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { Socket } from "socket.io-client"
 import { PlayerData } from "../interfaces"
@@ -26,11 +26,13 @@ const modalStyle: SxProps<Theme> = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "auto",
+  width: "70%",
+  height: "70%",
+  maxHeight: "500px",
+  maxWidth: "500px",
   bgcolor: "background.default",
   boxShadow: 24,
   borderRadius: 1,
-  p: 4,
 }
 
 /**
@@ -140,18 +142,22 @@ function Scoreboard({ socket, scores, timeIsUp, ...stackProps }: Props) {
         {translation.titles.scoreboard}
       </Typography>
       <Modal open={openModal && !modalLoading} onClose={() => setOpenModal(false)} disableAutoFocus>
-        <Stack sx={modalStyle} alignItems="center" direction="row" spacing={2}>
-          <IconButton id="prev-photo-btn" onClick={(e) => handlePhotoArrowClick(e, selectedPhotoNumber - 1)}>
-            <ArrowBackIcon />
-          </IconButton>
-          <Stack direction="column" alignItems="center" spacing={1}>
+        <Stack sx={modalStyle} direction="row">
+          <Box position="absolute" width={"100%"} height="100%">
+            <img style={{ objectFit: "contain" }} width={"100%"} height={"100%"} src={selectedPhoto} alt="submission image" />
+          </Box>
+          <Box display="flex" position="absolute" width={"100%"} height="100%" justifyContent={"space-between"}>
+            <IconButton sx={{ width: "64px", borderRadius: 0 }} id="prev-photo-btn" onClick={(e) => handlePhotoArrowClick(e, selectedPhotoNumber - 1)}>
+              <ArrowBackIcon />
+            </IconButton>
+            <IconButton sx={{ width: "64px", borderRadius: 0 }} id="next-photo-btn" onClick={(e) => handlePhotoArrowClick(e, selectedPhotoNumber + 1)}>
+              <ArrowForwardIcon />
+            </IconButton>
+          </Box>
+          <Box position={"absolute"} width="100%" bottom={0} padding={3} bgcolor="rgba(0,0,0,0.5)" textAlign={"center"}>
             <Typography sx={{ fontWeight: "bold" }} variant="body1" component="p">{`${selectedPlayer?.playerName}`}</Typography>
-            <img src={selectedPhoto} alt="" />
             <Typography variant="body1" component="p">{`${translation.texts.taskNumber}: ${selectedPhotoNumber + 1}`}</Typography>
-          </Stack>
-          <IconButton id="next-photo-btn" onClick={(e) => handlePhotoArrowClick(e, selectedPhotoNumber + 1)}>
-            <ArrowForwardIcon />
-          </IconButton>
+          </Box>
         </Stack>
       </Modal>
       <TableContainer sx={{ maxHeight: 300 }}>
