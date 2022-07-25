@@ -1,5 +1,9 @@
 # README
 
+Check the <b>[Frontend Wiki](https://gitlab.labranet.jamk.fi/wimma-lab-2022/iotitude/source-frontend/-/wikis/home)</b> for more information!
+
+## Setup
+
 To setup your local development environment, make sure you have installed [Docker](https://www.docker.com/) for your workstation!
 
 Optional but highly recommended! [Install docker extension for Visual Studio Code](https://code.visualstudio.com/docs/containers/overview).
