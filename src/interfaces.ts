@@ -193,9 +193,11 @@ export interface YouWereRemovedResponse {
 export interface PlayerFileStatusesResponse {
   statusCode: number
   submissions: {
-    fileName: string
-    status: fileStatus
     taskNumber: number
+      submissions: {
+        fileName: string
+        status: fileStatus
+    }[]
   }[]
 }
 
