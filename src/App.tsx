@@ -1,70 +1,77 @@
-import { useMemo } from 'react'
-import { Box, CssBaseline, PaletteMode, ThemeProvider, useMediaQuery } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import CreateChallengeRoom from './components/CreateChallengeRoom';
-import HomePage from './components/HomePage';
-import JoinChallenge from './components/JoinChallenge';
-import NotFound from './components/NotFound';
-import makeTheme from './Theme';
-import { getTranslation, Language, Translation } from './translations';
-import LanguageContext from './components/Context/LanguageContext';
+import { useMemo } from "react"
+import { Box, Button, CssBaseline, PaletteMode, ThemeProvider, useMediaQuery } from "@mui/material"
+import { useEffect, useState } from "react"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import CreateChallengeRoom from "./components/CreateChallengeRoom"
+import HomePage from "./components/HomePage"
+import JoinChallenge from "./components/JoinChallenge"
+import makeTheme from "./Theme"
+import { getTranslation, Language, Translation } from "./translations"
+import LanguageContext from "./components/Context/LanguageContext"
+import FeedbackModal from "./components/FeedbackModal"
+import { ThemeVariables } from "./interfaces"
 
-const App= () => {
-  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
-  const [translation, setTranslation] = useState<Translation>(getTranslation(localStorage.getItem("language") === null ? "en" 
-  : localStorage.getItem("language") as Language));
-  const [mode, setMode] = useState<PaletteMode>(localStorage.getItem("mode") !== null ? localStorage.getItem("mode") as PaletteMode
-    : prefersDark ? "dark"
-    : "light"
-  );
+const App = () => {
+  const prefersDark = useMediaQuery("(prefers-color-scheme: dark)")
+  const defaultTheme: ThemeVariables = {
+    color: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).color : "green",
+    mode: localStorage.getItem("theme") !== null ? (JSON.parse(localStorage.getItem("theme")!).mode as PaletteMode) : prefersDark ? "dark" : "light",
+    style: localStorage.getItem("theme") !== null ? JSON.parse(localStorage.getItem("theme")!).style : "1",
+  }
+  const [translation, setTranslation] = useState<Translation>(getTranslation(localStorage.getItem("language") === null ? "en" : (localStorage.getItem("language") as Language)))
+  const [themeOptions, setThemeOptions] = useState<ThemeVariables>(defaultTheme)
+  const { color, mode, style } = themeOptions
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
 
-  if(localStorage.getItem("mode") === null && mode !== null)
-    localStorage.setItem("mode", mode)
+  if (localStorage.getItem("theme") === null && themeOptions !== null) localStorage.setItem("theme", JSON.stringify(themeOptions))
 
   useEffect(() => {
     // Subscribe to language changed event
-    function event(){
-      setTranslation(getTranslation(localStorage.getItem("language") as Language));
+    function event() {
+      setTranslation(getTranslation(localStorage.getItem("language") as Language))
     }
 
-    document.addEventListener("language-change", event);
+    document.addEventListener("language-change", event)
 
     return () => {
-      document.removeEventListener("language-change", event);
+      document.removeEventListener("language-change", event)
     }
-  },[])
+  }, [])
 
   useEffect(() => {
+    // Subscribe to theme change event
     function event() {
-      setMode(localStorage.getItem("mode") as PaletteMode)
+      setThemeOptions(JSON.parse(localStorage.getItem("theme")!))
     }
-    document.addEventListener("mode-change", event);
+    document.addEventListener("theme-change", event)
 
     return () => {
-      document.removeEventListener("mode-change", event);
+      document.removeEventListener("theme-change", event)
     }
-  })
+  }, [])
 
-  const theme = useMemo(() =>  makeTheme(mode), [mode]);
+  const theme = useMemo(() => makeTheme(mode, color, style), [mode, color, style])
 
   return (
     <LanguageContext.Provider value={translation}>
       <ThemeProvider theme={theme}>
-        <CssBaseline/>
-        <Box className='App'>
+        <CssBaseline />
+        <Box className="App">
           <BrowserRouter>
             <Routes>
-              <Route path='/' element={<HomePage palette={theme.palette}/>} />
-              <Route path='game' element={<JoinChallenge />} />
-              <Route path='create' element={<CreateChallengeRoom />} />
-              <Route path='*' element={<NotFound />}/>
+              <Route path="/" element={<HomePage palette={theme.palette} />} />
+              <Route path="game" element={<JoinChallenge />} />
+              <Route path="create" element={<CreateChallengeRoom />} />
             </Routes>
           </BrowserRouter>
+          <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
+          <Button id="feedback-btn" sx={{ width: "auto", position: "fixed", bottom: 0, left: 0, ml: 2, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }} color="info" size="small" onClick={(e) => setFeedbackOpen(!feedbackOpen)}>
+            {translation.inputs.buttons.feedback}
+          </Button>
         </Box>
       </ThemeProvider>
     </LanguageContext.Provider>
-  );
+  )
 }
 
-export default App;
+export default App
