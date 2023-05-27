@@ -1,3 +1,5 @@
+THIS REPOSITORY IS AN IMPORTED REPOSITORY FROM GITLAB (https://gitlab.labranet.jamk.fi/wimma-lab-2022/iotitude/source-frontend)
+
 # README
 
 Check the <b>[Frontend Wiki](https://gitlab.labranet.jamk.fi/wimma-lab-2022/iotitude/source-frontend/-/wikis/home)</b> for more information!
